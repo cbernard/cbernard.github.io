@@ -1,0 +1,10 @@
+/**
+ * TWKLausanne
+ */
+
+ @font-face {
+  font-family: TWKLausanne300;
+  font-weight: 300;
+  font-display: swap;
+  src: url('../fonts/TWKLausanne-300.woff2') format('woff2');
+}
