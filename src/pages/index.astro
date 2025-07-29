@@ -1,284 +1,283 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
 import { Picture } from "astro:assets";
 
-import myImage from "../assets/images/02.webp";
-import mySecondImage from "../assets/images/tdh.jpg";
-import myThumb from "../assets/images/thumb-01.jpg";
-import mySecondThumb from "../assets/images/thumb-02.jpg";
+import Layout from "../layouts/Layout.astro";
+import Work from "../components/work/work.astro";
 
-const works = [
-    "Piaget",
-    "Annual report",
-    "Jaeger-Lecoultre",
-    "Memory card",
-    "Roger Dubuis",
-    "Roger Dubuis",
-    "Roger Dubuis",
-    "Roger Dubuis",
-    "Roger Dubuis",
-    "Roger Dubuis",
-    "Roger Dubuis",
-    "Roger Dubuis",
-    "Roger Dubuis",
-    "Roger Dubuis",
-    "Roger Dubuis",
-    "Roger Dubuis",
-];
+// import Loader from "../components/loader/loader.vue";
+
+import myImage from "../images/02.webp";
+import mySecondImage from "../images/tdh.jpg";
+import myThumb from "../images/thumb-01.jpg";
+import mySecondThumb from "../images/thumb-02.jpg";
+
+const projects = await getCollection("projects");
+const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Layout>
-    <div class="absolute top-0 left-[60px] h-screen w-px bg-red-500"></div>
+  <!-- <Loader client:load class="fixed inset-0 z-[5000]" /> -->
+
+  <div
+    class="absolute top-0 left-[60px] z-[9999] h-screen w-px bg-black-16 dark:bg-white-16"
+  >
+  </div>
+
+  <div
+    class="flex h-screen w-screen flex-col overflow-hidden md:flex-row"
+    x-data="accordion()"
+    :style="{ '--current': current, '--length': works.length }"
+  >
     <div
-        class="overflow-hidden w-screen h-screen flex flex-col md:flex-row"
-        x-data="accordion()"
-        :style="{ '--current': current, '--length': works.length }"
+      class="relative h-[50vh] landscape:order-2 landscape:h-auto landscape:w-[50vw]"
     >
-        <div
-            class="flex flex-col accordion h-[50vh] md:w-[50vw] md:h-auto"
-            :style="{ '--offset': offset, '--work-current-height': currentHeight }"
+      <div class="absolute end-0 top-0 z-30">
+        <a href="#" class="m-3 inline-block p-2 text-white">Infos</a>
+      </div>
+
+      <div class="absolute end-0 bottom-0 z-30">
+        <a
+          href="mailto:charly.bernard@gmail.com"
+          class="m-3 inline-block p-2 text-white">Contact</a
         >
-            <div
-                class="flex flex-col transition-transform ease-in-out duration-300"
-                x-ref="container"
-            >
-                <div class="flex items-center gap-x-12 py-5" x-ref="headline">
-                    <div class="w-[60px] text-center">00</div>
-                    <div class="flex items-center gap-x-4">
-                        <span>Charly Bernard</span>
-                        <span class="opacity-30">Front-end Developer</span>
-                    </div>
-                </div>
+      </div>
 
-                {
-                    works.map((work, index) => {
-                        return (
-                            <div
-                                class="work ease-in-out"
-                                x-bind:class={`{ 'work--current': current === ${index} }`}
-                            >
-                                <div class="flex items-center gap-x-12 text-nowrap">
-                                    <div class="w-[60px] text-center">
-                                        {String(index + 1).padStart(2, "0")}
-                                    </div>
-                                    <div class="text-[52px]">{work}</div>
-                                </div>
-                            </div>
-                        );
-                    })
-                }
-            </div>
-        </div>
-        <div class="h-[50vh] md:w-[50vw] md:h-auto relative">
-            {
-                works.map((work, index) => {
-                    return (
-                        <div
-                            class="absolute inset-0 transition-opacity opacity-0 z-10"
-                            x-bind:class={`{ 'opacity-100': current === ${index} }`}
-                        >
-                            <Picture
-                                src={index % 2 !== 0 ? myImage : mySecondImage}
-                                formats={["webp"]}
-                                alt="A description of my image."
-                                class="w-full h-full object-cover object-center"
-                            />
-                        </div>
-                    );
-                })
-            }
-
+      {
+        sortedProjects.map((_, index) => {
+          return (
             <div
-                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[300px] aspect-[300/375] overflow-hidden"
+              class="absolute inset-0 z-10 opacity-0 transition-opacity"
+              x-bind:class={`current === ${index} && 'opacity-100'`}
             >
-                <div class="flex flex-col slider">
-                    {
-                        works.map((work, index) => {
-                            return (
-                                <div class="aspect-[300/375]">
-                                    <a href="/about">
-                                        <Picture
-                                            src={
-                                                index % 2 === 0
-                                                    ? myThumb
-                                                    : mySecondThumb
-                                            }
-                                            formats={["webp"]}
-                                            alt="A description of my image."
-                                            class="w-full"
-                                        />
-                                    </a>
-                                </div>
-                            );
-                        })
-                    }
-                </div>
+              <Picture
+                src={index % 2 !== 0 ? myImage : mySecondImage}
+                formats={["webp"]}
+                alt="A description of my image."
+                class="h-full w-full object-cover object-center"
+              />
             </div>
+          );
+        })
+      }
+
+      <div
+        class="absolute top-1/2 left-1/2 z-50 aspect-[300/375] w-[300px] -translate-x-1/2 -translate-y-1/2 overflow-hidden"
+      >
+        <div
+          class="flex translate-y-[calc(100%_/_var(--length)_*_var(--current)_*_-1)] flex-col transition-transform"
+        >
+          {
+            sortedProjects.map((_, index) => {
+              return (
+                <div class="aspect-[300/375]">
+                  <a href="/projects">
+                    <Picture
+                      src={index % 2 === 0 ? myThumb : mySecondThumb}
+                      formats={["webp"]}
+                      alt="A description of my image."
+                      class="w-full"
+                    />
+                  </a>
+                </div>
+              );
+            })
+          }
         </div>
+      </div>
     </div>
 
-    <script is:inline type="text/javascript">
-        function accordion() {
-            return {
-                defaultHeight: 78,
-                current: 0,
-                offset: null,
-                currentHeight: null,
-                visible: 5,
-                works: null,
-                canScroll: true,
-                canKeyPress: true,
+    <div
+      class="relative flex h-[50vh] translate-y-[calc(var(--offset)_*_1px)] flex-col transition-transform landscape:order-1 landscape:h-auto landscape:w-[50vw]"
+      :style="{ '--offset': offset, '--work-current-height': currentHeight }"
+    >
+      <div
+        class="flex flex-col transition-transform duration-300 ease-in-out"
+        x-ref="container"
+      >
+        <div class="flex items-center gap-x-12 py-5" x-ref="headline">
+          <div class="w-[60px] text-center">00</div>
+          <div class="flex items-center gap-x-4">
+            <span>Charly Bernard</span>
+            <span class="text-black-32 dark:text-white-32">
+              Front-end Developer
+            </span>
+          </div>
+        </div>
 
-                init() {
-                    this.works = Array.from(this.$el.querySelectorAll(".work"));
-
-                    this.setWrapperOffset();
-                    this.setCurrentHeight();
-
-                    this.$refs.container.addEventListener(
-                        "wheel",
-                        this.onScroll.bind(this),
-                        {
-                            passive: false,
-                        },
-                    );
-
-                    window.addEventListener(
-                        "resize",
-                        () => {
-                            this.setWrapperOffset();
-                            this.setCurrentHeight();
-                        },
-                        { passive: true },
-                    );
-
-                    window.addEventListener("keydown", (e) => {
-                        if (!this.canKeyPress) {
-                            return;
-                        }
-
-                        if (e.key === "ArrowDown") {
-                            this.goToNext();
-                        } else if (e.key === "ArrowUp") {
-                            this.goToPrevious();
-                        }
-
-                        this.canKeyPress = false;
-                        setTimeout(() => {
-                            this.canKeyPress = true;
-                        }, 250);
-                    });
-
-                    Alpine.watch(
-                        () => this.current,
-                        () => {
-                            console.log(this.current);
-                            this.setWrapperOffset();
-                            this.setCurrentHeight();
-                        },
-                    );
-                },
-
-                onScroll(e) {
-                    e.preventDefault();
-
-                    if (!this.canScroll) {
-                        return;
-                    }
-
-                    this.canScroll = false;
-
-                    setTimeout(() => {
-                        this.canScroll = true;
-                    }, 500);
-
-                    const direction = e.deltaY > 0 ? 1 : -1;
-
-                    if (direction === 1) {
-                        this.goToNext();
-                    } else if (direction === -1) {
-                        this.goToPrevious();
-                    }
-                },
-
-                change(value) {
-                    if (value === this.current) {
-                        return;
-                    }
-
-                    this.current = value;
-                },
-
-                goToNext() {
-                    if (this.current < this.works.length - 1) {
-                        this.current++;
-                    }
-                },
-
-                goToPrevious() {
-                    if (this.current > 0) {
-                        this.current--;
-                    }
-                },
-
-                setCurrentHeight() {
-                    if (this.current === 0) {
-                        this.currentHeight =
-                            this.$el.clientHeight -
-                            this.$refs.headline.clientHeight -
-                            this.defaultHeight * (this.visible / 2);
-
-                        return;
-                    }
-
-                    if (
-                        this.current >
-                        this.works.length - 1 - Math.ceil(this.visible / 2)
-                    ) {
-                        this.currentHeight =
-                            this.$el.clientHeight -
-                            this.defaultHeight *
-                                (this.visible -
-                                    0.5 +
-                                    (this.works.length - 2 - this.current - 1));
-
-                        return;
-                    }
-
-                    this.currentHeight =
-                        this.$el.clientHeight -
-                        this.defaultHeight * this.visible;
-                },
-
-                setWrapperOffset() {
-                    if (this.current < 0) {
-                        return;
-                    }
-
-                    if (this.current === 0) {
-                        this.offset = 0;
-
-                        return;
-                    }
-
-                    if (this.current === 1) {
-                        this.offset =
-                            this.$refs.headline.clientHeight * -1 -
-                            (this.defaultHeight / 2) * this.current;
-
-                        return;
-                    }
-
-                    if (this.current < this.visible - 1) {
-                        return;
-                    }
-
-                    this.offset =
-                        this.$refs.headline.clientHeight * -1 -
-                        (this.defaultHeight / 2) * this.visible -
-                        this.defaultHeight * (this.current - this.visible);
-                },
-            };
+        {
+          sortedProjects.map((project, index) => {
+            return <Work index={index} title={project.data.title} />;
+          })
         }
-    </script>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline type="text/javascript">
+    function accordion() {
+      return {
+        defaultHeight: 78,
+        current: Alpine.store("navigation").current,
+        offset: null,
+        currentHeight: null,
+        visible: 5,
+        works: null,
+        canScroll: true,
+        canKeyPress: true,
+
+        init() {
+          this.works = Array.from(this.$el.querySelectorAll(".work"));
+
+          this.setWrapperOffset();
+          this.setCurrentHeight();
+
+          this.$refs.container.addEventListener(
+            "wheel",
+            this.onScroll.bind(this),
+            {
+              passive: false,
+            },
+          );
+
+          window.addEventListener(
+            "resize",
+            () => {
+              this.setWrapperOffset();
+              this.setCurrentHeight();
+            },
+            { passive: true },
+          );
+
+          window.addEventListener("keydown", (e) => {
+            if (!this.canKeyPress) {
+              return;
+            }
+
+            if (e.key === "ArrowDown") {
+              this.goToNext();
+            } else if (e.key === "ArrowUp") {
+              this.goToPrevious();
+            }
+
+            this.canKeyPress = false;
+            setTimeout(() => {
+              this.canKeyPress = true;
+            }, 250);
+          });
+
+          document.addEventListener("astro:before-preparation", () => {
+            Alpine.store("navigation").current = this.current;
+          });
+
+          Alpine.watch(
+            () => this.current,
+            () => {
+              this.setWrapperOffset();
+              this.setCurrentHeight();
+            },
+          );
+        },
+
+        onScroll(e) {
+          e.preventDefault();
+
+          if (!this.canScroll) {
+            return;
+          }
+
+          this.canScroll = false;
+
+          setTimeout(() => {
+            this.canScroll = true;
+          }, 500);
+
+          const direction = e.deltaY > 0 ? 1 : -1;
+
+          if (direction === 1) {
+            this.goToNext();
+          } else if (direction === -1) {
+            this.goToPrevious();
+          }
+        },
+
+        change(value) {
+          if (value === this.current) {
+            return;
+          }
+
+          this.current = value;
+        },
+
+        goToNext() {
+          if (this.current < this.works.length - 1) {
+            this.current++;
+          }
+        },
+
+        goToPrevious() {
+          if (this.current > 0) {
+            this.current--;
+          }
+        },
+
+        setCurrentHeight() {
+          if (this.current === 0) {
+            this.currentHeight =
+              this.$el.clientHeight -
+              this.$refs.headline.clientHeight -
+              this.defaultHeight * (this.visible / 2);
+
+            return;
+          }
+
+          if (
+            this.current >
+            this.works.length - 1 - Math.ceil(this.visible / 2)
+          ) {
+            this.currentHeight =
+              this.$el.clientHeight -
+              this.defaultHeight *
+                (this.visible -
+                  0.5 +
+                  (this.works.length - 2 - this.current - 1));
+
+            return;
+          }
+
+          this.currentHeight =
+            this.$el.clientHeight - this.defaultHeight * this.visible;
+        },
+
+        setWrapperOffset() {
+          if (this.current < 0) {
+            return;
+          }
+
+          if (this.current === 0) {
+            this.offset = 0;
+
+            return;
+          }
+
+          if (this.current === 1) {
+            this.offset =
+              this.$refs.headline.clientHeight * -1 -
+              (this.defaultHeight / 2) * this.current;
+
+            return;
+          }
+
+          if (this.current < this.visible - 1) {
+            return;
+          }
+
+          this.offset =
+            this.$refs.headline.clientHeight * -1 -
+            (this.defaultHeight / 2) * this.visible -
+            this.defaultHeight * (this.current - this.visible);
+        },
+      };
+    }
+  </script>
 </Layout>

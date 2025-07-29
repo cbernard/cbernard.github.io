@@ -2,72 +2,32 @@
 
 @import "tailwindcss";
 
-:root {
-    --font-primary: "TWKLausanne300", sans-serif;
+@custom-variant dark (&:where(.dark, .dark *));
 
-    --color-black: #0a0a0a;
-    --color-white: #ffffff;
-    --color-gray: #eeeeee;
+@theme {
+  /* Fonts */
+  --font-primary: "TWKLausanne300", sans-serif;
 
-    --color-black-08: color-mix(in srgb, var(--color-black) 8%, transparent);
-    --color-black-16: color-mix(in srgb, var(--color-black) 16%, transparent);
-    --color-black-24: color-mix(in srgb, var(--color-black) 24%, transparent);
-    --color-black-32: color-mix(in srgb, var(--color-black) 32%, transparent);
-    --color-black-52: color-mix(in srgb, var(--color-black) 52%, transparent);
-    --color-black-80: color-mix(in srgb, var(--color-black) 80%, transparent);
+  /* Colors */
+  --color-black: #0a0a0a;
+  --color-white: #ffffff;
+  --color-gray: #eeeeee;
 
-    --color-white-08: color-mix(in srgb, var(--color-white) 8%, transparent);
-    --color-white-16: color-mix(in srgb, var(--color-white) 16%, transparent);
-    --color-white-24: color-mix(in srgb, var(--color-white) 24%, transparent);
-    --color-white-32: color-mix(in srgb, var(--color-white) 32%, transparent);
-    --color-white-52: color-mix(in srgb, var(--color-white) 52%, transparent);
-    --color-white-80: color-mix(in srgb, var(--color-white) 80%, transparent);
+  --color-black-08: color-mix(in srgb, var(--color-black) 8%, transparent);
+  --color-black-16: color-mix(in srgb, var(--color-black) 16%, transparent);
+  --color-black-24: color-mix(in srgb, var(--color-black) 24%, transparent);
+  --color-black-32: color-mix(in srgb, var(--color-black) 32%, transparent);
+  --color-black-52: color-mix(in srgb, var(--color-black) 52%, transparent);
+  --color-black-80: color-mix(in srgb, var(--color-black) 80%, transparent);
 
-    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-out-quad: cubic-bezier(0.5, 1, 0.89, 1);
-    --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
-
-    --duration-short: 250ms;
-    --duration-standard: 300ms;
-    --duration-long: 400ms;
-
-    --header-offset: calc(var(--spacing) * 35);
-
-    @variant 2xl {
-        --header-offset: calc(var(--spacing) * 45);
-    }
+  --color-white-08: color-mix(in srgb, var(--color-white) 8%, transparent);
+  --color-white-16: color-mix(in srgb, var(--color-white) 16%, transparent);
+  --color-white-24: color-mix(in srgb, var(--color-white) 24%, transparent);
+  --color-white-32: color-mix(in srgb, var(--color-white) 32%, transparent);
+  --color-white-52: color-mix(in srgb, var(--color-white) 52%, transparent);
+  --color-white-80: color-mix(in srgb, var(--color-white) 80%, transparent);
 }
 
-body {
-    font-family: var(--font-primary);
-    color: var(--color-black);
-}
-
-.accordion {
-    translate: 0 calc(var(--offset, 0) * 1px);
-    transition: translate var(--duration-standard) var(--ease-in-out);
-}
-
-.work {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 78px;
-
-    color: var(--color-black-32);
-
-    transition:
-        height var(--duration-standard) var(--ease-in-out),
-        color var(--duration-standard) var(--ease-in-out);
-}
-
-.work--current {
-    height: calc(var(--work-current-height) * 1px);
-
-    color: var(--color-black);
-}
-
-.slider {
-    transition: translate var(--duration-standard) var(--ease-in-out);
-    translate: 0 calc(100% / var(--length) * var(--current) * -1);
+[x-cloak] {
+  display: none !important;
 }

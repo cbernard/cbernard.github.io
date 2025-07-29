@@ -1,21 +1,70 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+import { Icon } from "astro-icon/components";
 
 import "../styles/index.css";
 ---
 
 <!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <meta name="generator" content={Astro.generator} />
-        <title>Charly Bernard</title>
+<html lang="en" x-data :class="$store.darkMode.on && 'dark'">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Charly Bernard</title>
+  </head>
+  <body
+    class="font-primary text-black antialiased transition-colors dark:bg-black dark:text-white"
+  >
+    <div class="fixed end-1/2 top-0 z-10">
+      <button
+        type="button"
+        class="m-3 cursor-pointer p-2"
+        x-data
+        @click="$store.darkMode.toggle()"
+      >
+        <Icon name="switcher" class="h-3 w-3" />
+      </button>
+    </div>
 
-        <ViewTransitions />
-    </head>
-    <body>
-        <slot />
-    </body>
+    <main class="transition-fade">
+      <slot />
+    </main>
+
+    <script is:inline>
+      document.addEventListener("alpine:init", () => {
+        Alpine.store("darkMode", {
+          on: false,
+
+          toggle() {
+            this.on = !this.on;
+          },
+        });
+
+        Alpine.store("navigation", {
+          current: 0,
+        });
+      });
+
+      // document.addEventListener("astro:before-preparation", () => {
+      //   console.log("astro:before-preparation");
+      // });
+
+      // document.addEventListener("astro:after-preparation", () => {
+      //   console.log("astro:after-preparation");
+      // });
+
+      // document.addEventListener("astro:before-swap", () => {
+      //   console.log("astro:before-swap");
+      // });
+
+      // document.addEventListener("astro:after-swap", () => {
+      //   console.log("astro:after-swap");
+      // });
+
+      // document.addEventListener("astro:page-load", () => {
+      //   console.log("astro:page-load");
+      // });
+    </script>
+  </body>
 </html>

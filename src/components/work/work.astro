@@ -1,0 +1,15 @@
+---
+const { index, title } = Astro.props;
+---
+
+<div
+  class="work flex flex-col justify-center transition-all ease-in-out"
+  x-bind:class={`current == ${index} ? 'h-[calc(var(--work-current-height)_*_1px)] text-black dark:text-white' : 'h-[78px] text-black-32 dark:text-white-32'`}
+>
+  <div class="flex items-center gap-x-12 text-nowrap">
+    <div class="w-[60px] text-center">
+      {String(index + 1).padStart(2, "0")}
+    </div>
+    <div class="text-[52px]">{title}</div>
+  </div>
+</div>

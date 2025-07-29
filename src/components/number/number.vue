@@ -1,30 +1,25 @@
 <script setup>
-  import NumberFlow from '@number-flow/vue';
-  import { ref } from 'vue';
+import NumberFlow from "@number-flow/vue";
+import { ref } from "vue";
 
-  const props = defineProps({
-    value: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
-    trend: {
-      type: Number,
-      default: 0,
-    },
-    format: {
-      type: Object,
-      default: () => ({ notation: 'standard' }),
-    },
-  });
+const props = defineProps({
+  value: {
+    type: Number,
+    required: true,
+  },
 
-  const digit = ref(props.value);
+  trend: {
+    type: Number,
+    default: 0,
+  },
 
-  const handleClick = () => {
-    digit.value = digit.value + 100;
-  };
+  format: {
+    type: Object,
+    default: () => ({ notation: "standard" }),
+  },
+});
 </script>
 
 <template>
-  <NumberFlow :value="digit" :trend @click="handleClick" />
+  <NumberFlow :value="value" :trend="trend" :format="format" />
 </template>
