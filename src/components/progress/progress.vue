@@ -6,7 +6,7 @@ import Number from "../number/number.vue";
 const props = defineProps({
   translate: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 
   progress: {
@@ -29,27 +29,32 @@ const offset = computed(() => {
     progress * container.value?.clientHeight -
     number.value?.clientHeight / split;
 
+  console.log(value);
+
   return value > 0 ? `${value}px` : 0;
-});
-
-const numberClasses = computed(() => {
-  const common = "w-[3ch] h-[1.5em] text-center";
-
-  return props.translate
-    ? `${common} translate-y-(--offset) transition-translate duration-500 ease-in-out`
-    : common;
 });
 </script>
 
 <template>
   <div
-    class="flex h-full w-[60px] items-center justify-center border-r border-r-black-16 py-2 dark:border-r-white-16"
+    class="flex h-full"
     :class="[{ 'items-stretch': translate }]"
     :style="{ '--offset': offset }"
   >
     <div ref="container">
-      <div ref="number" :class="numberClasses">
-        <Number :value="progress * 100" />
+      <div
+        ref="number"
+        :class="[
+          {
+            'transition-translate translate-y-(--offset) duration-500 ease-in-out':
+              translate,
+          },
+        ]"
+      >
+        <Number
+          :value="progress * 100"
+          :format="{ minimumIntegerDigits: 2, useGrouping: false }"
+        />
       </div>
     </div>
   </div>

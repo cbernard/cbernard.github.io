@@ -1,6 +1,18 @@
 {
+  "slug": "annual-report",
   "order": 2,
   "title": "Annual report",
   "client": "Terre des hommes",
-  "year": 2024
+  "year": 2024,
+  "services": ["HTML", "CSS", "Javascript"],
+  "description": "Designed and developed a responsive front-end for Jaeger-LeCoultre, delivering a smooth user experience while maintaining the brand’s elegance and high-end aesthetic.",
+  "background": "images/projects/tdh.webp",
+  "thumbnail": "images/projects/ov-2021-thumbnail.webp",
+  "medias": [
+    "images/projects/jlc-detail-01.jpg",
+    "images/projects/jlc-detail-02.jpg",
+    "images/projects/jlc-detail-01.jpg",
+    "images/projects/jlc-detail-02.jpg"
+  ],
+  "url": "https://www.piaget.com/"
 }

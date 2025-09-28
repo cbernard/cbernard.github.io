@@ -16,6 +16,11 @@ import "../styles/index.css";
   <body
     class="font-primary text-black antialiased transition-colors dark:bg-black dark:text-white"
   >
+    <div
+      class="fixed top-0 left-[calc(var(--spacing)_*_5_+_100vw_/_32_+_5px)] z-[9999] h-screen w-px bg-black-16 dark:bg-white-16"
+    >
+    </div>
+
     <div class="fixed end-1/2 top-0 z-10">
       <button
         type="button"
@@ -27,44 +32,77 @@ import "../styles/index.css";
       </button>
     </div>
 
-    <main class="transition-fade">
+    <div class="fixed end-0 top-0 z-30">
+      <a href="#" class="m-3 inline-block p-2 text-white">Infos</a>
+    </div>
+
+    <div class="fixed end-0 bottom-0 z-30">
+      <a
+        href="mailto:charly.bernard@gmail.com"
+        class="m-3 inline-block p-2 text-white">Contact</a
+      >
+    </div>
+
+    <main id="swup">
       <slot />
     </main>
 
-    <script is:inline>
-      document.addEventListener("alpine:init", () => {
-        Alpine.store("darkMode", {
-          on: false,
+    <script>
+      import gsap from "gsap";
+      import Swup from "swup";
+      import SwupHeadPlugin from "@swup/head-plugin";
+      import SwupScriptsPlugin from "@swup/scripts-plugin";
+      import SwupDebugPlugin from "@swup/debug-plugin";
+      import SwupJsPlugin from "@swup/js-plugin";
 
-          toggle() {
-            this.on = !this.on;
-          },
-        });
-
-        Alpine.store("navigation", {
-          current: 0,
-        });
+      const swup = new Swup({
+        plugins: [
+          new SwupHeadPlugin(),
+          new SwupScriptsPlugin(),
+          new SwupDebugPlugin(),
+          new SwupJsPlugin({
+            animations: [
+              {
+                from: "(/)",
+                to: "(/project/.*)",
+                out: async () => {
+                  await gsap
+                    .timeline()
+                    .to(".projects", {
+                      xPercent: -100,
+                      duration: 1,
+                    })
+                    .to(
+                      ".projects__thumbnail",
+                      { xPercent: 100, duration: 1 },
+                      "<",
+                    );
+                },
+                in: async () => {},
+              },
+              {
+                from: "(/project/.*)",
+                to: "(/)",
+                out: async () => {
+                  await gsap.to(".image", {
+                    xPercent: 100,
+                    duration: 1,
+                  });
+                },
+                in: async () => {},
+              },
+            ],
+          }),
+        ],
       });
 
-      // document.addEventListener("astro:before-preparation", () => {
-      //   console.log("astro:before-preparation");
-      // });
+      const handler = () => console.log("New page loaded");
+      // Register a handler
+      swup.hooks.on("page:view", handler);
+    </script>
 
-      // document.addEventListener("astro:after-preparation", () => {
-      //   console.log("astro:after-preparation");
-      // });
-
-      // document.addEventListener("astro:before-swap", () => {
-      //   console.log("astro:before-swap");
-      // });
-
-      // document.addEventListener("astro:after-swap", () => {
-      //   console.log("astro:after-swap");
-      // });
-
-      // document.addEventListener("astro:page-load", () => {
-      //   console.log("astro:page-load");
-      // });
+    <script>
+      import "../scripts/index.js";
     </script>
   </body>
 </html>

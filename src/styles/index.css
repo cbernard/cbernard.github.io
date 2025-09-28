@@ -1,6 +1,7 @@
 @import "./fonts.css";
 
 @import "tailwindcss";
+@import "mouse-follower/dist/mouse-follower.min.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

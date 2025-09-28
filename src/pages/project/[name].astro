@@ -1,0 +1,117 @@
+---
+import { getCollection } from "astro:content";
+import { Picture } from "astro:assets";
+
+import { getImageByPath } from "../../utils/images";
+import Layout from "../../layouts/Layout.astro";
+import Progress from "../../components/progress/progress.astro";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+
+  return projects.map((project) => {
+    return {
+      params: {
+        name: project.data.slug,
+      },
+      props: {
+        project: project.data,
+      },
+    };
+  });
+}
+
+const { project } = Astro.props;
+
+const backgroundImage = getImageByPath(project.background);
+---
+
+<Layout>
+  <div class="flex w-screen flex-col md:flex-row">
+    <div class="sticky top-0 h-[50vh] md:h-screen md:w-[50vw]">
+      <div class="image absolute inset-0">
+        <Picture
+          src={backgroundImage}
+          formats={["webp"]}
+          alt="A description of my image."
+          class="h-full w-full object-cover object-center"
+        />
+      </div>
+
+      <div
+        class="absolute inset-0 grid grid-cols-8 gap-x-[10px] pt-5 pb-10 pl-5 text-white"
+      >
+        <div class="col-span-1 row-span-2 text-white-32">
+          <Progress :translate={true} />
+        </div>
+        <div class="col-span-6">
+          <div class="flex items-center gap-x-3">
+            <div>Date</div>
+            <span class="text-white-32">{project.year}</span>
+          </div>
+        </div>
+
+        <div class="col-span-6 col-start-2 flex flex-col gap-y-5">
+          {
+            project.url ? (
+              <a
+                href={project.url}
+                target="_blank"
+                aria-label="See live"
+                data-cursor-text="See live"
+              >
+                <span class="absolute inset-0" />
+                <h1 class="text-[52px]" data-split>
+                  {project.title}
+                </h1>
+              </a>
+            ) : (
+              <h1 class="text-[52px]" data-split>
+                {project.title}
+              </h1>
+            )
+          }
+
+          <div class="mt-auto flex items-center gap-x-3">
+            <div data-split>Services</div>
+            <div class="text-white-32" data-split>
+              {project.services.join(", ")}
+            </div>
+          </div>
+
+          <div data-split>
+            {project.description}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="relative flex h-[50vh] flex-col items-center gap-y-[100px] pt-56 pb-10 md:h-auto md:w-[50vw]"
+    >
+      <a href="/" class="absolute top-0 left-0 m-3 p-2">Revenir</a>
+      <div class="flex flex-col gap-y-10">
+        {
+          project.medias.map((item, index) => {
+            const image = getImageByPath(item);
+            return (
+              <div class="bg-black p-14">
+                <Picture
+                  src={image}
+                  formats={["webp"]}
+                  alt={`${project.title} - ${index}`}
+                  class="w-full"
+                />
+              </div>
+            );
+          })
+        }
+      </div>
+
+      <div class="relative text-[32px]">
+        <div class="text-black-32">Next project</div>
+        <!-- <div class="absolute inset-0">Next project</div> -->
+      </div>
+    </div>
+  </div>
+</Layout>

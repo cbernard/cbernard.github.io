@@ -1,6 +1,18 @@
 {
+  "slug": "ov-2021",
   "order": 4,
   "title": "OV - 2021",
   "client": "Terre des hommes",
-  "year": 2021
+  "year": 2021,
+  "services": ["HTML", "CSS", "Javascript"],
+  "description": "Designed and developed a responsive front-end for Jaeger-LeCoultre, delivering a smooth user experience while maintaining the brand’s elegance and high-end aesthetic.",
+  "background": "images/projects/tdh.webp",
+  "thumbnail": "images/projects/ov-2021-thumbnail.webp",
+  "medias": [
+    "images/projects/jlc-detail-01.jpg",
+    "images/projects/jlc-detail-02.jpg",
+    "images/projects/jlc-detail-01.jpg",
+    "images/projects/jlc-detail-02.jpg"
+  ],
+  "url": "https://www.piaget.com/"
 }

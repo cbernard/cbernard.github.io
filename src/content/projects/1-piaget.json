@@ -1,6 +1,18 @@
 {
+  "slug": "piaget",
   "order": 10,
   "title": "Piaget",
   "client": "Richemont",
-  "year": 2024
+  "year": 2024,
+  "services": ["HTML", "CSS", "Javascript"],
+  "description": "Designed and developed a responsive front-end for Jaeger-LeCoultre, delivering a smooth user experience while maintaining the brand’s elegance and high-end aesthetic.",
+  "background": "images/projects/piaget.webp",
+  "thumbnail": "images/projects/piaget-thumbnail.webp",
+  "medias": [
+    "images/projects/jlc-detail-01.jpg",
+    "images/projects/jlc-detail-02.jpg",
+    "images/projects/jlc-detail-01.jpg",
+    "images/projects/jlc-detail-02.jpg"
+  ],
+  "url": "https://www.piaget.com/"
 }

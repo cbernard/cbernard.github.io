@@ -1,0 +1,36 @@
+---
+export interface Props {
+  translate?: boolean;
+  progress?: number;
+}
+
+const { translate = true, progress = 0 } = Astro.props;
+---
+
+<div
+  class="flex h-full"
+  class:list={["flex h-full", { "items-stretch": translate }]}
+  x-data="progress()"
+  x-bind:style="{ '--offset': offset }"
+>
+  <div x-ref="container">
+    <div
+      x-ref="numberContainer"
+      class:list={[
+        {
+          "transition-translate translate-y-(--offset) ease-in-out": translate,
+        },
+      ]}
+    >
+      <number-flow x-ref="number"></number-flow>
+    </div>
+  </div>
+</div>
+
+<!-- <script>
+  import Alpine from "alpinejs";
+
+  import progress from "./progress";
+
+  Alpine.data("progress", progress);
+</script> -->
