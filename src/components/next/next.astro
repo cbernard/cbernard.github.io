@@ -1,0 +1,21 @@
+---
+export interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<div
+  class="relative mx-auto w-fit text-[32px]"
+  x-data="next()"
+  x-bind:style="{ '--progress-x': progress }"
+>
+  <div class="text-black-32">{label}</div>
+  <div
+    class="absolute inset-0"
+    style="clip-path: polygon(0 0, var(--progress-x) 0, var(--progress-x) 100%, 0% 100%);"
+  >
+    {label}
+  </div>
+</div>

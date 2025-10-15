@@ -11,6 +11,19 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Layout>
+  <div class="fixed end-0 top-0 z-30 m-3">
+    <slot name="test">
+      <a href="#" class="inline-block p-2 text-white">Infos</a>
+    </slot>
+  </div>
+
+  <div class="fixed end-0 bottom-0 z-30">
+    <a
+      href="mailto:charly.bernard@gmail.com"
+      class="m-3 inline-block p-2 text-white">Contact</a
+    >
+  </div>
+
   <div
     class="flex h-screen w-screen flex-col overflow-hidden landscape:flex-row"
     x-data="accordion()"

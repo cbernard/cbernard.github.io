@@ -5,6 +5,7 @@ import { Picture } from "astro:assets";
 import { getImageByPath } from "../../utils/images";
 import Layout from "../../layouts/Layout.astro";
 import Progress from "../../components/progress/progress.astro";
+import Next from "../../components/next/next.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -28,30 +29,45 @@ const backgroundImage = getImageByPath(project.background);
 
 <Layout>
   <div class="flex w-screen flex-col md:flex-row">
-    <div class="sticky top-0 h-[50vh] md:h-screen md:w-[50vw]">
-      <div class="image absolute inset-0">
-        <Picture
-          src={backgroundImage}
-          formats={["webp"]}
-          alt="A description of my image."
-          class="h-full w-full object-cover object-center"
-        />
-      </div>
-
+    <div class="relative grid md:sticky md:top-0 md:h-screen md:w-[50vw]">
       <div
-        class="absolute inset-0 grid grid-cols-8 gap-x-[10px] pt-5 pb-10 pl-5 text-white"
+        class="grid grid-cols-8 grid-rows-[1fr_auto_auto] gap-x-[10px] gap-y-5 pt-5 pb-10 pl-5 md:grid-rows-[auto_1fr_auto]"
       >
-        <div class="col-span-1 row-span-2 text-white-32">
+        <div
+          class="col-span-8 col-start-1 row-span-2 row-start-1 -mt-5 -ml-5 md:row-span-3 md:row-start-1 md:-mb-10"
+        >
+          <Picture
+            src={backgroundImage}
+            formats={["webp"]}
+            alt="A description of my image."
+            class="h-full w-full object-cover object-center"
+          />
+        </div>
+
+        <div
+          class="col-start-1 row-span-3 row-start-1 hidden text-white-32 md:block"
+        >
           <Progress :translate={true} />
         </div>
-        <div class="col-span-6">
+
+        <div
+          class="col-span-6 col-start-2 row-start-2 flex items-center justify-between pb-5 md:row-start-1 md:pb-0"
+        >
           <div class="flex items-center gap-x-3">
-            <div>Date</div>
+            <div class="text-white">Date</div>
             <span class="text-white-32">{project.year}</span>
+          </div>
+
+          <div
+            class="flex items-center gap-x-2 rounded-sm bg-white-16 p-2 text-white before:block before:aspect-square before:w-[5px] before:rounded-full before:bg-green md:hidden"
+          >
+            See live
           </div>
         </div>
 
-        <div class="col-span-6 col-start-2 flex flex-col gap-y-5">
+        <div
+          class="col-span-6 col-start-2 row-start-1 self-center text-white md:row-start-2"
+        >
           {
             project.url ? (
               <a
@@ -60,7 +76,7 @@ const backgroundImage = getImageByPath(project.background);
                 aria-label="See live"
                 data-cursor-text="See live"
               >
-                <span class="absolute inset-0" />
+                <span class="absolute inset-0 hidden md:block" />
                 <h1 class="text-[52px]" data-split>
                   {project.title}
                 </h1>
@@ -71,10 +87,17 @@ const backgroundImage = getImageByPath(project.background);
               </h1>
             )
           }
+        </div>
 
-          <div class="mt-auto flex items-center gap-x-3">
+        <div
+          class="col-span-6 col-start-2 row-start-3 flex flex-col gap-y-5 md:text-white"
+        >
+          <div class="flex items-center gap-x-3">
             <div data-split>Services</div>
-            <div class="text-white-32" data-split>
+            <div
+              class="text-black-32 md:text-white-32 dark:text-white-32"
+              data-split
+            >
               {project.services.join(", ")}
             </div>
           </div>
@@ -87,10 +110,10 @@ const backgroundImage = getImageByPath(project.background);
     </div>
 
     <div
-      class="relative flex h-[50vh] flex-col items-center gap-y-[100px] pt-56 pb-10 md:h-auto md:w-[50vw]"
+      class="relative grid h-[50vh] grid-cols-12 flex-col items-center gap-y-[10px] pb-14 md:h-auto md:w-[50vw] md:pt-56"
     >
       <a href="/" class="absolute top-0 left-0 m-3 p-2">Revenir</a>
-      <div class="flex flex-col gap-y-10">
+      <div class="images z-2 col-span-10 col-start-2 flex flex-col gap-y-10">
         {
           project.medias.map((item, index) => {
             const image = getImageByPath(item);
@@ -108,9 +131,8 @@ const backgroundImage = getImageByPath(project.background);
         }
       </div>
 
-      <div class="relative text-[32px]">
-        <div class="text-black-32">Next project</div>
-        <!-- <div class="absolute inset-0">Next project</div> -->
+      <div class="test z-1 col-span-12 col-start-1 -mt-20">
+        <Next label="Next project" />
       </div>
     </div>
   </div>

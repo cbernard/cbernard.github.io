@@ -1,17 +1,14 @@
 import "number-flow";
 
-const getProgress = (value) => {
-  return parseInt(value * 100);
-};
-
-const getOffset = (progress) => {};
-
 export default function progress() {
   return {
     progress: 0,
     offset: 0,
 
     init() {
+      this.$refs.number.format = {
+        minimumIntegerDigits: 2,
+      };
       this.updateProgress(Alpine.store("navigation").scrollProgress);
 
       Alpine.watch(
@@ -23,10 +20,8 @@ export default function progress() {
     },
 
     updateProgress(value) {
-      this.$refs.number.update(getProgress(value));
-
+      this.$refs.number.update(parseInt(value * 100));
       this.progress = value;
-
       this.offset = this.getOffset();
     },
 
@@ -34,7 +29,7 @@ export default function progress() {
       const split = progress > 0.5 ? 1 : 2;
 
       const value =
-        this.progress * window.innerHeight -
+        this.progress * this.$refs.container?.clientHeight -
         this.$refs.number?.clientHeight / split;
 
       return value > 0 ? `${value}px` : 0;
