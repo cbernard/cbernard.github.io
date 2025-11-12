@@ -1,3 +1,6 @@
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import scrollInstance from "./scroll";
+
 export default function accordion() {
   return {
     defaultHeight: 78,
@@ -6,108 +9,127 @@ export default function accordion() {
     currentHeight: null,
     visible: 5,
     works: null,
-    canScroll: true,
-    canKeyPress: true,
     ready: false,
 
     init() {
       this.works = Array.from(this.$el.querySelectorAll(".work"));
 
-      this.setWrapperOffset();
-      this.setCurrentHeight();
+      this.onResize = this.handleResize.bind(this);
+      this.onKeyDown = this.handleKeyDown.bind(this);
+      this.onTransitionEnd = this.handleTransitionEnd.bind(this);
 
-      this.$refs.container.addEventListener("wheel", this.onScroll.bind(this), {
-        passive: false,
+      this.onResize();
+      this.addEventListeners();
+
+      this.$nextTick(() => {
+        this.createScrolltriggerInstances();
       });
 
-      window.addEventListener(
-        "resize",
-        () => {
-          this.setWrapperOffset();
-          this.setCurrentHeight();
-        },
-        { passive: true },
-      );
-
-      window.addEventListener("keydown", (e) => {
-        if (!this.canKeyPress) {
-          return;
-        }
-
-        if (e.key === "ArrowDown") {
-          this.goToNext();
-        } else if (e.key === "ArrowUp") {
-          this.goToPrevious();
-        }
-
-        this.canKeyPress = false;
-        setTimeout(() => {
-          this.canKeyPress = true;
-        }, 250);
-      });
-
-      Alpine.watch(
+      this.$watch(
         () => this.current,
         () => {
           Alpine.store("navigation").current = this.current;
           this.setWrapperOffset();
-          this.setCurrentHeight();
+          this.setCurrentWorkHeight();
         },
       );
+    },
 
-      this.$el.addEventListener("transitionend", () => {
-        if (!this.ready) {
-          this.ready = true;
-        }
+    addEventListeners() {
+      window.addEventListener("resize", this.onResize, { passive: true });
+      window.addEventListener("keydown", this.onKeyDown);
+      this.$refs.container.addEventListener(
+        "transitionend",
+        this.onTransitionEnd,
+      );
+    },
+
+    removeEventListeners() {
+      window.removeEventListener("resize", this.onResize, { passive: true });
+      window.removeEventListener("keydown", this.onKeyDown);
+      this.$refs.container.removeEventListener(
+        "transitionend",
+        this.onTransitionEnd,
+      );
+    },
+
+    handleResize() {
+      this.setWrapperOffset();
+      this.setCurrentWorkHeight();
+    },
+
+    handleKeyDown(e) {
+      if (e.key === "ArrowDown") {
+        this.scrollToNext();
+      } else if (e.key === "ArrowUp") {
+        this.scrollToPrevious();
+      }
+    },
+
+    handleTransitionEnd() {
+      if (!this.ready) {
+        this.ready = true;
+      }
+    },
+
+    createScrolltriggerInstances() {
+      const triggers = Array.from(
+        this.$refs.scrollable.querySelectorAll("div"),
+      );
+      const filteredTriggers = triggers.slice(0, this.visible * -1);
+
+      filteredTriggers.forEach((child, index) => {
+        ScrollTrigger.create({
+          trigger: child,
+          start: "top top",
+          end: "bottom top",
+          onEnter: () => {
+            this.goTo(index);
+          },
+          onEnterBack: () => {
+            this.goTo(index);
+          },
+          markers: true,
+          id: `accordion-${index}`,
+          refreshPriority: -1,
+        });
       });
     },
 
-    onScroll(e) {
-      e.preventDefault();
-
-      if (!this.canScroll) {
-        return;
-      }
-
-      this.canScroll = false;
-
-      setTimeout(() => {
-        this.canScroll = true;
-      }, 1000);
-
-      const direction = e.deltaY > 0 ? 1 : -1;
-
-      if (direction === 1) {
-        this.goToNext();
-      } else if (direction === -1) {
-        this.goToPrevious();
-      }
-    },
-
-    change(value) {
-      if (value === this.current) {
-        return;
-      }
-
-      this.current = value;
-    },
-
-    goToNext() {
+    scrollToNext() {
       if (this.current < this.works.length - 1) {
-        this.current++;
+        scrollInstance.scrollTo(
+          ((this.current + 1) * window.innerHeight) / this.visible + 1,
+          { immediate: true },
+        );
       }
     },
 
-    goToPrevious() {
+    scrollToPrevious() {
       if (this.current > 0) {
-        this.current--;
+        scrollInstance.scrollTo(
+          ((this.current - 1) * window.innerHeight) / this.visible + 1,
+          { immediate: true },
+        );
       }
     },
 
-    setCurrentHeight() {
+    goTo(index) {
+      if (
+        index === this.current ||
+        index < 0 ||
+        index > this.works.length - 1
+      ) {
+        return;
+      }
+
+      this.current = index;
+    },
+
+    setCurrentWorkHeight() {
       if (this.current === 0) {
         this.currentHeight =
-          this.$el.clientHeight -
+          this.$refs.container.clientHeight -
           this.$refs.headline.clientHeight -
           this.defaultHeight * (this.visible / 2);
 
@@ -116,7 +138,7 @@ export default function accordion() {
 
       if (this.current > this.works.length - 1 - Math.ceil(this.visible / 2)) {
         this.currentHeight =
-          this.$el.clientHeight -
+          this.$refs.container.clientHeight -
           this.defaultHeight *
             (this.visible - 0.5 + (this.works.length - 2 - this.current - 1));
 
@@ -124,7 +146,7 @@ export default function accordion() {
       }
 
       this.currentHeight =
-        this.$el.clientHeight - this.defaultHeight * this.visible;
+        this.$refs.container.clientHeight - this.defaultHeight * this.visible;
     },
 
     setWrapperOffset() {
@@ -154,6 +176,11 @@ export default function accordion() {
         this.$refs.headline.clientHeight * -1 -
         (this.defaultHeight / 2) * this.visible -
         this.defaultHeight * (this.current - this.visible);
+    },
+
+    destroy() {
+      this.removeEventListeners();
+      ScrollTrigger.killAll();
     },
   };
 }

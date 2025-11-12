@@ -4,6 +4,7 @@ export default function progress() {
   return {
     progress: 0,
     offset: 0,
+    watcher: null,
 
     init() {
       this.$refs.number.format = {
@@ -11,7 +12,7 @@ export default function progress() {
       };
       this.updateProgress(Alpine.store("navigation").scrollProgress);
 
-      Alpine.watch(
+      this.watcher = this.$watch(
         () => Alpine.store("navigation").scrollProgress,
         (newValue) => {
           this.updateProgress(newValue);
@@ -20,7 +21,7 @@ export default function progress() {
     },
 
     updateProgress(value) {
-      this.$refs.number.update(parseInt(value * 100));
+      this.$refs.number?.update(parseInt(value * 100));
       this.progress = value;
       this.offset = this.getOffset();
     },
@@ -33,6 +34,10 @@ export default function progress() {
         this.$refs.number?.clientHeight / split;
 
       return value > 0 ? `${value}px` : 0;
+    },
+
+    destroy() {
+      this.watcher = null;
     },
   };
 }

@@ -1,0 +1,12 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<button
+  type="button"
+  class="m-3 cursor-pointer p-2"
+  x-data
+  @click="$store.darkMode.toggle()"
+>
+  <Icon name="switcher" class="h-[14px] w-[14px] md:h-[10px] md:w-[10px]" />
+</button>

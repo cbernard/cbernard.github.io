@@ -4,6 +4,8 @@ import { Picture } from "astro:assets";
 
 import Layout from "../layouts/Layout.astro";
 import Work from "../components/work/work.astro";
+import ThemeSwitcher from "../components/theme-switcher/theme-switcher.astro";
+
 import { getImageByPath } from "../utils/images";
 
 const projects = await getCollection("projects");
@@ -11,10 +13,12 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Layout>
+  <div class="fixed end-1/2 top-0 z-10">
+    <ThemeSwitcher />
+  </div>
+
   <div class="fixed end-0 top-0 z-30 m-3">
-    <slot name="test">
-      <a href="#" class="inline-block p-2 text-white">Infos</a>
-    </slot>
+    <a href="#" class="inline-block p-2 text-white">Infos</a>
   </div>
 
   <div class="fixed end-0 bottom-0 z-30">
@@ -24,91 +28,105 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
     >
   </div>
 
-  <div
-    class="flex h-screen w-screen flex-col overflow-hidden landscape:flex-row"
-    x-data="accordion()"
-    :style="{ '--current': current, '--length': works.length }"
-  >
+  <div x-data="accordion()">
     <div
-      class="projects relative h-[50vh] overflow-hidden landscape:order-2 landscape:h-auto landscape:w-[50vw]"
+      class="pointer-events-none relative z-200 flex flex-col"
+      x-bind:style="{ '--itemsPerViewport': visible }"
+      x-ref="scrollable"
     >
-      {
-        sortedProjects.map((project, index) => {
-          const backgroundImage = getImageByPath(project.data.background);
-          return (
-            <div
-              class="absolute inset-0 z-10 opacity-0"
-              x-bind:class={`current === ${index} && 'opacity-100'`}
-            >
-              <Picture
-                src={backgroundImage}
-                formats={["webp"]}
-                alt={`${project.data.title} background`}
-                class="h-full w-full object-cover object-center"
-              />
-            </div>
-          );
-        })
-      }
-
-      <div
-        class="projects__thumbnail absolute inset-0 z-50 flex items-center justify-center"
-      >
-        <div class="aspect-[300/375] w-[300px] overflow-hidden">
-          <div
-            class="flex translate-y-[calc(100%_/_var(--length)_*_var(--current)_*_-1)] flex-col"
-            x-bind:class={`ready && 'transition-transform'`}
-          >
-            {
-              sortedProjects.map((project, index) => {
-                const thumbnailImage = getImageByPath(project.data.thumbnail);
-                return (
-                  <div class="aspect-[300/375]">
-                    <a href={`project/${project.data.slug}`}>
-                      <Picture
-                        src={thumbnailImage}
-                        formats={["webp"]}
-                        alt={`${project.data.title} thumbnail`}
-                        class="w-full"
-                      />
-                    </a>
-                  </div>
-                );
-              })
-            }
-          </div>
+      <template x-for="i in (works.length + visible)">
+        <div
+          class="h-[calc(100vh_/_var(--itemsPerViewport))] flex-shrink-0 opacity-40 odd:bg-amber-300 even:bg-amber-200"
+        >
         </div>
-      </div>
+      </template>
     </div>
 
     <div
-      class="relative flex h-[50vh] translate-y-[calc(var(--offset)_*_1px)] flex-col pl-5 landscape:order-1 landscape:h-auto landscape:w-[50vw]"
-      x-bind:style="{ '--offset': offset, '--work-current-height': currentHeight }"
-      x-bind:class={`ready && 'transition-transform'`}
+      class="fixed top-0 flex h-screen w-screen flex-col overflow-hidden landscape:flex-row"
+      x-bind:style="{ '--current': current, '--length': works.length }"
+      x-ref="container"
     >
       <div
-        class="flex flex-col duration-300 ease-in-out"
-        x-ref="container"
+        class="projects relative h-[50vh] overflow-hidden landscape:order-2 landscape:h-auto landscape:w-[50vw]"
+      >
+        {
+          sortedProjects.map((project, index) => {
+            const backgroundImage = getImageByPath(project.data.background);
+            return (
+              <div
+                class="absolute inset-0 z-10 opacity-0"
+                x-bind:class={`current === ${index} && 'opacity-100'`}
+              >
+                <Picture
+                  src={backgroundImage}
+                  formats={["webp"]}
+                  alt={`${project.data.title} background`}
+                  class="h-full w-full object-cover object-center"
+                />
+              </div>
+            );
+          })
+        }
+
+        <div
+          class="projects__thumbnail absolute inset-0 z-50 flex items-center justify-center"
+        >
+          <div class="aspect-[300/375] w-[300px] overflow-hidden">
+            <div
+              class="flex translate-y-[calc(100%_/_var(--length)_*_var(--current)_*_-1)] flex-col"
+              x-bind:class={`ready && 'transition-transform'`}
+            >
+              {
+                sortedProjects.map((project) => {
+                  const thumbnailImage = getImageByPath(project.data.thumbnail);
+                  return (
+                    <div class="aspect-[300/375]">
+                      <a href={`project/${project.data.slug}`}>
+                        <Picture
+                          src={thumbnailImage}
+                          formats={["webp"]}
+                          alt={`${project.data.title} thumbnail`}
+                          class="w-full"
+                        />
+                      </a>
+                    </div>
+                  );
+                })
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="relative flex h-[50vh] translate-y-[calc(var(--offset)_*_1px)] flex-col pl-5 landscape:order-1 landscape:h-auto landscape:w-[50vw]"
+        x-bind:style="{ '--offset': offset, '--work-current-height': currentHeight }"
         x-bind:class={`ready && 'transition-transform'`}
       >
         <div
-          class="grid grid-cols-8 items-center gap-x-[10px] py-5"
-          x-ref="headline"
+          class="flex flex-col duration-300 ease-in-out"
+          x-bind:class={`ready && 'transition-transform'`}
         >
-          <div class="col-span-1">00</div>
-          <div class="col-span-7 flex items-center gap-x-4">
-            <span>Charly Bernard</span>
-            <span class="text-black-32 dark:text-white-32">
-              Front-end Developer
-            </span>
+          <div
+            class="grid grid-cols-8 items-center gap-x-[10px] py-5"
+            x-ref="headline"
+          >
+            <div class="col-span-1">00</div>
+            <div class="col-span-7 flex items-center gap-x-4">
+              <span>Charly Bernard</span>
+              <span class="text-black-32 dark:text-white-32">
+                Front-end Developer
+              </span>
+            </div>
           </div>
-        </div>
 
-        {
-          sortedProjects.map((project, index) => {
-            return <Work index={index} title={project.data.title} />;
-          })
-        }
+          {
+            sortedProjects.map((project, index) => {
+              return <Work index={index} title={project.data.title} />;
+            })
+          }
+        </div>
       </div>
     </div>
   </div>

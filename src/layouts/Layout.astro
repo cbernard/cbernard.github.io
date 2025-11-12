@@ -1,6 +1,4 @@
 ---
-import { Icon } from "astro-icon/components";
-
 import "../styles/index.css";
 ---
 
@@ -14,22 +12,11 @@ import "../styles/index.css";
     <title>Charly Bernard</title>
   </head>
   <body
-    class="font-primary text-black antialiased transition-colors dark:bg-black dark:text-white"
+    class="overflow-hidden font-primary text-black antialiased transition-colors dark:bg-black dark:text-white"
   >
     <div
-      class="fixed top-0 left-[calc(var(--spacing)_*_5_+_100vw_/_32_+_5px)] z-[9999] h-screen w-px bg-black-16 dark:bg-white-16"
+      class="fixed top-0 left-[calc(var(--spacing)_*_5_+_(100vw_-_var(--spacing)_*_10)_/_6_-_25px)] z-[9999] h-screen w-px bg-black-16 md:left-[calc(var(--spacing)_*_5_+_(100vw_-_var(--spacing)_*_10)_/_32_+_5px)] dark:bg-white-16"
     >
-    </div>
-
-    <div class="fixed end-1/2 top-0 z-10">
-      <button
-        type="button"
-        class="m-3 cursor-pointer p-2"
-        x-data
-        @click="$store.darkMode.toggle()"
-      >
-        <Icon name="switcher" class="h-3 w-3" />
-      </button>
     </div>
 
     <main id="swup">
@@ -86,7 +73,6 @@ import "../styles/index.css";
       });
 
       const handler = () => console.log("New page loaded");
-      // Register a handler
       swup.hooks.on("page:view", handler);
     </script>
 

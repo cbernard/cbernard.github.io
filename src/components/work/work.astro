@@ -3,13 +3,13 @@ const { index, title } = Astro.props;
 ---
 
 <div
-  class="work flex flex-col justify-center transition-all ease-in-out"
-  x-bind:class={`current == ${index} ? 'h-[calc(var(--work-current-height)_*_1px)] text-black dark:text-white' : 'h-[78px] text-black-32 dark:text-white-32'`}
+  class="work flex flex-col justify-center transition-all duration-300 ease-in-out"
+  x-bind:class={`current == ${index} ? 'h-[calc(var(--work-current-height)_*_1px)] dark:text-white' : 'h-[78px] text-black-32 dark:text-white-32'`}
 >
   <div class="grid grid-cols-8 items-center gap-x-[10px] text-nowrap">
     <div class="col-span-1">
       {String(index + 1).padStart(2, "0")}
     </div>
-    <div class="col-span-7 text-[52px]">{title}</div>
+    <div class="col-span-7 text-[32px] md:text-[52px]">{title}</div>
   </div>
 </div>

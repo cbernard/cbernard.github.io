@@ -17,7 +17,7 @@ Alpine.store("darkMode", {
 });
 
 Alpine.store("navigation", {
-  current: 1,
+  current: 0,
   scrollProgress: 0,
 });
 

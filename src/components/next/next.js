@@ -6,14 +6,13 @@ gsap.registerPlugin(ScrollTrigger);
 export default function next() {
   return {
     progress: 0,
-    scrollTrigger: null,
 
     init() {
       gsap.set(".test", {
         opacity: 0,
       });
 
-      this.scrollTrigger = ScrollTrigger.create({
+      ScrollTrigger.create({
         trigger: ".test",
         start: "bottom bottom-=40px",
         end: "+=300",
@@ -31,7 +30,7 @@ export default function next() {
     },
 
     destroy() {
-      this.ScrollTrigger?.kill();
+      ScrollTrigger.killAll();
     },
   };
 }

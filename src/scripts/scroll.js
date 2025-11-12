@@ -47,6 +47,10 @@ export class Scroll {
     this.#lenis.start();
   }
 
+  scrollTo(value, options = {}) {
+    this.#lenis.scrollTo(value, options);
+  }
+
   refresh() {
     gsap.ticker.remove(this.#lenis.raf);
     this.#lenis.destroy();
