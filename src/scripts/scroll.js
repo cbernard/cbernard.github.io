@@ -58,6 +58,8 @@ export class Scroll {
   }
 }
 
-const scrollInstance = new Scroll();
+const scrollInstance = new Scroll({
+  wheelMultiplier: 0.75,
+});
 
 export default scrollInstance;

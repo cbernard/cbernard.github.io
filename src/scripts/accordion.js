@@ -5,11 +5,11 @@ export default function accordion() {
   return {
     defaultHeight: 78,
     current: Alpine.store("navigation").current,
-    offset: null,
-    currentHeight: null,
-    visible: 5,
+    vh: window.innerHeight,
+    visible: 6,
     works: null,
     ready: false,
+    positions: [],
 
     init() {
       this.works = Array.from(this.$el.querySelectorAll(".work"));
@@ -27,18 +27,67 @@ export default function accordion() {
 
       this.$watch(
         () => this.current,
-        () => {
-          Alpine.store("navigation").current = this.current;
-          this.setWrapperOffset();
-          this.setCurrentWorkHeight();
+        (newValue, oldValue) => {
+          Alpine.store("navigation").current = newValue;
+          this.updatePositions();
         },
       );
+    },
+
+    updatePositions() {
+      const getTopPosition = (index) => {
+        if (this.current === 1 && index === 0) {
+          return 0;
+        }
+
+        if (this.current <= this.visible / 2) {
+          return this.defaultHeight * (index - 0.5);
+        }
+
+        return this.defaultHeight * (index - this.current + 2.5);
+      };
+
+      const middlePosition = this.vh / 2 - this.defaultHeight * 0.5;
+
+      const getBottomPosition = (index) => {
+        if (this.current >= this.works.length - this.visible / 2) {
+          if (index === this.works.length - 1) {
+            return this.vh - this.defaultHeight;
+          }
+
+          return (
+            this.vh -
+            this.defaultHeight * (this.visible + this.current - 3 - index)
+          );
+        }
+
+        return (
+          this.vh -
+          this.defaultHeight * (this.visible + this.current - 2.5 - index)
+        );
+      };
+
+      this.positions = this.works.map((_, index) => {
+        if (index < this.current) {
+          return getTopPosition(index);
+        }
+
+        if (index === this.current) {
+          return middlePosition;
+        }
+
+        return getBottomPosition(index);
+      });
+    },
+
+    getPosition(index) {
+      return `--this-translate-y: ${this.positions[index]}px`;
     },
 
     addEventListeners() {
       window.addEventListener("resize", this.onResize, { passive: true });
       window.addEventListener("keydown", this.onKeyDown);
-      this.$refs.container.addEventListener(
+      this.$refs.wrapper.addEventListener(
         "transitionend",
         this.onTransitionEnd,
       );
@@ -47,15 +96,15 @@ export default function accordion() {
     removeEventListeners() {
       window.removeEventListener("resize", this.onResize, { passive: true });
       window.removeEventListener("keydown", this.onKeyDown);
-      this.$refs.container.removeEventListener(
+      this.$refs.wrapper.removeEventListener(
         "transitionend",
         this.onTransitionEnd,
       );
     },
 
     handleResize() {
-      this.setWrapperOffset();
-      this.setCurrentWorkHeight();
+      this.vh = window.innerHeight;
+      this.updatePositions();
     },
 
     handleKeyDown(e) {
@@ -66,7 +115,7 @@ export default function accordion() {
       }
     },
 
-    handleTransitionEnd() {
+    handleTransitionEnd(e) {
       if (!this.ready) {
         this.ready = true;
       }
@@ -90,7 +139,6 @@ export default function accordion() {
             this.goTo(index);
           },
           markers: true,
-          id: `accordion-${index}`,
           refreshPriority: -1,
         });
       });
@@ -99,7 +147,7 @@ export default function accordion() {
     scrollToNext() {
       if (this.current < this.works.length - 1) {
         scrollInstance.scrollTo(
-          ((this.current + 1) * window.innerHeight) / this.visible + 1,
+          ((this.current + 1) * this.vh) / this.visible + 1,
           { immediate: true },
         );
       }
@@ -108,74 +156,32 @@ export default function accordion() {
     scrollToPrevious() {
       if (this.current > 0) {
         scrollInstance.scrollTo(
-          ((this.current - 1) * window.innerHeight) / this.visible + 1,
+          ((this.current - 1) * this.vh) / this.visible + 1,
           { immediate: true },
         );
       }
     },
 
+    isValidIndex(index) {
+      return index !== this.current && index >= 0 && index < this.works.length;
+    },
+
+    scrollTo(index) {
+      if (!this.isValidIndex(index)) {
+        return;
+      }
+
+      scrollInstance.scrollTo((index * this.vh) / this.visible + 1, {
+        immediate: true,
+      });
+    },
+
     goTo(index) {
-      if (
-        index === this.current ||
-        index < 0 ||
-        index > this.works.length - 1
-      ) {
+      if (!this.isValidIndex(index)) {
         return;
       }
 
       this.current = index;
-    },
-
-    setCurrentWorkHeight() {
-      if (this.current === 0) {
-        this.currentHeight =
-          this.$refs.container.clientHeight -
-          this.$refs.headline.clientHeight -
-          this.defaultHeight * (this.visible / 2);
-
-        return;
-      }
-
-      if (this.current > this.works.length - 1 - Math.ceil(this.visible / 2)) {
-        this.currentHeight =
-          this.$refs.container.clientHeight -
-          this.defaultHeight *
-            (this.visible - 0.5 + (this.works.length - 2 - this.current - 1));
-
-        return;
-      }
-
-      this.currentHeight =
-        this.$refs.container.clientHeight - this.defaultHeight * this.visible;
-    },
-
-    setWrapperOffset() {
-      if (this.current < 0) {
-        return;
-      }
-
-      if (this.current === 0) {
-        this.offset = 0;
-
-        return;
-      }
-
-      if (this.current === 1) {
-        this.offset =
-          this.$refs.headline.clientHeight * -1 -
-          (this.defaultHeight / 2) * this.current;
-
-        return;
-      }
-
-      if (this.current < this.visible - 1) {
-        return;
-      }
-
-      this.offset =
-        this.$refs.headline.clientHeight * -1 -
-        (this.defaultHeight / 2) * this.visible -
-        this.defaultHeight * (this.current - this.visible);
     },
 
     destroy() {

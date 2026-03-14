@@ -35,9 +35,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
       x-ref="scrollable"
     >
       <template x-for="i in (works.length + visible)">
-        <div
-          class="h-[calc(100vh_/_var(--itemsPerViewport))] flex-shrink-0 opacity-40 odd:bg-amber-300 even:bg-amber-200"
-        >
+        <div class="h-[calc(100vh_/_var(--itemsPerViewport))] flex-shrink-0">
         </div>
       </template>
     </div>
@@ -45,7 +43,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
     <div
       class="fixed top-0 flex h-screen w-screen flex-col overflow-hidden landscape:flex-row"
       x-bind:style="{ '--current': current, '--length': works.length }"
-      x-ref="container"
+      x-ref="wrapper"
     >
       <div
         class="projects relative h-[50vh] overflow-hidden landscape:order-2 landscape:h-auto landscape:w-[50vw]"
@@ -85,6 +83,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
                       <a href={`project/${project.data.slug}`}>
                         <Picture
                           src={thumbnailImage}
+                          f
                           formats={["webp"]}
                           alt={`${project.data.title} thumbnail`}
                           class="w-full"
@@ -100,17 +99,18 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
       </div>
 
       <div
-        class="relative flex h-[50vh] translate-y-[calc(var(--offset)_*_1px)] flex-col pl-5 landscape:order-1 landscape:h-auto landscape:w-[50vw]"
-        x-bind:style="{ '--offset': offset, '--work-current-height': currentHeight }"
+        class="relative flex h-[50vh] flex-col pl-5 landscape:order-1 landscape:h-auto landscape:w-[50vw]"
         x-bind:class={`ready && 'transition-transform'`}
+        x-ref="container"
       >
         <div
-          class="flex flex-col duration-300 ease-in-out"
+          class="flex flex-col ease-[cubic-bezier(0.5,0,0,1)]"
           x-bind:class={`ready && 'transition-transform'`}
         >
           <div
-            class="grid grid-cols-8 items-center gap-x-[10px] py-5"
+            class="grid grid-cols-8 items-center gap-x-[10px] py-5 transition-transform duration-1000"
             x-ref="headline"
+            x-bind:class={`current > 0 && '-translate-y-full'`}
           >
             <div class="col-span-1">00</div>
             <div class="col-span-7 flex items-center gap-x-4">
@@ -123,7 +123,13 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 
           {
             sortedProjects.map((project, index) => {
-              return <Work index={index} title={project.data.title} />;
+              return (
+                <Work
+                  index={index}
+                  title={project.data.title}
+                  link={`project/${project.data.slug}`}
+                />
+              );
             })
           }
         </div>
