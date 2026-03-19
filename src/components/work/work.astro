@@ -1,33 +1,40 @@
 ---
+export interface Props {
+  index: number;
+  title: string;
+  link: string;
+}
+
 const { index, title, link } = Astro.props;
+
+const itemClasses =
+  "grid cursor-pointer grid-cols-6 items-center gap-x-[10px] text-start text-nowrap md:grid-cols-8";
 ---
 
 <div
-  class="work absolute flex h-[78px] w-full translate-y-[calc(var(--this-translate-y))] flex-col justify-center transition-all duration-1000 ease-[cubic-bezier(0.5,0,0,1)]"
+  class="work absolute flex h-[48px] w-full translate-y-[calc(var(--this-translate-y))] flex-col justify-center transition-all duration-1000 ease-[cubic-bezier(0.5,0,0,1)] md:h-[78px]"
   x-bind:class={`current == ${index} ? ' dark:text-white' : ' text-black-32 dark:text-white-32'`}
   x-bind:style={`getPosition(${index})`}
 >
   <template x-if={`current == ${index}`}>
-    <a
-      href={link}
-      class="grid cursor-pointer grid-cols-8 items-center gap-x-[10px] text-start text-nowrap"
-    >
+    <a href={link} class={itemClasses}>
       <div class="col-span-1">
         {String(index + 1).padStart(2, "0")}
       </div>
-      <div class="col-span-7 text-[32px] md:text-[52px]">{title}</div>
+      <div class="col-span-5 text-[32px] md:col-span-7 md:text-[52px]">
+        {title}
+      </div>
     </a>
   </template>
 
   <template x-if={`current != ${index}`}>
-    <button
-      class="grid cursor-pointer grid-cols-8 items-center gap-x-[10px] text-start text-nowrap"
-      @click={`scrollTo(${index})`}
-    >
+    <button class={itemClasses} @click={`scrollTo(${index})`}>
       <div class="col-span-1">
         {String(index + 1).padStart(2, "0")}
       </div>
-      <div class="col-span-7 text-[32px] md:text-[52px]">{title}</div>
+      <div class="col-span-5 text-[32px] md:col-span-7 md:text-[52px]">
+        {title}
+      </div>
     </button>
   </template>
 </div>

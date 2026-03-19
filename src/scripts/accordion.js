@@ -1,24 +1,28 @@
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { debounce } from "./helpers";
 import scrollInstance from "./scroll";
 
 export default function accordion() {
   return {
-    defaultHeight: 78,
-    current: Alpine.store("navigation").current,
-    vh: window.innerHeight,
-    visible: 6,
-    works: null,
+    itemHeight: null,
+    containerHeight: null,
+    items: null,
+    visible: null,
+    current: Alpine.store("main").current,
     ready: false,
     positions: [],
 
     init() {
-      this.works = Array.from(this.$el.querySelectorAll(".work"));
-
-      this.onResize = this.handleResize.bind(this);
+      this.onResize = debounce(this.handleResize.bind(this), 100);
       this.onKeyDown = this.handleKeyDown.bind(this);
       this.onTransitionEnd = this.handleTransitionEnd.bind(this);
 
-      this.onResize();
+      this.isMobile = window.matchMedia(
+        "(orientation: portrait) and (max-width: 767px)",
+      );
+
+      this.setData();
+      this.updatePositions();
       this.addEventListeners();
 
       this.$nextTick(() => {
@@ -27,11 +31,19 @@ export default function accordion() {
 
       this.$watch(
         () => this.current,
-        (newValue, oldValue) => {
-          Alpine.store("navigation").current = newValue;
+        (newValue) => {
+          Alpine.store("main").current = newValue;
           this.updatePositions();
         },
       );
+    },
+
+    setData() {
+      this.items = Array.from(this.$el.querySelectorAll(".work"));
+      this.containerHeight =
+        this.$refs.container.getBoundingClientRect().height;
+      this.itemHeight = this.isMobile.matches ? 48 : 78;
+      this.visible = this.isMobile.matches ? 5 : 6;
     },
 
     updatePositions() {
@@ -41,33 +53,33 @@ export default function accordion() {
         }
 
         if (this.current <= this.visible / 2) {
-          return this.defaultHeight * (index - 0.5);
+          return this.itemHeight * (index - 0.5);
         }
 
-        return this.defaultHeight * (index - this.current + 2.5);
+        return this.itemHeight * (index - this.current + 1.5);
       };
 
-      const middlePosition = this.vh / 2 - this.defaultHeight * 0.5;
+      const middlePosition = this.containerHeight / 2 - this.itemHeight * 0.5;
 
       const getBottomPosition = (index) => {
-        if (this.current >= this.works.length - this.visible / 2) {
-          if (index === this.works.length - 1) {
-            return this.vh - this.defaultHeight;
+        if (this.current >= this.items.length - this.visible / 2) {
+          if (index === this.items.length - 1) {
+            return this.containerHeight - this.itemHeight;
           }
 
           return (
-            this.vh -
-            this.defaultHeight * (this.visible + this.current - 3 - index)
+            this.containerHeight -
+            this.itemHeight * (this.visible + this.current - 3 - index)
           );
         }
 
         return (
-          this.vh -
-          this.defaultHeight * (this.visible + this.current - 2.5 - index)
+          this.containerHeight -
+          this.itemHeight * (this.visible + this.current - 2.5 - index)
         );
       };
 
-      this.positions = this.works.map((_, index) => {
+      this.positions = this.items.map((_, index) => {
         if (index < this.current) {
           return getTopPosition(index);
         }
@@ -103,8 +115,11 @@ export default function accordion() {
     },
 
     handleResize() {
-      this.vh = window.innerHeight;
-      this.updatePositions();
+      this.setData();
+
+      this.$nextTick(() => {
+        this.updatePositions();
+      });
     },
 
     handleKeyDown(e) {
@@ -138,16 +153,15 @@ export default function accordion() {
           onEnterBack: () => {
             this.goTo(index);
           },
-          markers: true,
           refreshPriority: -1,
         });
       });
     },
 
     scrollToNext() {
-      if (this.current < this.works.length - 1) {
+      if (this.current < this.items.length - 1) {
         scrollInstance.scrollTo(
-          ((this.current + 1) * this.vh) / this.visible + 1,
+          ((this.current + 1) * this.containerHeight) / this.visible + 1,
           { immediate: true },
         );
       }
@@ -156,14 +170,14 @@ export default function accordion() {
     scrollToPrevious() {
       if (this.current > 0) {
         scrollInstance.scrollTo(
-          ((this.current - 1) * this.vh) / this.visible + 1,
+          ((this.current - 1) * this.containerHeight) / this.visible + 1,
           { immediate: true },
         );
       }
     },
 
     isValidIndex(index) {
-      return index !== this.current && index >= 0 && index < this.works.length;
+      return index !== this.current && index >= 0 && index < this.items.length;
     },
 
     scrollTo(index) {
@@ -171,9 +185,12 @@ export default function accordion() {
         return;
       }
 
-      scrollInstance.scrollTo((index * this.vh) / this.visible + 1, {
-        immediate: true,
-      });
+      scrollInstance.scrollTo(
+        (index * this.containerHeight) / this.visible + 1,
+        {
+          immediate: true,
+        },
+      );
     },
 
     goTo(index) {

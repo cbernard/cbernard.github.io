@@ -4,7 +4,6 @@ import { Picture } from "astro:assets";
 
 import Layout from "../layouts/Layout.astro";
 import Work from "../components/work/work.astro";
-import ThemeSwitcher from "../components/theme-switcher/theme-switcher.astro";
 
 import { getImageByPath } from "../utils/images";
 
@@ -13,10 +12,6 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Layout>
-  <div class="fixed end-1/2 top-0 z-10">
-    <ThemeSwitcher />
-  </div>
-
   <div class="fixed end-0 top-0 z-30 m-3">
     <a href="#" class="inline-block p-2 text-white">Infos</a>
   </div>
@@ -34,15 +29,16 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
       x-bind:style="{ '--itemsPerViewport': visible }"
       x-ref="scrollable"
     >
-      <template x-for="i in (works.length + visible)">
+      <template x-for="i in (items.length + visible)">
         <div class="h-[calc(100vh_/_var(--itemsPerViewport))] flex-shrink-0">
         </div>
       </template>
     </div>
 
     <div
-      class="fixed top-0 flex h-screen w-screen flex-col overflow-hidden landscape:flex-row"
-      x-bind:style="{ '--current': current, '--length': works.length }"
+      class="fixed top-0 flex h-screen w-screen flex-col overflow-hidden transition-transform duration-800 ease-[cubic-bezier(0.5,0,0,1)] landscape:flex-row"
+      x-bind:class="{ 'translate-y-[60vh]': Alpine.store('main').loaded === false }"
+      x-bind:style="{ '--current': current, '--length': items.length }"
       x-ref="wrapper"
     >
       <div
@@ -68,7 +64,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
         }
 
         <div
-          class="projects__thumbnail absolute inset-0 z-50 flex items-center justify-center"
+          class="projects__thumbnail absolute inset-0 z-50 hidden items-center justify-center landscape:flex"
         >
           <div class="aspect-[300/375] w-[300px] overflow-hidden">
             <div
@@ -108,7 +104,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
           x-bind:class={`ready && 'transition-transform'`}
         >
           <div
-            class="grid grid-cols-8 items-center gap-x-[10px] py-5 transition-transform duration-1000"
+            class="z-50 hidden items-center gap-x-[10px] py-5 transition-transform duration-1000 md:grid md:grid-cols-8"
             x-ref="headline"
             x-bind:class={`current > 0 && '-translate-y-full'`}
           >

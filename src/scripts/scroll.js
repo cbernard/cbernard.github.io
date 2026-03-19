@@ -22,7 +22,7 @@ export class Scroll {
     document.documentElement.style.setProperty("--lenis-scroll-y", `0px`);
 
     this.#lenis.on("scroll", ({ scroll }) => {
-      Alpine.store("navigation").scrollProgress = this.#lenis.progress;
+      Alpine.store("main").scrollProgress = this.#lenis.progress;
 
       document.documentElement.style.setProperty(
         "--lenis-scroll-y",
@@ -59,7 +59,7 @@ export class Scroll {
 }
 
 const scrollInstance = new Scroll({
-  wheelMultiplier: 0.75,
+  wheelMultiplier: 0.5,
 });
 
 export default scrollInstance;

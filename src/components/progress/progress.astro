@@ -1,16 +1,16 @@
 ---
 export interface Props {
   translate?: boolean;
-  progress?: number;
+  progress?: "scroll" | "load";
 }
 
-const { translate = true, progress = 0 } = Astro.props;
+const { translate = false, progress = "scroll" } = Astro.props;
 ---
 
 <div
   class="flex h-full"
   class:list={["flex h-full", { "items-stretch": translate }]}
-  x-data="progress()"
+  x-data={`progress({ type: '${progress}' })`}
   x-bind:style="{ '--offset': offset }"
 >
   <div x-ref="container">

@@ -1,6 +1,6 @@
 import "number-flow";
 
-export default function progress() {
+export default function progress(options = { type: "scroll" }) {
   return {
     progress: 0,
     offset: 0,
@@ -10,14 +10,21 @@ export default function progress() {
       this.$refs.number.format = {
         minimumIntegerDigits: 2,
       };
-      this.updateProgress(Alpine.store("navigation").scrollProgress);
+
+      this.updateProgress(this.updateValue);
 
       this.watcher = this.$watch(
-        () => Alpine.store("navigation").scrollProgress,
+        () => this.updateValue,
         (newValue) => {
           this.updateProgress(newValue);
         },
       );
+    },
+
+    get updateValue() {
+      return options.type === "scroll"
+        ? Alpine.store("main").scrollProgress
+        : Alpine.store("main").loading;
     },
 
     updateProgress(value) {

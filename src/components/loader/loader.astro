@@ -1,0 +1,33 @@
+---
+import { getCollection } from "astro:content";
+import Progress from "../../components/progress/progress.astro";
+import { getImageUrl } from "../../utils/images";
+
+const projects = await getCollection("projects");
+
+const assets = [
+  "/fonts/TWKLausanne-300.woff2",
+  ...projects.flatMap((project) => [
+    getImageUrl(project.data.background),
+    getImageUrl(project.data.thumbnail),
+    ...project.data.medias.map(getImageUrl),
+  ]),
+];
+
+const distinctAssets = [...new Set(assets)];
+---
+
+<div
+  class="transition-translate fixed inset-0 z-[5000] grid grid-cols-6 items-center gap-[10px] bg-black px-5 text-white-32 duration-800 ease-[cubic-bezier(0.5,0,0,1)] md:grid-cols-16"
+  x-data={`loader(${JSON.stringify(distinctAssets)})`}
+  x-bind:class="{ '-translate-y-full': Alpine.store('main').loaded }"
+>
+  <div class="col-start-1 text-white-32">
+    <Progress progress="load" />
+  </div>
+
+  <div class="col-span-15 col-start-2 flex items-center gap-x-4">
+    <span class="text-white">Charly Bernard</span>
+    <span>Front-end Developer</span>
+  </div>
+</div>

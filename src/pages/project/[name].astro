@@ -6,7 +6,6 @@ import { getImageByPath } from "../../utils/images";
 import Layout from "../../layouts/Layout.astro";
 import Progress from "../../components/progress/progress.astro";
 import Next from "../../components/next/next.astro";
-import ThemeSwitcher from "../../components/theme-switcher/theme-switcher.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -33,7 +32,10 @@ const backgroundImage = getImageByPath(project.background);
     <a href="/" class="inline-block p-2">Back</a>
   </div>
 
-  <div class="flex w-screen flex-col md:flex-row">
+  <div
+    class="flex w-screen flex-col transition-transform duration-800 ease-[cubic-bezier(0.5,0,0,1)] md:flex-row"
+    x-bind:class="{ 'translate-y-[60vh]': Alpine.store('main').loaded === false }"
+  >
     <div class="relative md:sticky md:top-0 md:h-screen md:w-[50vw]">
       <div
         class="grid h-full grid-cols-6 grid-rows-[1fr_auto_auto] gap-x-[10px] gap-y-5 px-4 pt-5 pb-10 md:grid-cols-8 md:grid-rows-[auto_1fr_auto] md:pr-5 md:pl-5"
@@ -54,17 +56,13 @@ const backgroundImage = getImageByPath(project.background);
         </div>
 
         <div class="col-start-6 row-start-1 text-end md:hidden">
-          <a href="/" class="text-white">Back</a>
+          <a href="/" class="text-white"> </a>
         </div>
 
         <div
           class="col-start-1 row-span-3 row-start-1 hidden text-white-32 md:block"
         >
-          <Progress :translate={true} />
-        </div>
-
-        <div class="col-start-1 row-start-2 text-white md:hidden">
-          <ThemeSwitcher />
+          <Progress translate={true} progress="scroll" />
         </div>
 
         <div
@@ -76,7 +74,7 @@ const backgroundImage = getImageByPath(project.background);
           </div>
 
           <div
-            class="flex items-center gap-x-2 rounded-sm bg-white-16 p-2 text-white before:block before:aspect-square before:w-[5px] before:rounded-full before:bg-green md:hidden"
+            class="flex items-center gap-x-1 rounded-sm bg-white-16 px-2 py-1 text-white before:block before:aspect-square before:w-[5px] before:rounded-full before:bg-green md:hidden md:gap-x-2 md:p-2"
           >
             See live
           </div>
@@ -107,7 +105,7 @@ const backgroundImage = getImageByPath(project.background);
         </div>
 
         <div
-          class="col-span-5 col-start-2 row-start-3 flex flex-col gap-y-5 md:col-span-7 md:col-start-2 md:text-white"
+          class="col-span-5 col-start-2 row-start-3 flex flex-col gap-y-5 md:col-span-7 md:col-start-2 md:text-white lg:col-span-6 lg:col-start-2"
         >
           <div class="flex items-center gap-x-3">
             <div data-split>Services</div>
@@ -127,9 +125,11 @@ const backgroundImage = getImageByPath(project.background);
     </div>
 
     <div
-      class="grid h-[50vh] grid-cols-12 flex-col items-center gap-y-[10px] pb-14 md:h-auto md:w-[50vw] md:pt-56"
+      class="grid h-[50vh] grid-cols-6 flex-col items-center gap-[10px] px-4 pb-14 md:h-auto md:w-[50vw] md:grid-cols-8 md:pt-56 md:pr-5 md:pl-[5px]"
     >
-      <div class="images z-2 col-span-10 col-start-2 flex flex-col gap-y-10">
+      <div
+        class="images z-2 col-span-5 col-start-2 flex flex-col gap-y-10 md:col-span-6 md:col-start-2"
+      >
         {
           project.medias.map((item, index) => {
             const image = getImageByPath(item);
@@ -147,7 +147,7 @@ const backgroundImage = getImageByPath(project.background);
         }
       </div>
 
-      <div class="test z-1 col-span-12 col-start-1 -mt-20">
+      <div class="test z-1 col-span-full col-start-1 -mt-20">
         <Next label="Next project" />
       </div>
     </div>

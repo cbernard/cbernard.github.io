@@ -1,4 +1,9 @@
 ---
+import ThemeSwitcher from "../components/theme-switcher/theme-switcher.astro";
+import Loader from "../components/loader/loader.astro";
+import Grid from "../components/grid/grid.astro";
+import Separator from "../components/separator/separator.astro";
+
 import "../styles/index.css";
 ---
 
@@ -14,10 +19,22 @@ import "../styles/index.css";
   <body
     class="font-primary text-black antialiased transition-colors dark:bg-black dark:text-white pointer-fine:overflow-hidden"
   >
+    <Loader />
+
     <div
-      class="fixed top-0 left-[calc(var(--spacing)_*_5_+_(100vw_-_var(--spacing)_*_10)_/_6_-_25px)] z-[9999] h-screen w-px bg-black-16 md:left-[calc(var(--spacing)_*_5_+_(100vw_-_var(--spacing)_*_10)_/_32_+_5px)] dark:bg-white-16"
+      class="fixed start-0 top-1/2 z-10 -translate-y-full md:-translate-y-0 landscape:start-[unset] landscape:end-1/2 landscape:top-0"
     >
+      <ThemeSwitcher />
     </div>
+
+    <Grid iMobile={6} iDesktop={16} />
+
+    <div class="fixed start-0 top-0 grid w-full grid-cols-6 px-4 py-5">
+      <div class="col-span-1 text-white">CB</div>
+      <div class="col-span-5 text-white-32">Front-end Developer</div>
+    </div>
+
+    <Separator />
 
     <main id="swup">
       <slot />
