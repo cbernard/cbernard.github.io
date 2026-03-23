@@ -32,10 +32,7 @@ const backgroundImage = getImageByPath(project.background);
     <a href="/" class="inline-block p-2">Back</a>
   </div>
 
-  <div
-    class="flex w-screen flex-col transition-transform duration-800 ease-[cubic-bezier(0.5,0,0,1)] md:flex-row"
-    x-bind:class="{ 'translate-y-[60vh]': Alpine.store('main').loaded === false }"
-  >
+  <div class="flex w-screen flex-col md:flex-row">
     <div class="relative md:sticky md:top-0 md:h-screen md:w-[50vw]">
       <div
         class="grid h-full grid-cols-6 grid-rows-[1fr_auto_auto] gap-x-[10px] gap-y-5 px-4 pt-5 pb-10 md:grid-cols-8 md:grid-rows-[auto_1fr_auto] md:pr-5 md:pl-5"
@@ -153,3 +150,7 @@ const backgroundImage = getImageByPath(project.background);
     </div>
   </div>
 </Layout>
+
+<script>
+  console.log("coucou");
+</script>

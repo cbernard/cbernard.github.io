@@ -29,7 +29,7 @@ export class Scroll {
         `${scroll}px`,
       );
 
-      ScrollTrigger.update;
+      ScrollTrigger.update();
     });
 
     gsap.ticker.add((time) => {
