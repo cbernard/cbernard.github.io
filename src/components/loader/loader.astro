@@ -18,9 +18,8 @@ const distinctAssets = [...new Set(assets)];
 ---
 
 <div
-  class="transition-translate fixed inset-0 z-[5000] grid grid-cols-6 items-center gap-[10px] bg-black px-5 text-white-32 duration-800 ease-[cubic-bezier(0.5,0,0,1)] md:grid-cols-16"
+  class="fixed inset-0 z-[5000] grid grid-cols-6 items-center gap-[10px] bg-black px-5 text-white-32 md:grid-cols-16"
   x-data={`loader(${JSON.stringify(distinctAssets)})`}
-  x-bind:class="{ '-translate-y-full': Alpine.store('main').loaded }"
 >
   <div class="col-start-1 text-white-32">
     <Progress progress="load" />

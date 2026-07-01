@@ -1,0 +1,7 @@
+[data-split] {
+  opacity: 0;
+
+  .lines {
+    transform: translateY(100%);
+  }
+}

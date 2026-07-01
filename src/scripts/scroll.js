@@ -5,17 +5,19 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const defaultOptions = {
+  wheelMultiplier: 0.25,
+};
+
 export class Scroll {
   #lenis;
   #options;
 
   constructor(options = {}) {
-    this.#options = options;
-
-    this.#init();
+    this.#options = { ...defaultOptions, ...options };
   }
 
-  #init() {
+  init() {
     this.#lenis = new Lenis(this.#options);
 
     this.#lenis.scrollTo(0, { immediate: true });
@@ -54,12 +56,9 @@ export class Scroll {
   refresh() {
     gsap.ticker.remove(this.#lenis.raf);
     this.#lenis.destroy();
-    this.#init();
+    this.init();
   }
 }
 
-const scrollInstance = new Scroll({
-  wheelMultiplier: 0.5,
-});
-
+const scrollInstance = new Scroll({ init: false });
 export default scrollInstance;

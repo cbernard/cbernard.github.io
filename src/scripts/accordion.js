@@ -53,10 +53,11 @@ export default function accordion() {
         }
 
         if (this.current <= this.visible / 2) {
+          console.log("test");
           return this.itemHeight * (index - 0.5);
         }
 
-        return this.itemHeight * (index - this.current + 1.5);
+        return this.itemHeight * (index - this.current + 2.5);
       };
 
       const middlePosition = this.containerHeight / 2 - this.itemHeight * 0.5;

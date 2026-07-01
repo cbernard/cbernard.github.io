@@ -1,5 +1,6 @@
 ---
 import ThemeSwitcher from "../components/theme-switcher/theme-switcher.astro";
+import RotateNotice from "../components/rotate-notice/rotate-notice.astro";
 import Loader from "../components/loader/loader.astro";
 import Grid from "../components/grid/grid.astro";
 import Separator from "../components/separator/separator.astro";
@@ -15,14 +16,23 @@ import "../styles/index.css";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>Charly Bernard</title>
+
+    <script is:inline>
+      history.scrollRestoration = "manual";
+      window.scrollTo(0, 0);
+    </script>
   </head>
+
   <body
-    class="font-primary text-black antialiased transition-colors dark:bg-black dark:text-white pointer-fine:overflow-hidden"
+    class="bg-white font-primary text-black antialiased transition-colors dark:bg-black dark:text-white pointer-fine:overflow-hidden"
   >
+    <RotateNotice />
+
     <Loader />
 
     <div
-      class="fixed start-0 top-1/2 z-10 -translate-y-full md:-translate-y-0 landscape:start-[unset] landscape:end-1/2 landscape:top-0"
+      :class="$store.main.isHome ? 'fixed' : 'absolute'"
+      class="start-0 top-[calc(100vw*335/400)] z-10 -translate-y-full landscape:start-[unset] landscape:end-1/2 landscape:top-0 landscape:-translate-y-0"
     >
       <ThemeSwitcher />
     </div>
@@ -41,60 +51,7 @@ import "../styles/index.css";
     </main>
 
     <script>
-      import gsap from "gsap";
-      import Swup from "swup";
-      import SwupHeadPlugin from "@swup/head-plugin";
-      import SwupScriptsPlugin from "@swup/scripts-plugin";
-      import SwupDebugPlugin from "@swup/debug-plugin";
-      import SwupJsPlugin from "@swup/js-plugin";
-
-      const swup = new Swup({
-        plugins: [
-          new SwupHeadPlugin(),
-          new SwupScriptsPlugin(),
-          new SwupDebugPlugin(),
-          new SwupJsPlugin({
-            animations: [
-              {
-                from: "(/)",
-                to: "(/project/.*)",
-                out: async () => {
-                  await gsap
-                    .timeline()
-                    .to(".projects", {
-                      xPercent: -100,
-                      duration: 1,
-                    })
-                    .to(
-                      ".projects__thumbnail",
-                      { xPercent: 100, duration: 1 },
-                      "<",
-                    );
-                },
-                in: async () => {},
-              },
-              {
-                from: "(/project/.*)",
-                to: "(/)",
-                out: async () => {
-                  await gsap.to(".image", {
-                    xPercent: 100,
-                    duration: 1,
-                  });
-                },
-                in: async () => {},
-              },
-            ],
-          }),
-        ],
-      });
-
-      const handler = () => console.log("New page loaded");
-      swup.hooks.on("page:view", handler);
-    </script>
-
-    <script>
-      import "../scripts/index.js";
+      import "../scripts/app.js";
     </script>
   </body>
 </html>

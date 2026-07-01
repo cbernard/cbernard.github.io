@@ -28,17 +28,22 @@ const backgroundImage = getImageByPath(project.background);
 ---
 
 <Layout>
-  <div class="fixed end-0 top-0 z-30 m-3">
-    <a href="/" class="inline-block p-2">Back</a>
+  <div
+    class="absolute end-0 top-0 z-30 m-3 mix-blend-difference landscape:fixed"
+  >
+    <a href="/" class="inline-block p-2 text-white">Back</a>
   </div>
 
-  <div class="flex w-screen flex-col md:flex-row">
-    <div class="relative md:sticky md:top-0 md:h-screen md:w-[50vw]">
+  <div class="flex w-screen flex-col md:flex-row md:justify-end">
+    <div
+      class="relative md:fixed md:start-0 md:top-0 md:h-screen md:w-[50vw]"
+      data-reveal-slide-up="load"
+    >
       <div
         class="grid h-full grid-cols-6 grid-rows-[1fr_auto_auto] gap-x-[10px] gap-y-5 px-4 pt-5 pb-10 md:grid-cols-8 md:grid-rows-[auto_1fr_auto] md:pr-5 md:pl-5"
       >
         <div
-          class="image col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 md:col-span-8 md:col-start-1 md:row-span-3 md:row-start-1 md:-mx-5 md:-mb-10"
+          class="image col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 aspect-[400/335] md:col-span-8 md:col-start-1 md:row-span-3 md:row-start-1 md:-mx-5 md:-mb-10 md:aspect-auto"
         >
           <Picture
             src={backgroundImage}
@@ -70,9 +75,12 @@ const backgroundImage = getImageByPath(project.background);
             <span class="text-white-32">{project.year}</span>
           </div>
 
-          <div
-            class="flex items-center gap-x-1 rounded-sm bg-white-16 px-2 py-1 text-white before:block before:aspect-square before:w-[5px] before:rounded-full before:bg-green md:hidden md:gap-x-2 md:p-2"
-          >
+          <div class="btn md:hidden">
+            <div
+              aria-label="Online"
+              class="block aspect-square w-[5px] rounded-full bg-green"
+            >
+            </div>
             See live
           </div>
         </div>
@@ -126,12 +134,16 @@ const backgroundImage = getImageByPath(project.background);
     >
       <div
         class="images z-2 col-span-5 col-start-2 flex flex-col gap-y-10 md:col-span-6 md:col-start-2"
+        data-reveal-slide-up
       >
         {
           project.medias.map((item, index) => {
             const image = getImageByPath(item);
             return (
-              <div class="bg-black p-14">
+              <div
+                class="bg-black p-14 transition-colors dark:bg-white"
+                data-reveal-slide-up="load"
+              >
                 <Picture
                   src={image}
                   formats={["webp"]}
@@ -150,7 +162,3 @@ const backgroundImage = getImageByPath(project.background);
     </div>
   </div>
 </Layout>
-
-<script>
-  console.log("coucou");
-</script>

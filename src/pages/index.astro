@@ -12,7 +12,14 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Layout>
-  <div class="fixed end-0 top-0 z-30 m-3">
+  <div
+    class="fixed top-0 left-0 z-30 grid w-full grid-cols-6 gap-[10px] p-4 landscape:hidden"
+  >
+    <span class="col-span-1 text-white">CB</span>
+    <span class="col-span-4 text-white-32">Front-end Developer</span>
+  </div>
+
+  <div class="fixed end-0 top-0 z-30 m-2 landscape:m-3">
     <a href="#" class="inline-block p-2 text-white">Infos</a>
   </div>
 
@@ -30,19 +37,21 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
       x-ref="scrollable"
     >
       <template x-for="i in (items.length + visible)">
-        <div class="h-[calc(100vh_/_var(--itemsPerViewport))] flex-shrink-0">
+        <div
+          class="h-[calc(150vh_/_var(--itemsPerViewport))] flex-shrink-0 landscape:h-[calc(100vh_/_var(--itemsPerViewport))]"
+        >
         </div>
       </template>
     </div>
 
     <div
-      class="fixed top-0 flex h-screen w-screen flex-col overflow-hidden transition-transform duration-800 ease-[cubic-bezier(0.5,0,0,1)] landscape:flex-row"
-      x-bind:class="{ 'translate-y-[60vh]': Alpine.store('main').loaded === false }"
+      class="fixed top-0 flex h-screen w-screen flex-col overflow-hidden landscape:flex-row"
       x-bind:style="{ '--current': current, '--length': items.length }"
       x-ref="wrapper"
+      data-reveal-slide-up="load"
     >
       <div
-        class="projects relative h-[50vh] overflow-hidden landscape:order-2 landscape:h-auto landscape:w-[50vw]"
+        class="projects relative aspect-[400/335] w-full overflow-hidden landscape:order-2 landscape:aspect-auto landscape:h-auto landscape:w-[50vw]"
       >
         {
           sortedProjects.map((project, index) => {
@@ -55,6 +64,8 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
                 <Picture
                   src={backgroundImage}
                   formats={["webp"]}
+                  widths={[400, 800]}
+                  sizes="(orientation: landscape) 50vw, 100vw"
                   alt={`${project.data.title} background`}
                   class="h-full w-full object-cover object-center"
                 />
@@ -95,7 +106,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
       </div>
 
       <div
-        class="relative flex h-[50vh] flex-col pl-5 landscape:order-1 landscape:h-auto landscape:w-[50vw]"
+        class="relative flex flex-1 flex-col pl-5 landscape:order-1 landscape:h-auto landscape:w-[50vw]"
         x-bind:class={`ready && 'transition-transform'`}
         x-ref="container"
       >
