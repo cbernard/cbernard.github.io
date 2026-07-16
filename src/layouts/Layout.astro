@@ -31,7 +31,7 @@ import "../styles/index.css";
     <Loader />
 
     <div
-      :class="$store.main.isHome ? 'fixed' : 'absolute'"
+      :class="$store.main.isHome ? 'fixed' : 'absolute landscape:fixed'"
       class="start-0 top-[calc(100vw*335/400)] z-10 -translate-y-full landscape:start-[unset] landscape:end-1/2 landscape:top-0 landscape:-translate-y-0"
     >
       <ThemeSwitcher />

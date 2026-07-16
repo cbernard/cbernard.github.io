@@ -48,7 +48,9 @@ const backgroundImage = getImageByPath(project.background);
           <Picture
             src={backgroundImage}
             formats={["webp"]}
-            alt="A description of my image."
+            widths={[400, 800]}
+            sizes="(orientation: landscape) 50vw, 100vw"
+            alt={`${project.title} background`}
             class="h-full w-full object-cover object-center"
           />
         </div>
@@ -68,7 +70,7 @@ const backgroundImage = getImageByPath(project.background);
         </div>
 
         <div
-          class="col-span-5 col-start-2 row-start-2 flex items-center justify-between pb-5 md:col-span-7 md:col-start-2 md:row-start-1 md:pb-0"
+          class="col-span-5 col-start-2 row-start-2 flex items-center justify-between pb-3 md:col-span-7 md:col-start-2 md:row-start-1 md:pb-0"
         >
           <div class="flex items-center gap-x-3">
             <div class="text-white">Date</div>

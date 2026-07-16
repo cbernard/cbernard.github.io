@@ -61,7 +61,9 @@ const swup = new Swup({
               );
           },
           in: async () => {
-            if (!isDesktopLandscape()) await fadeIn();
+            if (!isDesktopLandscape()) {
+              await fadeIn();
+            }
           },
         },
         {

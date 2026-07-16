@@ -6,6 +6,17 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Exposées pour le JS (lues via getComputedStyle). Tailwind tree-shake les
+   variables de breakpoint non utilisées en var(), d'où `static` pour forcer
+   leur émission — voir isDesktopLandscape() dans swup.js. */
+@theme static {
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+}
+
 @theme {
   /* Fonts */
   --font-primary: "TWKLausanne300", sans-serif;
@@ -32,8 +43,10 @@
   --color-white-80: color-mix(in srgb, var(--color-white) 80%, transparent);
 }
 
-.btn {
-  @apply flex items-center gap-x-1 rounded-sm bg-white-16 px-2 py-1 text-white md:gap-x-2 md:p-2;
+@layer components {
+  .btn {
+    @apply flex items-center gap-x-1 rounded-sm bg-white-16 px-2 py-0.5 text-white md:gap-x-2 md:p-2;
+  }
 }
 
 [x-cloak] {
