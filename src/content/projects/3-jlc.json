@@ -7,6 +7,7 @@
   "services": ["HTML", "CSS", "Javascript"],
   "description": "Designed and developed a responsive front-end for Jaeger-LeCoultre, delivering a smooth user experience while maintaining the brand’s elegance and high-end aesthetic.",
   "background": "images/projects/jlc.webp",
+  "overlay": 0.3,
   "thumbnail": "images/projects/jlc-thumbnail.webp",
   "medias": [
     "images/projects/jlc-detail-01.jpg",

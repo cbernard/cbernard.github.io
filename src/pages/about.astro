@@ -3,13 +3,36 @@ import { Picture } from "astro:assets";
 
 import Layout from "../layouts/Layout.astro";
 import Progress from "../components/progress/progress.astro";
+import Pin from "../components/pin/pin.astro";
 
 import backgroundImage from "../images/about.jpg";
 
 const links = [
   { name: "Instagram", href: "#" },
-  { name: "Twitter", href: "#" },
+  { name: "Linkedin", href: "#" },
 ];
+
+const recognitions = [
+  {
+    project: "Jaeger-Lecoultre",
+    award: "Awwwards",
+    label: "Site of the Day",
+    year: "2024",
+  },
+  {
+    project: "Roger Dubuis",
+    award: "FWA",
+    label: "Site of the Day",
+    year: "2024",
+  },
+];
+
+const credits = [
+  { name: "Thomas Monavon", role: "UX / UI Design" },
+  { name: "Lausanne Agency", role: "Development" },
+];
+
+const email = "charly.bernard@gmail.com";
 ---
 
 <Layout>
@@ -25,7 +48,7 @@ const links = [
       data-reveal-slide-up="load"
     >
       <div
-        class="grid h-full grid-cols-6 grid-rows-[1fr_auto_auto] gap-x-[10px] gap-y-5 px-4 pt-5 pb-10 md:grid-cols-8 md:grid-rows-[auto_1fr_auto] md:pr-5 md:pl-5"
+        class="grid h-full grid-cols-6 grid-rows-[1fr_auto_auto] gap-x-[10px] gap-y-5 px-4 pt-5 pb-5 md:grid-cols-8 md:grid-rows-[auto_1fr_auto] md:pr-5 md:pl-5"
       >
         <div
           class="image col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 aspect-[400/335] md:col-span-8 md:col-start-1 md:row-span-3 md:row-start-1 md:-mx-5 md:-mb-10 md:aspect-auto"
@@ -59,7 +82,7 @@ const links = [
         >
           <div class="flex items-center gap-x-4">
             <span class="text-white">Charly Bernard</span>
-            <span class="text-white-32"> Front-end Developer </span>
+            <span class="text-white-32">Front-end Developer </span>
           </div>
         </div>
 
@@ -80,31 +103,101 @@ const links = [
     </div>
 
     <div
-      class="grid h-[50vh] grid-cols-6 flex-col items-center gap-[10px] px-4 pb-14 md:h-auto md:w-[50vw] md:grid-cols-8 md:pt-56 md:pr-5 md:pl-[5px]"
+      class="grid min-h-[50vh] grid-cols-6 flex-col items-center gap-[10px] px-4 pb-14 md:h-auto md:w-[50vw] md:grid-cols-8 md:pt-56 md:pr-5 md:pl-[5px]"
     >
       <div
         class="z-2 col-span-5 col-start-2 transition-colors duration-200 has-[button:hover]:text-black-32 md:col-span-6 md:col-start-2 dark:has-[button:hover]:text-white-32"
       >
-        <div data-split class="text-4xl">
-          Mauris congue dolor at commodo sollicitudin. <div
-            class="has-[button:hover]:text-black dark:has-[button:hover]:text-white"
+        <div
+          data-split
+          class="flex flex-col gap-y-4 text-[clamp(2.25rem,1.58rem_+_1.39vw,3.25rem)] leading-[1.1]"
+        >
+          <p>
+            Charly Bernard is a Swiss developer and <Pin label="travel lover" />
+            passionate about creating innovative and efficient digital solutions.
+            With expertise in web and software development, he focuses on delivering
+            high-quality, user-friendly applications.
+          </p>
+          <p>
+            Driven by curiosity and precision, between two waves Charly
+            continuously explores new technologies to enhance his projects.
+          </p>
+          <p>
+            A great hiking and photography enthusiast, he is someone who loves
+            to see things through in his work and has a keen eye for detail,
+            ensuring pixel-perfect integration of any request.
+          </p>
+        </div>
+
+        <div
+          class="z-2 col-span-5 col-start-2 mt-28 flex flex-col gap-y-28 md:col-span-6 md:col-start-2 md:mt-48 md:gap-y-48"
+        >
+          <section
+            data-reveal-slide-up="scroll"
+            style="--reveal-index: 0"
+            class="flex flex-col gap-y-10"
           >
-            Curabitur ac nisi
-            <button
-              class="relative h-5 w-10 cursor-pointer text-black-32 transition-colors duration-200 before:absolute before:top-1/2 before:left-1/2 before:h-5 before:w-5 before:translate-x-[-50%] before:translate-y-[-50%] before:rounded-full before:border before:content-[''] after:absolute after:top-1/2 after:left-1/2 after:h-2 after:w-2 after:translate-x-[-50%] after:translate-y-[-50%] after:transform after:rounded-full after:bg-current after:transition-opacity after:content-[''] hover:text-black hover:after:opacity-0 dark:text-white-32 dark:hover:text-white"
-              data-cursor-stick
-              aria-label="Hover me"></button>
-          </div>
-          dolor bibendum scelerisque eget ac ligula. Nullam vulputate pharetra mi.
-          Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-          inceptos himenaeos. Vivamus efficitur massa eget ligula pretium gravida.
-          Pellentesque efficitur ligula at tellus dictum suscipit. Curabitur libero
-          nulla, maximus et libero eu, sagittis volutpat urna. Praesent ac tincidunt
-          est, sed consequat ex. Maecenas lobortis congue neque vitae placerat. Maecenas
-          ac vestibulum turpis, a malesuada tellus. Curabitur sit amet euismod orci.
-          Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-          inceptos himenaeos. Integer eget lacinia lorem. Nam condimentum metus vel
-          felis dictum, non viverra purus scelerisque.
+            <h2 class="text-[clamp(1.5rem,1.3rem_+_0.42vw,1.875rem)]">
+              Recognitions
+            </h2>
+
+            <div class="flex flex-col gap-y-5">
+              {
+                recognitions.map((item) => (
+                  <div class="grid grid-cols-2 gap-x-[10px] gap-y-1 md:grid-cols-6">
+                    <div class="col-span-2 md:col-span-2">{item.project}</div>
+
+                    <div class="flex items-baseline gap-x-2 md:col-span-3 md:col-start-3">
+                      <span class="text-black-32 dark:text-white-32">
+                        {item.award}
+                      </span>
+                      <span>{item.label}</span>
+                    </div>
+
+                    <div class="text-end md:col-start-6">{item.year}</div>
+                  </div>
+                ))
+              }
+            </div>
+          </section>
+
+          <section
+            data-reveal-slide-up="scroll"
+            style="--reveal-index: 1"
+            class="flex flex-col gap-y-10"
+          >
+            <h2 class="text-[clamp(1.5rem,1.3rem_+_0.42vw,1.875rem)]">
+              Credits
+            </h2>
+
+            <div class="flex flex-col gap-y-5">
+              {
+                credits.map((item) => (
+                  <div class="grid grid-cols-2 gap-x-[10px] gap-y-1 md:grid-cols-6">
+                    <div class="md:col-span-2">{item.name}</div>
+
+                    <div class="text-black-32 md:col-span-3 md:col-start-3 dark:text-white-32">
+                      {item.role}
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </section>
+
+          <section
+            data-reveal-slide-up="scroll"
+            style="--reveal-index: 2"
+            class="flex flex-col gap-y-5"
+          >
+            <h2 class="text-[clamp(1.5rem,1.3rem_+_0.42vw,1.875rem)]">
+              Let&rsquo;s work together!
+            </h2>
+
+            <a href={`mailto:${email}`} class="self-start hover:underline">
+              {email}
+            </a>
+          </section>
         </div>
       </div>
     </div>

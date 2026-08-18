@@ -15,7 +15,6 @@ export default function accordion() {
     init() {
       this.onResize = debounce(this.handleResize.bind(this), 100);
       this.onKeyDown = this.handleKeyDown.bind(this);
-      this.onTransitionEnd = this.handleTransitionEnd.bind(this);
 
       this.isMobile = window.matchMedia(
         "(orientation: portrait) and (max-width: 767px)",
@@ -26,7 +25,9 @@ export default function accordion() {
       this.addEventListeners();
 
       this.$nextTick(() => {
+        this.syncScrollPosition();
         this.createScrolltriggerInstances();
+        this.markAsReady();
       });
 
       this.$watch(
@@ -97,22 +98,39 @@ export default function accordion() {
       return `--this-translate-y: ${this.positions[index]}px`;
     },
 
+    getScrollPosition(index) {
+      return (index * this.containerHeight) / this.visible + 1;
+    },
+
+    /**
+     * `current` is restored from the store on mount while the scroll is back at
+     * the top. Without this, the ScrollTriggers would drag the accordion back
+     * to the item matching a scroll of 0 as soon as the user scrolls down.
+     */
+    syncScrollPosition() {
+      scrollInstance.scrollTo(this.getScrollPosition(this.current), {
+        immediate: true,
+      });
+    },
+
+    /**
+     * The CSS transitions stay off until the items have been painted at their
+     * initial position, otherwise a remount (Swup) animates them into place.
+     */
+    markAsReady() {
+      requestAnimationFrame(() => {
+        this.ready = true;
+      });
+    },
+
     addEventListeners() {
       window.addEventListener("resize", this.onResize, { passive: true });
       window.addEventListener("keydown", this.onKeyDown);
-      this.$refs.wrapper.addEventListener(
-        "transitionend",
-        this.onTransitionEnd,
-      );
     },
 
     removeEventListeners() {
       window.removeEventListener("resize", this.onResize, { passive: true });
       window.removeEventListener("keydown", this.onKeyDown);
-      this.$refs.wrapper.removeEventListener(
-        "transitionend",
-        this.onTransitionEnd,
-      );
     },
 
     handleResize() {
@@ -128,12 +146,6 @@ export default function accordion() {
         this.scrollToNext();
       } else if (e.key === "ArrowUp") {
         this.scrollToPrevious();
-      }
-    },
-
-    handleTransitionEnd(e) {
-      if (!this.ready) {
-        this.ready = true;
       }
     },
 
@@ -161,19 +173,17 @@ export default function accordion() {
 
     scrollToNext() {
       if (this.current < this.items.length - 1) {
-        scrollInstance.scrollTo(
-          ((this.current + 1) * this.containerHeight) / this.visible + 1,
-          { immediate: true },
-        );
+        scrollInstance.scrollTo(this.getScrollPosition(this.current + 1), {
+          immediate: true,
+        });
       }
     },
 
     scrollToPrevious() {
       if (this.current > 0) {
-        scrollInstance.scrollTo(
-          ((this.current - 1) * this.containerHeight) / this.visible + 1,
-          { immediate: true },
-        );
+        scrollInstance.scrollTo(this.getScrollPosition(this.current - 1), {
+          immediate: true,
+        });
       }
     },
 
@@ -186,12 +196,9 @@ export default function accordion() {
         return;
       }
 
-      scrollInstance.scrollTo(
-        (index * this.containerHeight) / this.visible + 1,
-        {
-          immediate: true,
-        },
-      );
+      scrollInstance.scrollTo(this.getScrollPosition(index), {
+        immediate: true,
+      });
     },
 
     goTo(index) {

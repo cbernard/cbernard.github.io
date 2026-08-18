@@ -9,20 +9,25 @@ import Next from "../../components/next/next.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
+  const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 
-  return projects.map((project) => {
+  return sortedProjects.map((project, index) => {
+    const nextProject = sortedProjects[(index + 1) % sortedProjects.length];
+
     return {
       params: {
         name: project.data.slug,
       },
       props: {
         project: project.data,
+        nextProject: nextProject.data,
+        index,
       },
     };
   });
 }
 
-const { project } = Astro.props;
+const { project, nextProject, index } = Astro.props;
 
 const backgroundImage = getImageByPath(project.background);
 ---
@@ -34,7 +39,11 @@ const backgroundImage = getImageByPath(project.background);
     <a href="/" class="inline-block p-2 text-white">Back</a>
   </div>
 
-  <div class="flex w-screen flex-col md:flex-row md:justify-end">
+  <div
+    class="flex w-screen flex-col md:flex-row md:justify-end"
+    x-data
+    x-init={`$store.main.current = ${index}`}
+  >
     <div
       class="relative md:fixed md:start-0 md:top-0 md:h-screen md:w-[50vw]"
       data-reveal-slide-up="load"
@@ -43,7 +52,7 @@ const backgroundImage = getImageByPath(project.background);
         class="grid h-full grid-cols-6 grid-rows-[1fr_auto_auto] gap-x-[10px] gap-y-5 px-4 pt-5 pb-10 md:grid-cols-8 md:grid-rows-[auto_1fr_auto] md:pr-5 md:pl-5"
       >
         <div
-          class="image col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 aspect-[400/335] md:col-span-8 md:col-start-1 md:row-span-3 md:row-start-1 md:-mx-5 md:-mb-10 md:aspect-auto"
+          class="image relative col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 aspect-[400/335] md:col-span-8 md:col-start-1 md:row-span-3 md:row-start-1 md:-mx-5 md:-mb-10 md:aspect-auto"
         >
           <Picture
             src={backgroundImage}
@@ -53,24 +62,33 @@ const backgroundImage = getImageByPath(project.background);
             alt={`${project.title} background`}
             class="h-full w-full object-cover object-center"
           />
+
+          {
+            project.overlay > 0 && (
+              <div
+                class="pointer-events-none absolute inset-0 bg-black"
+                style={`opacity: ${project.overlay}`}
+              />
+            )
+          }
         </div>
 
-        <div class="col-start-1 row-start-1 md:hidden">
+        <div class="z-10 col-start-1 row-start-1 md:hidden">
           <a href="/" class="text-white">CB</a>
         </div>
 
-        <div class="col-start-6 row-start-1 text-end md:hidden">
+        <div class="z-10 col-start-6 row-start-1 text-end md:hidden">
           <a href="/" class="text-white"> </a>
         </div>
 
         <div
-          class="col-start-1 row-span-3 row-start-1 hidden text-white-32 md:block"
+          class="z-10 col-start-1 row-span-3 row-start-1 hidden text-white-32 md:block"
         >
           <Progress translate={true} progress="scroll" />
         </div>
 
         <div
-          class="col-span-5 col-start-2 row-start-2 flex items-center justify-between pb-3 md:col-span-7 md:col-start-2 md:row-start-1 md:pb-0"
+          class="z-10 col-span-5 col-start-2 row-start-2 flex items-center justify-between pb-3 md:col-span-7 md:col-start-2 md:row-start-1 md:pb-0"
         >
           <div class="flex items-center gap-x-3">
             <div class="text-white">Date</div>
@@ -88,7 +106,7 @@ const backgroundImage = getImageByPath(project.background);
         </div>
 
         <div
-          class="col-span-5 col-start-2 row-start-1 self-center text-white md:col-span-7 md:col-start-2 md:row-start-2"
+          class="z-10 col-span-5 col-start-2 row-start-1 self-center text-white md:col-span-7 md:col-start-2 md:row-start-2"
         >
           {
             project.url ? (
@@ -112,7 +130,7 @@ const backgroundImage = getImageByPath(project.background);
         </div>
 
         <div
-          class="col-span-5 col-start-2 row-start-3 flex flex-col gap-y-5 md:col-span-7 md:col-start-2 md:text-white lg:col-span-6 lg:col-start-2"
+          class="z-10 col-span-5 col-start-2 row-start-3 flex flex-col gap-y-5 md:col-span-7 md:col-start-2 md:text-white lg:col-span-6 lg:col-start-2"
         >
           <div class="flex items-center gap-x-3">
             <div data-split>Services</div>
@@ -136,7 +154,7 @@ const backgroundImage = getImageByPath(project.background);
     >
       <div
         class="images z-2 col-span-5 col-start-2 flex flex-col gap-y-10 md:col-span-6 md:col-start-2"
-        data-reveal-slide-up
+        data-reveal-slide-up="load"
       >
         {
           project.medias.map((item, index) => {
@@ -144,7 +162,8 @@ const backgroundImage = getImageByPath(project.background);
             return (
               <div
                 class="bg-black p-14 transition-colors dark:bg-white"
-                data-reveal-slide-up="load"
+                data-reveal-slide-up="scroll"
+                style={`--reveal-index: ${index}`}
               >
                 <Picture
                   src={image}
@@ -159,7 +178,7 @@ const backgroundImage = getImageByPath(project.background);
       </div>
 
       <div class="test z-1 col-span-full col-start-1 -mt-20">
-        <Next label="Next project" />
+        <Next label="Next project" href={`/project/${nextProject.slug}`} />
       </div>
     </div>
   </div>

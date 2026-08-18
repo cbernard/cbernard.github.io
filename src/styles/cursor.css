@@ -1,0 +1,7 @@
+/* La lib rétrécit le point sur tout <a> et <button> (scale 0.15 contre 0.2 au
+   repos). Les `:not()` laissent passer ses autres états : ils ont la même
+   spécificité mais sont déclarés avant cette feuille, donc sans eux `-pointer`
+   les écraserait. */
+.mf-cursor.-pointer:not(.-hidden, .-text, .-icon):before {
+  transform: scale(0.2);
+}

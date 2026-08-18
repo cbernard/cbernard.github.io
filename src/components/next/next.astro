@@ -1,9 +1,10 @@
 ---
 export interface Props {
   label: string;
+  href: string;
 }
 
-const { label } = Astro.props;
+const { label, href = "#" } = Astro.props;
 ---
 
 <div
@@ -16,6 +17,6 @@ const { label } = Astro.props;
     class="absolute inset-0"
     style="clip-path: polygon(0 0, var(--progress-x) 0, var(--progress-x) 100%, 0% 100%);"
   >
-    {label}
+    <a href={href}>{label}</a>
   </div>
 </div>

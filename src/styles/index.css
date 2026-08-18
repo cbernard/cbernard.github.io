@@ -3,6 +3,7 @@
 
 @import "tailwindcss";
 @import "mouse-follower/dist/mouse-follower.min.css";
+@import "./cursor.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

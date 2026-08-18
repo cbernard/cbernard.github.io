@@ -12,6 +12,7 @@ const defaultOptions = {
 export class Scroll {
   #lenis;
   #options;
+  #raf;
 
   constructor(options = {}) {
     this.#options = { ...defaultOptions, ...options };
@@ -20,8 +21,10 @@ export class Scroll {
   init() {
     this.#lenis = new Lenis(this.#options);
 
-    this.#lenis.scrollTo(0, { immediate: true });
-    document.documentElement.style.setProperty("--lenis-scroll-y", `0px`);
+    document.documentElement.style.setProperty(
+      "--lenis-scroll-y",
+      `${window.scrollY}px`,
+    );
 
     this.#lenis.on("scroll", ({ scroll }) => {
       Alpine.store("main").scrollProgress = this.#lenis.progress;
@@ -34,10 +37,14 @@ export class Scroll {
       ScrollTrigger.update();
     });
 
-    gsap.ticker.add((time) => {
+    // Kept on the instance so `refresh()` can actually remove it: the callback
+    // is a closure, not `lenis.raf`, so removing the latter is a no-op and every
+    // refresh would leave a destroyed Lenis being ticked.
+    this.#raf = (time) => {
       this.#lenis.raf(time * 1000);
-    });
+    };
 
+    gsap.ticker.add(this.#raf);
     gsap.ticker.lagSmoothing(0);
   }
 
@@ -54,7 +61,7 @@ export class Scroll {
   }
 
   refresh() {
-    gsap.ticker.remove(this.#lenis.raf);
+    gsap.ticker.remove(this.#raf);
     this.#lenis.destroy();
     this.init();
   }

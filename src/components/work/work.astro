@@ -12,8 +12,12 @@ const itemClasses =
 ---
 
 <div
-  class="work absolute flex h-[48px] w-full translate-y-[calc(var(--this-translate-y))] flex-col justify-center transition-all duration-1000 ease-[cubic-bezier(0.5,0,0,1)] md:h-[78px]"
-  x-bind:class={`current == ${index} ? ' dark:text-white' : ' text-black-32 dark:text-white-32'`}
+  class="work absolute flex h-[48px] w-full translate-y-[calc(var(--this-translate-y))] flex-col justify-center md:h-[78px]"
+  x-bind:class={`{
+    'dark:text-white': current == ${index},
+    'text-black-32 dark:text-white-32': current != ${index},
+    'transition-all duration-1000 ease-[cubic-bezier(0.5,0,0,1)]': ready,
+  }`}
   x-bind:style={`getPosition(${index})`}
 >
   <template x-if={`current == ${index}`}>

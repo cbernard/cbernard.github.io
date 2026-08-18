@@ -12,6 +12,7 @@ const projects = defineCollection({
     services: z.array(z.string()),
     description: z.string(),
     background: z.string(),
+    overlay: z.number().min(0).max(1).default(0),
     thumbnail: z.string(),
     medias: z.array(z.string()),
     url: z.string(),
