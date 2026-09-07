@@ -6,6 +6,7 @@ import accordion from "./accordion";
 import progress from "../components/progress/progress";
 import loader from "../components/loader/loader";
 import next from "../components/next/next";
+import pins from "../components/pin/pin";
 
 export const isHomepage = () => window.location.pathname === "/";
 
@@ -13,6 +14,7 @@ Alpine.data("accordion", accordion);
 Alpine.data("progress", progress);
 Alpine.data("loader", loader);
 Alpine.data("next", next);
+Alpine.data("pins", pins);
 
 Alpine.store("darkMode", {
   on: false,

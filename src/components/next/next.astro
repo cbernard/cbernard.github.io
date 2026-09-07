@@ -9,7 +9,7 @@ const { label, href = "#" } = Astro.props;
 
 <div
   class="relative mx-auto w-fit text-[32px]"
-  x-data="next()"
+  x-data={`next(${JSON.stringify(href)})`}
   x-bind:style="{ '--progress-x': progress }"
 >
   <div class="text-black-32">{label}</div>
@@ -17,6 +17,6 @@ const { label, href = "#" } = Astro.props;
     class="absolute inset-0"
     style="clip-path: polygon(0 0, var(--progress-x) 0, var(--progress-x) 100%, 0% 100%);"
   >
-    <a href={href}>{label}</a>
+    {label}
   </div>
 </div>

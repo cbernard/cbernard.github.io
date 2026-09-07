@@ -45,6 +45,14 @@ const fadeOutNext = () =>
     overwrite: "auto",
   });
 
+// Between two projects, the outgoing image leaves by a fade. The whole panel
+// goes with it: the progress column and the date are white and not part of the
+// unreveal, they would linger over the page background once the image is gone.
+// Kept on `duration`, the length of the unreveal, so the fade costs no extra
+// time on the exit.
+const fadeOutPanel = () =>
+  gsap.to(".panel", { opacity: 0, duration: duration, ease: "power2.in" });
+
 const swup = new Swup({
   animateHistoryBrowsing: true,
   plugins: [
@@ -53,6 +61,20 @@ const swup = new Swup({
     new SwupDebugPlugin(),
     new SwupJsPlugin({
       animations: [
+        // Works and About share no element to carry from one to the other, so
+        // both ways get the fade the other routes fall back to off desktop.
+        {
+          from: "(/)",
+          to: "(/about/?)",
+          out: fadeOut,
+          in: fadeIn,
+        },
+        {
+          from: "(/about/?)",
+          to: "(/)",
+          out: fadeOut,
+          in: fadeIn,
+        },
         {
           from: "(/)",
           to: "(/project/.*)",
@@ -115,13 +137,14 @@ const swup = new Swup({
               return;
             }
 
-            // All three run at once, but the exit is only over when the longest
+            // All four run at once, but the exit is only over when the longest
             // one is: an `onStart` callback would let Swup swap the content
             // while the unreveal is still playing.
             await Promise.all([
               revealInstance.unreveal({ slideUp: false }),
               revealInstance.unrevealVisible(),
               fadeOutNext(),
+              fadeOutPanel(),
             ]);
           },
           in: async () => {
@@ -137,7 +160,7 @@ const swup = new Swup({
             // reveals of `reveal()`, from the same 20px offset as a first visit.
             await gsap.from(".image", {
               opacity: 0,
-              duration: 0.5,
+              duration: duration,
               ease: "power2.out",
             });
           },

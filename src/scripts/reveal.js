@@ -7,13 +7,43 @@ gsap.registerPlugin(ScrollTrigger);
 class Reveal {
   #split;
   #scrollTweens = [];
+  #firstSplitDone = false;
 
   #init() {
+    this.#split?.revert();
+    this.#firstSplitDone = false;
+
     this.#split = SplitText.create("[data-split]", {
       type: "words, lines",
       mask: "lines",
       linesClass: "lines",
+      wordsClass: "word",
+      autoSplit: true,
+      onSplit: (split) => this.#onSplit(split),
     });
+
+    this.#firstSplitDone = true;
+  }
+
+  /**
+   * SplitText calls this on the first split too, the one `reveal()` is about to
+   * animate — only the splits after it, a resize or fonts landing late, are
+   * ours to place.
+   */
+  #onSplit(split) {
+    if (!this.#firstSplitDone) {
+      return;
+    }
+
+    // Fresh lines come back translated down by `.lines` in the CSS, and the
+    // tween that had brought them up is still on the ones just replaced. What
+    // holds them hidden until the entrance is the opacity of `[data-split]`,
+    // so putting them at rest here is safe even before it has played.
+    gsap.set(split.lines, { y: "0%" });
+
+    // Re-wrapped copy is not the same height, and the re-split is debounced
+    // 200ms — well after the refresh ScrollTrigger runs on resize by itself.
+    ScrollTrigger.refresh();
   }
 
   #killScroll() {
@@ -69,12 +99,15 @@ class Reveal {
     const tl = gsap.timeline({ delay });
 
     if (this.#split.lines.length > 0) {
+      // Duration and stagger scale together: their ratio is what gives the
+      // cascade its rhythm, only the time scale is tightened here.
       tl.to(this.#split.lines, {
         onStart: () => {
           gsap.set("[data-split]", { opacity: 1 });
         },
         y: "0%",
-        stagger: 0.1,
+        duration: 0.35,
+        stagger: 0.07,
       });
     }
 

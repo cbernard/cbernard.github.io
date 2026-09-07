@@ -1,15 +1,30 @@
 ---
 export interface Props {
   label: string;
+  index: number;
 }
 
-const { label = "" } = Astro.props;
+const { label = "", index = 0 } = Astro.props;
+
+const words = label.trim().split(" ");
+const last = words.pop();
 ---
 
-<div class="has-[button:hover]:text-black dark:has-[button:hover]:text-white">
-  {label}
-  <button
-    class="relative h-5 w-10 cursor-pointer text-black-32 transition-colors duration-200 before:absolute before:top-1/2 before:left-1/2 before:h-5 before:w-5 before:translate-x-[-50%] before:translate-y-[-50%] before:rounded-full before:border before:content-[''] after:absolute after:top-1/2 after:left-1/2 after:h-2 after:w-2 after:translate-x-[-50%] after:translate-y-[-50%] after:transform after:rounded-full after:bg-current after:transition-opacity after:content-[''] hover:text-black hover:after:opacity-0 dark:text-white-32 dark:hover:text-white"
-    data-cursor-stick
-    aria-label="Hover me"></button>
-</div>
+{
+  /* `data-pin-label` is where `pin.js` reads the pin from, to copy it over its
+    picture while it is held — the real one stays here, faded. */
+}
+<span
+  class="transition-colors duration-200 has-[button:hover]:text-black dark:has-[button:hover]:text-white"
+  data-pin-label={index}
+>
+  {words.length > 0 && `${words.join(" ")} `}
+  <span class="whitespace-nowrap">
+    {last}
+    <button
+      class="relative mx-2 h-5 w-5 cursor-pointer touch-none text-black-32 transition-colors duration-200 select-none before:absolute before:top-1/2 before:left-1/2 before:h-5 before:w-5 before:translate-x-[-50%] before:translate-y-[-50%] before:rounded-full before:border before:content-[''] after:absolute after:top-1/2 after:left-1/2 after:h-2 after:w-2 after:translate-x-[-50%] after:translate-y-[-50%] after:transform after:rounded-full after:bg-current after:transition-opacity after:content-[''] hover:text-black hover:after:opacity-0 dark:text-white-32 dark:hover:text-white"
+      data-pin={index}
+      data-cursor-stick
+      aria-label={`Show the ${label} picture`}></button>
+  </span>
+</span>

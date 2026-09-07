@@ -1,11 +1,17 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import swup from "../../scripts/swup.js";
+
 gsap.registerPlugin(ScrollTrigger);
 
-export default function next() {
+export default function next(href) {
   return {
-    progress: 0,
+    // Fills over the last 10% of the page scroll, not the pin.
+    get progress() {
+      const scroll = this.$store.main.scrollProgress;
+      return `${gsap.utils.clamp(0, 1, (scroll - 0.9) / 0.1) * 100}%`;
+    },
 
     init() {
       gsap.set(".test", {
@@ -19,8 +25,7 @@ export default function next() {
         toggleActions: "play none none reverse",
         markers: true,
         pin: true,
-        onUpdate: (self) => (this.progress = `${self.progress * 100}%`),
-        onLeave: () => {},
+        onLeave: () => swup.navigate(href),
         animation: gsap.to(".test", {
           opacity: 1,
           duration: 0.2,
