@@ -27,7 +27,13 @@ export class Scroll {
     );
 
     this.#lenis.on("scroll", ({ scroll }) => {
-      Alpine.store("main").scrollProgress = this.#lenis.progress;
+      const { limit, progress } = this.#lenis;
+
+      Alpine.store("main").scrollProgress = progress;
+
+      // `progress` reads 1 on an unscrollable page, so fall back to Infinity.
+      Alpine.store("main").scrollRemaining =
+        limit > 0 ? limit - scroll : Infinity;
 
       document.documentElement.style.setProperty(
         "--lenis-scroll-y",
@@ -37,9 +43,7 @@ export class Scroll {
       ScrollTrigger.update();
     });
 
-    // Kept on the instance so `refresh()` can actually remove it: the callback
-    // is a closure, not `lenis.raf`, so removing the latter is a no-op and every
-    // refresh would leave a destroyed Lenis being ticked.
+    // Kept on the instance so `refresh()` can remove this exact closure.
     this.#raf = (time) => {
       this.#lenis.raf(time * 1000);
     };

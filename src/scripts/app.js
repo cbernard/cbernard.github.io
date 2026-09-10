@@ -14,9 +14,7 @@ class App {
       this.onPageReady({ revealDelay: 0, swup: true });
     });
 
-    // The scroll reveals are created while the `in` animation still has their
-    // container translated, so their trigger positions are measured off. They
-    // are only valid once the transition has settled.
+    // Trigger positions are measured off until the `in` animation has settled.
     swup.hooks.on("animation:in:end", () => {
       ScrollTrigger.refresh();
     });

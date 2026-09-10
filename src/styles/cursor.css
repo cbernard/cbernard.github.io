@@ -1,7 +1,77 @@
+/* Masque le curseur natif, mais uniquement quand `Cursor` a instancié son
+   remplaçant. Le sélecteur universel est nécessaire : `cursor` s'hérite, mais
+   les `cursor-pointer` du markup l'écraseraient élément par élément. Ce fichier
+   n'est pas dans une `@layer`, il gagne donc sur les utilitaires Tailwind
+   quelle que soit la spécificité. */
+.has-cursor,
+.has-cursor * {
+  cursor: none;
+}
+
+/* `data-cursor="-hidden"` escamote le curseur custom (point à scale 0). Combiné
+   au `cursor: none` ci-dessus, la zone se retrouvait sans aucun curseur : on
+   rend la main au natif, en `pointer` comme l'indique le markup. */
+.has-cursor [data-cursor="-hidden"],
+.has-cursor [data-cursor="-hidden"] * {
+  cursor: pointer;
+}
+
+/* Le curseur reprend le gris discret du design system (la paire `-32`, celle
+   de tous les états secondaires — voir pin.astro). `currentColor` héritait de
+   <body>, donc du noir/blanc pleine opacité : on pose la couleur sur le
+   curseur pour garder l'inversion clair/sombre. La lib fait déjà transiter
+   `color` sur 400ms, le changement de thème est donc animé. */
+.mf-cursor {
+  color: var(--color-black-32);
+}
+
+.dark .mf-cursor {
+  color: var(--color-white-32);
+}
+
+/* Carré : écrase le `border-radius: 50%` de la lib. Même spécificité, mais
+   cette feuille est déclarée après la sienne. */
+.mf-cursor:before {
+  border-radius: 0;
+}
+
 /* La lib rétrécit le point sur tout <a> et <button> (scale 0.15 contre 0.2 au
    repos). Les `:not()` laissent passer ses autres états : ils ont la même
    spécificité mais sont déclarés avant cette feuille, donc sans eux `-pointer`
    les écraserait. */
 .mf-cursor.-pointer:not(.-hidden, .-text, .-icon):before {
   transform: scale(0.2);
+}
+
+/* État « pill » (`data-cursor="-pill"` + `data-cursor-text`) : on masque le
+   point de la lib et son élément texte devient le badge. La lib garde la
+   gestion du suivi et du show/hide. */
+.mf-cursor.-pill:before {
+  transform: scale(0);
+}
+
+/* `nowrap` est indispensable : l'élément est en absolute dans un conteneur de
+   largeur nulle (`contain: size`), il se replierait donc sur min-content et le
+   label passerait sur deux lignes. */
+.mf-cursor.-pill .mf-cursor-text {
+  @apply btn;
+
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  white-space: nowrap;
+  transform: translate(-50%, -50%) scale(0.9);
+}
+
+/* Spécificité supérieure au `.mf-cursor.-text .mf-cursor-text` de la lib, qui
+   remettrait un `scale(1)` sans le recentrage. */
+.mf-cursor.-pill.-text .mf-cursor-text {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.mf-cursor.-pill .mf-cursor-text:before {
+  @apply block aspect-square w-[5px] rounded-full bg-green;
+
+  content: "";
 }

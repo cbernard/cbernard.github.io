@@ -102,21 +102,16 @@ export default function accordion() {
       return (index * this.containerHeight) / this.visible + 1;
     },
 
-    /**
-     * `current` is restored from the store on mount while the scroll is back at
-     * the top. Without this, the ScrollTriggers would drag the accordion back
-     * to the item matching a scroll of 0 as soon as the user scrolls down.
-     */
+    // `current` is restored from the store on mount, but the scroll is back at
+    // the top: without this the ScrollTriggers snap it back to the first item.
     syncScrollPosition() {
       scrollInstance.scrollTo(this.getScrollPosition(this.current), {
         immediate: true,
       });
     },
 
-    /**
-     * The CSS transitions stay off until the items have been painted at their
-     * initial position, otherwise a remount (Swup) animates them into place.
-     */
+    // CSS transitions stay off until the first paint, or a Swup remount
+    // animates the items into place.
     markAsReady() {
       requestAnimationFrame(() => {
         this.ready = true;

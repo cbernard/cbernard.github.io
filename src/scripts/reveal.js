@@ -25,24 +25,17 @@ class Reveal {
     this.#firstSplitDone = true;
   }
 
-  /**
-   * SplitText calls this on the first split too, the one `reveal()` is about to
-   * animate — only the splits after it, a resize or fonts landing late, are
-   * ours to place.
-   */
+  // SplitText also calls this on the first split, the one `reveal()` animates.
   #onSplit(split) {
     if (!this.#firstSplitDone) {
       return;
     }
 
-    // Fresh lines come back translated down by `.lines` in the CSS, and the
-    // tween that had brought them up is still on the ones just replaced. What
-    // holds them hidden until the entrance is the opacity of `[data-split]`,
-    // so putting them at rest here is safe even before it has played.
+    // Fresh lines come back translated down by `.lines` in the CSS.
     gsap.set(split.lines, { y: "0%" });
 
     // Re-wrapped copy is not the same height, and the re-split is debounced
-    // 200ms — well after the refresh ScrollTrigger runs on resize by itself.
+    // 200ms — past the refresh ScrollTrigger runs on resize by itself.
     ScrollTrigger.refresh();
   }
 
@@ -99,8 +92,6 @@ class Reveal {
     const tl = gsap.timeline({ delay });
 
     if (this.#split.lines.length > 0) {
-      // Duration and stagger scale together: their ratio is what gives the
-      // cascade its rhythm, only the time scale is tightened here.
       tl.to(this.#split.lines, {
         onStart: () => {
           gsap.set("[data-split]", { opacity: 1 });
@@ -111,8 +102,7 @@ class Reveal {
       });
     }
 
-    // Only on a Swup arrival: on the initial load these elements are already
-    // choreographed with the loader curtain, fading them would flash them.
+    // On the initial load these are choreographed with the loader curtain.
     if (swup && document.querySelector("[data-reveal-fade='swup']")) {
       tl.fromTo(
         "[data-reveal-fade='swup']",
@@ -125,12 +115,8 @@ class Reveal {
     return tl.then();
   }
 
-  /**
-   * Exit between two projects: only the items on screen leave, over a fixed
-   * distance. Translating their column instead covers a distance equal to its
-   * own height — several thousand pixels on a project with many medias, hence
-   * a speed that changes from one project to the next.
-   */
+  // Only the items on screen leave, over a fixed distance: translating their
+  // column would cover its own height, so a speed that varies per project.
   unrevealVisible({ distance = 80 } = {}) {
     this.#killScroll();
 
@@ -152,7 +138,7 @@ class Reveal {
   }
 
   unreveal({ delay = 0, swup = false, slideUp = true } = {}) {
-    // A scroll reveal still in flight would drag its element back up mid-exit.
+    // A reveal still in flight would drag its element back up mid-exit.
     this.#killScroll();
 
     const tl = gsap.timeline({ delay });
@@ -167,8 +153,8 @@ class Reveal {
       });
     }
 
-    // `slideUp: false` leaves these items to a caller that exits them itself
-    // (see `unrevealVisible`), otherwise both tweens fight over the same y.
+    // `slideUp: false` leaves these to `unrevealVisible`, or both tweens
+    // fight over the same y.
     const items = slideUp
       ? gsap.utils.toArray("[data-reveal-slide-up='scroll']")
       : [];

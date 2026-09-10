@@ -33,10 +33,8 @@ const fadeIn = () =>
     { opacity: 1, duration: 0.3, ease: "power2.out" },
   );
 
-// Leaving a project from the bottom of the page means the Next button is on
-// screen at full opacity, and would be cut off abruptly. `overwrite` drops the
-// scroll-driven opacity tween of `next()` if it is still running. A no-op when
-// Next is out of view and already at 0.
+// `overwrite` drops the scroll-driven opacity tween of `next()` if it is still
+// running.
 const fadeOutNext = () =>
   gsap.to(".test", {
     opacity: 0,
@@ -45,11 +43,7 @@ const fadeOutNext = () =>
     overwrite: "auto",
   });
 
-// Between two projects, the outgoing image leaves by a fade. The whole panel
-// goes with it: the progress column and the date are white and not part of the
-// unreveal, they would linger over the page background once the image is gone.
-// Kept on `duration`, the length of the unreveal, so the fade costs no extra
-// time on the exit.
+// On `duration`, the length of the unreveal, so the fade costs no extra time.
 const fadeOutPanel = () =>
   gsap.to(".panel", { opacity: 0, duration: duration, ease: "power2.in" });
 
@@ -61,8 +55,7 @@ const swup = new Swup({
     new SwupDebugPlugin(),
     new SwupJsPlugin({
       animations: [
-        // Works and About share no element to carry from one to the other, so
-        // both ways get the fade the other routes fall back to off desktop.
+        // Works and About share no element to carry over, so both ways fade.
         {
           from: "(/)",
           to: "(/about/?)",
@@ -112,8 +105,6 @@ const swup = new Swup({
               return;
             }
 
-            // The Next fade is shorter than the unreveal, so it settles well
-            // before the image starts sliding.
             await Promise.all([revealInstance.unreveal(), fadeOutNext()]);
 
             await gsap.to(".image", {
@@ -137,9 +128,8 @@ const swup = new Swup({
               return;
             }
 
-            // All four run at once, but the exit is only over when the longest
-            // one is: an `onStart` callback would let Swup swap the content
-            // while the unreveal is still playing.
+            // Awaited together: Swup must not swap the content until the
+            // longest of the four is done.
             await Promise.all([
               revealInstance.unreveal({ slideUp: false }),
               revealInstance.unrevealVisible(),
@@ -153,11 +143,7 @@ const swup = new Swup({
               return;
             }
 
-            // Only the incoming panel image fades. Fading the outgoing one out
-            // would leave the panel text — white, and only half masked out by
-            // then — over the page background.
-            // The medias need nothing here: they come back through the scroll
-            // reveals of `reveal()`, from the same 20px offset as a first visit.
+            // Incoming image only; the medias come back through `reveal()`.
             await gsap.from(".image", {
               opacity: 0,
               duration: duration,

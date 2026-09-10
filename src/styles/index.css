@@ -44,10 +44,11 @@
   --color-white-80: color-mix(in srgb, var(--color-white) 80%, transparent);
 }
 
-@layer components {
-  .btn {
-    @apply flex items-center gap-x-1 rounded-sm bg-white-16 px-2 py-0.5 text-white md:gap-x-2 md:p-2;
-  }
+/* `@utility` plutôt que `@layer components` : Tailwind v4 n'autorise `@apply`
+   que sur des utilitaires, et cursor.css réutilise la pill pour l'état
+   `-pill` du curseur. */
+@utility btn {
+  @apply flex items-center gap-x-1 rounded-sm bg-white-16 px-2 py-0.5 text-white md:gap-x-2 md:p-2;
 }
 
 [x-cloak] {

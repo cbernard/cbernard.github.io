@@ -10,10 +10,7 @@ const words = label.trim().split(" ");
 const last = words.pop();
 ---
 
-{
-  /* `data-pin-label` is where `pin.js` reads the pin from, to copy it over its
-    picture while it is held — the real one stays here, faded. */
-}
+{/* `pin.js` reads `data-pin-label` to copy the pin over its picture. */}
 <span
   class="transition-colors duration-200 has-[button:hover]:text-black dark:has-[button:hover]:text-white"
   data-pin-label={index}

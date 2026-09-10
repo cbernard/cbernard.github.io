@@ -27,6 +27,7 @@ Alpine.store("darkMode", {
 Alpine.store("main", {
   current: 0,
   scrollProgress: 0,
+  scrollRemaining: Infinity,
   loading: 0,
   loaded: false,
   isHome: isHomepage(),

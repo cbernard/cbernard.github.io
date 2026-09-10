@@ -1,14 +1,7 @@
-/**
- * Drives the pins of the about page: the picture behind them, swapped on hover
- * on a mouse, held as a postcard while the finger stays pressed on a touch
- * screen.
- *
- * The listeners are delegated from the wrapper rather than bound on the buttons:
- * the pins sit inside `[data-split]`, whose markup SplitText rebuilds on every
- * reveal, and `pointerenter` / `pointerleave` do not bubble.
- */
-// Matches the entrance of the postcard, so the copy and the picture move
-// together.
+// Listeners are delegated from the wrapper: SplitText rebuilds the `[data-split]`
+// markup the pins sit in, and `pointerenter` / `pointerleave` do not bubble.
+
+// Matches the entrance of the postcard.
 const FADE = "opacity 0.3s ease-out";
 
 // What is left of the real pin under its picture.
@@ -32,8 +25,7 @@ export default function pins() {
       this.$el.addEventListener("pointerdown", this.onDown);
       this.$el.addEventListener("contextmenu", this.onContextMenu);
 
-      // The finger can lift anywhere: outside the pin, or outside the page when
-      // the browser cancels the gesture — hence the window and not `$el`.
+      // The finger can lift anywhere, hence the window and not `$el`.
       window.addEventListener("pointerup", this.onRelease);
       window.addEventListener("pointercancel", this.onRelease);
     },
@@ -70,8 +62,7 @@ export default function pins() {
       this.active = null;
     },
 
-    // A press leaves `active` alone: the panel on the left is off screen as soon
-    // as the copy is scrolled to, so a touch only ever shows the postcard.
+    // A press leaves `active` alone: a touch only ever shows the postcard.
     handleDown(event) {
       const index = this.getIndex(event);
 
@@ -88,11 +79,8 @@ export default function pins() {
       this.drop();
     },
 
-    /**
-     * Copies the pin over its own picture and leaves the real one behind it,
-     * faded. Word by word rather than the label in one piece: each word already
-     * has its own box, so a label broken over two lines lands right.
-     */
+    // Word by word rather than in one piece: each word already has its own
+    // box, so a label broken over two lines lands right.
     lift(index) {
       const layer = document.querySelector("[data-pin-ghosts]");
       const labels = document.querySelectorAll(`[data-pin-label="${index}"]`);
@@ -123,17 +111,13 @@ export default function pins() {
       this.lifted = [];
     },
 
-    /**
-     * The copy is a step out of the flow, so nothing of its typography is
-     * inherited: it is read off the original and written back on the ghost.
-     */
+    // The copy is out of the flow, so no typography is inherited.
     getGhost(part) {
       const rect = part.getBoundingClientRect();
       const styles = getComputedStyle(part);
       const ghost = part.cloneNode(true);
 
-      // A second `[data-pin]` would answer the delegated listeners, and the
-      // Alpine binding of the label would bind a second time.
+      // A second `[data-pin]` would answer the delegated listeners.
       ["data-pin", "data-pin-label", "data-cursor-stick", ":data-active"].forEach(
         (attribute) => ghost.removeAttribute(attribute),
       );
@@ -162,8 +146,7 @@ export default function pins() {
       return ghost;
     },
 
-    // A long press on the pin is the gesture that holds the postcard open, the
-    // native callout would cut it short.
+    // The long press holds the postcard open; the native callout cuts it short.
     handleContextMenu(event) {
       if (this.getIndex(event) !== null) {
         event.preventDefault();
