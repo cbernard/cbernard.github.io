@@ -10,8 +10,12 @@ class App {
   constructor() {
     scrollInstance.init();
 
-    swup.hooks.on("page:view", () => {
-      this.onPageReady({ revealDelay: 0, swup: true });
+    swup.hooks.on("page:view", (visit) => {
+      this.onPageReady({
+        revealDelay: 0,
+        swup: true,
+        instant: Boolean(visit.meta.composed),
+      });
     });
 
     // Trigger positions are measured off until the `in` animation has settled.
@@ -20,8 +24,8 @@ class App {
     });
   }
 
-  async onPageReady({ revealDelay = 1, swup = false } = {}) {
-    await revealInstance.reveal({ delay: revealDelay, swup });
+  async onPageReady({ revealDelay = 1, swup = false, instant = false } = {}) {
+    await revealInstance.reveal({ delay: revealDelay, swup, instant });
     this.reset();
   }
 

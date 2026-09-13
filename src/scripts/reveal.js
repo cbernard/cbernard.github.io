@@ -85,9 +85,18 @@ class Reveal {
       });
   }
 
-  reveal({ delay = 1, swup = false } = {}) {
+  reveal({ delay = 1, swup = false, instant = false } = {}) {
     this.#init();
     this.#initScroll();
+
+    // A page that rides in composed has nothing left to stage: its copy is
+    // already in place.
+    if (instant) {
+      gsap.set("[data-split]", { opacity: 1 });
+      gsap.set(this.#split.lines, { y: "0%" });
+
+      return Promise.resolve();
+    }
 
     const tl = gsap.timeline({ delay });
 

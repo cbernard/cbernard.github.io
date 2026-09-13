@@ -16,23 +16,36 @@
   cursor: pointer;
 }
 
-/* Le curseur reprend le gris discret du design system (la paire `-32`, celle
-   de tous les états secondaires — voir pin.astro). `currentColor` héritait de
-   <body>, donc du noir/blanc pleine opacité : on pose la couleur sur le
-   curseur pour garder l'inversion clair/sombre. La lib fait déjà transiter
-   `color` sur 400ms, le changement de thème est donc animé. */
+/* `exclusion` sur du blanc inverse le fond : le curseur reste lisible sur
+   n'importe quel backdrop — image, dégradé, thème clair ou sombre — sans
+   dépendre du thème, d'où l'absence de variante `.dark`. */
 .mf-cursor {
-  color: var(--color-black-32);
+  mix-blend-mode: exclusion;
 }
 
-.dark .mf-cursor {
-  color: var(--color-white-32);
-}
+/* L'alpha n'est pas une teinte mais la force de l'inversion, donc volontairement
+   hors de l'échelle `-XX` du design system : la couleur rendue n'a rien à voir
+   avec « du blanc à 65 % ». Valeur calibrée en mesurant le contraste réel sur
+   les pages — à 32 %, 20 % de la surface de la home passait sous le seuil de
+   perception ; à 65 % on tombe à 3,6 %. Mesuré : #595959 sur blanc, #a3a3a3 sur
+   le noir du thème. Angle mort à connaître : l'inversion a un point fixe en
+   #808080 exactement, et sa position ne dépend pas de l'alpha (elle sort de
+   (1-a)·C + a·(255-C) = C, soit C = 127,5). Monter l'alpha resserre la bande
+   autour de ce gris mais ne peut pas la supprimer.
 
-/* Carré : écrase le `border-radius: 50%` de la lib. Même spécificité, mais
-   cette feuille est déclarée après la sienne. */
+   `background` écrase le `currentColor` de la lib, `border-radius` son 50% :
+   même spécificité, mais cette feuille est déclarée après la sienne. */
 .mf-cursor:before {
+  background: rgb(255 255 255 / 0.65);
   border-radius: 0;
+}
+
+/* Pas de blend sur les états qui portent du contenu : un label ou une image
+   inversés deviennent illisibles. La pill reprend donc ses couleurs propres. */
+.mf-cursor.-text,
+.mf-cursor.-icon,
+.mf-cursor.-media {
+  mix-blend-mode: normal;
 }
 
 /* La lib rétrécit le point sur tout <a> et <button> (scale 0.15 contre 0.2 au

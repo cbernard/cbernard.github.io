@@ -6,6 +6,7 @@ import { getImageByPath } from "../../utils/images";
 import Layout from "../../layouts/Layout.astro";
 import Progress from "../../components/progress/progress.astro";
 import Next from "../../components/next/next.astro";
+import Link from "../../components/link/link.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -36,7 +37,7 @@ const backgroundImage = getImageByPath(project.background);
   <div
     class="absolute end-0 top-0 z-30 m-3 mix-blend-difference landscape:fixed"
   >
-    <a href="/" class="inline-block p-2 text-white">Back</a>
+    <Link href="/" class="inline-block p-2 text-white">Back</Link>
   </div>
 
   <div

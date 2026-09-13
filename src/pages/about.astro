@@ -5,6 +5,7 @@ import Layout from "../layouts/Layout.astro";
 import Progress from "../components/progress/progress.astro";
 import Pin from "../components/pin/pin.astro";
 import Postcard from "../components/pin/postcard.astro";
+import Link from "../components/link/link.astro";
 
 import backgroundImage from "../images/about.jpg";
 import travelImage from "../images/about_2.jpg";
@@ -43,7 +44,7 @@ const email = "charly.bernard@gmail.com";
   <div
     class="absolute end-0 top-0 z-30 m-3 mix-blend-difference landscape:fixed"
   >
-    <a href="/" class="inline-block p-2 text-white">Works</a>
+    <Link href="/" class="inline-block p-2 text-white">Works</Link>
   </div>
 
   <div
@@ -93,22 +94,24 @@ const email = "charly.bernard@gmail.com";
           }
         </div>
 
-        <div class="col-start-1 row-start-1 md:hidden">
+        {/* Positioned like the image cell above them: a positioned element
+            paints over its static siblings whatever the DOM order. */}
+        <div class="relative col-start-1 row-start-1 md:hidden">
           <a href="/" class="text-white">CB</a>
         </div>
 
-        <div class="col-start-6 row-start-1 text-end md:hidden">
+        <div class="relative col-start-6 row-start-1 text-end md:hidden">
           <a href="/" class="text-white"> </a>
         </div>
 
         <div
-          class="col-start-1 row-span-3 row-start-1 hidden text-white-32 md:block"
+          class="relative col-start-1 row-span-3 row-start-1 hidden text-white-32 md:block"
         >
           <Progress translate={true} progress="scroll" />
         </div>
 
         <div
-          class="col-span-5 col-start-2 row-start-2 flex items-center justify-between pb-3 md:col-span-7 md:col-start-2 md:row-start-1 md:pb-0"
+          class="relative col-span-5 col-start-2 row-start-2 flex items-center justify-between pb-3 md:col-span-7 md:col-start-2 md:row-start-1 md:pb-0"
         >
           <div class="flex items-center gap-x-4">
             <span class="text-white">Charly Bernard</span>
@@ -117,14 +120,12 @@ const email = "charly.bernard@gmail.com";
         </div>
 
         <div
-          class="col-span-5 col-start-2 row-start-3 flex flex-col gap-y-5 md:col-span-7 md:col-start-2 md:text-white lg:col-span-6 lg:col-start-2"
+          class="relative col-span-5 col-start-2 row-start-3 flex flex-col gap-y-5 md:col-span-7 md:col-start-2 md:text-white lg:col-span-6 lg:col-start-2"
         >
           <div class="flex items-center gap-x-4">
             {
               links.map((link) => (
-                <a href={link.href} class="hover:underline">
-                  {link.name}
-                </a>
+                <Link href={link.href}>{link.name}</Link>
               ))
             }
           </div>
@@ -230,9 +231,9 @@ const email = "charly.bernard@gmail.com";
               Let&rsquo;s work together!
             </h2>
 
-            <a href={`mailto:${email}`} class="self-start hover:underline">
+            <Link href={`mailto:${email}`} class="self-start">
               {email}
-            </a>
+            </Link>
           </section>
         </div>
       </div>
