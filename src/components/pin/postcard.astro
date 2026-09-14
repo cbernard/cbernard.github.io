@@ -22,6 +22,7 @@ const { pins = [] } = Astro.props;
         :data-active={`isPressed(${index}) || null`}
       >
         <Picture
+          fallbackFormat="webp"
           src={pin.image}
           formats={["webp"]}
           widths={[400, 800]}

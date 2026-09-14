@@ -62,6 +62,7 @@ const email = "charly.bernard@gmail.com";
           class="image relative col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 aspect-[400/335] md:col-span-8 md:col-start-1 md:row-span-3 md:row-start-1 md:-mx-5 md:-mb-10 md:aspect-auto"
         >
           <Picture
+            fallbackFormat="webp"
             src={backgroundImage}
             formats={["webp"]}
             widths={[400, 800]}
@@ -80,6 +81,7 @@ const email = "charly.bernard@gmail.com";
                 :data-active={`isActive(${index}) || null`}
               >
                 <Picture
+                  fallbackFormat="webp"
                   src={pin.image}
                   formats={["webp"]}
                   widths={[400, 800]}

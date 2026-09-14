@@ -63,6 +63,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
                 x-bind:class={`current === ${index} && 'opacity-100'`}
               >
                 <Picture
+                  fallbackFormat="webp"
                   src={backgroundImage}
                   formats={["webp"]}
                   widths={[400, 800]}
@@ -91,6 +92,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
                     <div class="aspect-[300/375]">
                       <a href={`project/${project.data.slug}`}>
                         <Picture
+                          fallbackFormat="webp"
                           src={thumbnailImage}
                           f
                           formats={["webp"]}
