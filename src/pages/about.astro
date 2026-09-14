@@ -168,9 +168,7 @@ const email = "charly.bernard@gmail.com";
           </p>
         </div>
 
-        <div
-          class="z-2 col-span-5 col-start-2 mt-28 flex flex-col gap-y-28 md:col-span-6 md:col-start-2 md:mt-48 md:gap-y-48"
-        >
+        <div class="mt-28 flex flex-col gap-y-28 md:mt-48 md:gap-y-48">
           <section
             data-reveal-slide-up="scroll"
             style="--reveal-index: 0"
@@ -183,14 +181,16 @@ const email = "charly.bernard@gmail.com";
             <div class="flex flex-col gap-y-5">
               {
                 recognitions.map((item) => (
-                  <div class="grid grid-cols-2 gap-x-[10px] gap-y-1 md:grid-cols-6">
-                    <div class="col-span-2 md:col-span-2">{item.project}</div>
+                  <div class="grid grid-cols-[1fr_auto] gap-x-[10px] gap-y-1 md:grid-cols-6">
+                    <div class="col-span-2">{item.project}</div>
 
-                    <div class="flex items-baseline gap-x-2 md:col-span-3 md:col-start-3">
-                      <span class="text-black-32 dark:text-white-32">
+                    {/* Inline rather than a flex row: a label that wraps stays
+                        in the text flow instead of hanging under the award. */}
+                    <div class="md:col-span-3 md:col-start-3">
+                      <span class="me-2 text-black-32 dark:text-white-32">
                         {item.award}
                       </span>
-                      <span>{item.label}</span>
+                      {item.label}
                     </div>
 
                     <div class="text-end md:col-start-6">{item.year}</div>
