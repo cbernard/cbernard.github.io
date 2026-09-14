@@ -25,17 +25,13 @@ class Reveal {
     this.#firstSplitDone = true;
   }
 
-  // SplitText also calls this on the first split, the one `reveal()` animates.
   #onSplit(split) {
     if (!this.#firstSplitDone) {
       return;
     }
 
-    // Fresh lines come back translated down by `.lines` in the CSS.
     gsap.set(split.lines, { y: "0%" });
 
-    // Re-wrapped copy is not the same height, and the re-split is debounced
-    // 200ms — past the refresh ScrollTrigger runs on resize by itself.
     ScrollTrigger.refresh();
   }
 
@@ -68,10 +64,6 @@ class Reveal {
         const read = (property) =>
           parseFloat(styles.getPropertyValue(property)) || 0;
 
-        // A duration has to be read through its unit: the minifier rewrites
-        // `0.08s` as the shorter `80ms`, and taking that number for seconds
-        // pushed the whole stagger to a minute and a half. Only the first
-        // item, multiplied by zero, ever came back.
         const readSeconds = (property) => {
           const value = styles.getPropertyValue(property).trim();
           const seconds = parseFloat(value) || 0;
@@ -100,8 +92,6 @@ class Reveal {
     this.#init();
     this.#initScroll();
 
-    // A page that rides in composed has nothing left to stage: its copy is
-    // already in place.
     if (instant) {
       gsap.set("[data-split]", { opacity: 1 });
       gsap.set(this.#split.lines, { y: "0%" });
@@ -122,7 +112,6 @@ class Reveal {
       });
     }
 
-    // On the initial load these are choreographed with the loader curtain.
     if (swup && document.querySelector("[data-reveal-fade='swup']")) {
       tl.fromTo(
         "[data-reveal-fade='swup']",
