@@ -15,6 +15,16 @@ import "../styles/index.css";
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+
+    {/* TEMPORAIRE — à retirer au lancement, sans quoi le site restera
+        invisible dans les résultats de recherche.
+
+        Pas de `Disallow` dans un robots.txt en complément : il empêcherait
+        les robots de lire cette balise, et une URL bloquée peut tout de même
+        être listée si elle est liée depuis ailleurs. Le crawl doit rester
+        ouvert pour que le `noindex` soit vu, puis respecté. */}
+    <meta name="robots" content="noindex, nofollow" />
+
     <title>Charly Bernard</title>
 
     <script is:inline>
