@@ -23,12 +23,16 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - name: Deploy via FTPS
+      # Starter hosting only answers plain FTP on port 21: it has no TLS to
+      # offer, and rejects AUTH with a 500. Everything here travels in clear,
+      # so the account behind these secrets should reach the web root and
+      # nothing else.
+      - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
+          protocol: ftp
           local-dir: ./dist/
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
