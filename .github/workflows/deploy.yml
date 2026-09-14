@@ -5,34 +5,32 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Pages publishes through an OIDC-authenticated deployment, not a token we
+# carry around: nothing here needs a secret.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 concurrency:
-  group: deploy
+  group: pages
   cancel-in-progress: false
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: withastro/action@v6
         with:
-          node-version-file: .nvmrc
-          cache: npm
+          node-version: 22
 
-      - run: npm ci
-      - run: npm run build
-
-      # Starter hosting only answers plain FTP on port 21: it has no TLS to
-      # offer, and rejects AUTH with a 500. Everything here travels in clear,
-      # so the account behind these secrets should reach the web root and
-      # nothing else.
-      - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftp
-          local-dir: ./dist/
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
