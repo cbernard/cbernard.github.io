@@ -68,13 +68,24 @@ class Reveal {
         const read = (property) =>
           parseFloat(styles.getPropertyValue(property)) || 0;
 
+        // A duration has to be read through its unit: the minifier rewrites
+        // `0.08s` as the shorter `80ms`, and taking that number for seconds
+        // pushed the whole stagger to a minute and a half. Only the first
+        // item, multiplied by zero, ever came back.
+        const readSeconds = (property) => {
+          const value = styles.getPropertyValue(property).trim();
+          const seconds = parseFloat(value) || 0;
+
+          return value.endsWith("ms") ? seconds / 1000 : seconds;
+        };
+
         return gsap.to(element, {
           y: 0,
           opacity: 1,
           duration: 0.8,
           delay:
             Math.min(read("--reveal-index"), read("--reveal-stagger-max")) *
-            read("--reveal-stagger"),
+            readSeconds("--reveal-stagger"),
           ease: "power2.out",
           scrollTrigger: {
             trigger: element,
