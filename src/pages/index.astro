@@ -39,14 +39,14 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
     >
       <template x-for="i in (items.length + visible)">
         <div
-          class="h-[calc(150vh_/_var(--itemsPerViewport))] flex-shrink-0 landscape:h-[calc(100vh_/_var(--itemsPerViewport))]"
+          class="h-[calc(150svh_/_var(--itemsPerViewport))] flex-shrink-0 landscape:h-[calc(100svh_/_var(--itemsPerViewport))]"
         >
         </div>
       </template>
     </div>
 
     <div
-      class="fixed top-0 flex h-screen w-screen flex-col overflow-hidden landscape:flex-row"
+      class="fixed top-0 flex h-svh w-screen flex-col overflow-hidden landscape:flex-row"
       x-bind:style="{ '--current': current, '--length': items.length }"
       x-ref="wrapper"
       data-reveal-slide-up="load"
