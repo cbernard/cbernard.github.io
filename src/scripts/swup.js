@@ -107,14 +107,38 @@ const captureLeaving = () => {
   gsap.set(leaving, { y: 0 });
 };
 
-// The arriving page rises over the full height of the one it replaces, which
-// drifts under it.
-const cover = () => {
+// The distance a page travels to clear the viewport on the given axis.
+const span = (element, axis) => {
+  const { width, height } = element.getBoundingClientRect();
+
+  return axis === "x" ? width : height;
+};
+
+// Waiting off to the side, the arriving page makes the document wider than the
+// viewport and a mobile browser zooms out to fit it. Both elements: the root
+// hands its overflow to the viewport and is itself left visible, so the body
+// keeps widening the page on its own.
+const clipSides = () => {
+  const elements = [document.documentElement, document.body];
+
+  elements.forEach((element) => {
+    element.style.overflowX = "hidden";
+  });
+
+  return () =>
+    elements.forEach((element) => element.style.removeProperty("overflow-x"));
+};
+
+// The arriving page rises over the one it replaces, which drifts under it.
+// `direction` is the edge it comes in from: 1 the end of the axis, -1 its
+// start.
+const cover = (axis = "y", direction = 1) => {
   if (!leaving) {
     return fadeIn();
   }
 
-  const height = leaving.getBoundingClientRect().height;
+  const distance = span(leaving, axis) * direction;
+  const unclip = axis === "x" ? clipSides() : null;
 
   // The copy is what gets covered, so it goes under the arriving page.
   leaving.style.zIndex = -1;
@@ -131,47 +155,58 @@ const cover = () => {
       onComplete: () => {
         dropLeaving();
         gsap.set("#swup", { clearProps: "transform,backgroundColor" });
+        unclip?.();
       },
     })
     .to(
       leaving,
-      { y: -height * coverDrift, duration: coverDuration, ease: coverEasing },
+      {
+        [axis]: -distance * coverDrift,
+        duration: coverDuration,
+        ease: coverEasing,
+      },
       0,
     )
     .fromTo(
       "#swup",
-      { y: height },
-      { y: 0, duration: coverDuration, ease: coverEasing },
+      { [axis]: distance },
+      { [axis]: 0, duration: coverDuration, ease: coverEasing },
       0,
     )
     .then();
 };
 
-// The way back: the page on top drops out of the viewport while the one
-// underneath drifts up into place. It travels by the layer the loader slides
-// in on the first load — on Works everything on screen is `fixed` inside it,
-// so the layer moves without its container, and so without the scroll the
-// accordion restores on mount.
-const uncover = () => {
+// The way back, `cover` played backwards: the page on top leaves the viewport
+// while the one underneath drifts into place. It travels by the layer the
+// loader slides in on the first load — on Works everything on screen is
+// `fixed` inside it, so the layer moves without its container, and so without
+// the scroll the accordion restores on mount.
+const uncover = (axis = "y", direction = 1) => {
   if (!leaving) {
     return fadeIn();
   }
 
-  const height = leaving.getBoundingClientRect().height;
+  const distance = span(leaving, axis) * direction;
   const layer = "[data-reveal-slide-up='load']";
+  const unclip = axis === "x" ? clipSides() : null;
 
   return gsap
     .timeline({
       onComplete: () => {
         dropLeaving();
         gsap.set(layer, { clearProps: "transform" });
+        unclip?.();
       },
     })
-    .to(leaving, { y: height, duration: coverDuration, ease: coverEasing }, 0)
+    .to(
+      leaving,
+      { [axis]: distance, duration: coverDuration, ease: coverEasing },
+      0,
+    )
     .fromTo(
       layer,
-      { y: -height * coverDrift },
-      { y: 0, duration: coverDuration, ease: coverEasing },
+      { [axis]: -distance * coverDrift },
+      { [axis]: 0, duration: coverDuration, ease: coverEasing },
       0,
     )
     .then();
@@ -196,7 +231,9 @@ const swup = new Swup({
             visit.meta.composed = true;
             captureLeaving();
           },
-          in: cover,
+          // Portrait mirrors the works transition; the desktop keeps the
+          // vertical cover.
+          in: () => (isDesktopLandscape() ? cover() : cover("x", -1)),
         },
         {
           from: "(/about/?)",
@@ -204,7 +241,7 @@ const swup = new Swup({
           // Works comes back on its own reveal, the fade it plays when a
           // project closes.
           out: async () => captureLeaving(),
-          in: uncover,
+          in: () => (isDesktopLandscape() ? uncover() : uncover("x", -1)),
         },
         {
           from: "(/)",
@@ -232,7 +269,7 @@ const swup = new Swup({
           },
           in: async () => {
             if (!isDesktopLandscape()) {
-              await cover();
+              await cover("x");
             }
           },
         },
@@ -255,7 +292,7 @@ const swup = new Swup({
           },
           in: async () => {
             if (!isDesktopLandscape()) {
-              await uncover();
+              await uncover("x");
             }
           },
         },
