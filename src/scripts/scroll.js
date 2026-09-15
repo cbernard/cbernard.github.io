@@ -5,8 +5,22 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const WRAPPER = "#scroller";
+const CONTENT = "#swup";
+
+const wrapper = document.querySelector(WRAPPER);
+
+// Set here and not in `init()`: Alpine mounts its components, and with them
+// their triggers, before the instance below is ever initialised.
+ScrollTrigger.defaults({ scroller: wrapper });
+
 const defaultOptions = {
   wheelMultiplier: 0.25,
+
+  // A finger on a `fixed` element scrolls the document and never the overflow
+  // container the element sits in, and the pages are built out of `fixed`
+  // layers, so Lenis drives the touch scroll itself.
+  syncTouch: true,
 };
 
 export class Scroll {
@@ -18,12 +32,22 @@ export class Scroll {
     this.#options = { ...defaultOptions, ...options };
   }
 
+  get scrollY() {
+    return this.#lenis?.scroll ?? 0;
+  }
+
   init() {
-    this.#lenis = new Lenis(this.#options);
+    // Swup throws the content away on every visit, hence the fresh lookup:
+    // `refresh()` is what hands Lenis the element of the page just rendered.
+    this.#lenis = new Lenis({
+      ...this.#options,
+      wrapper,
+      content: document.querySelector(CONTENT),
+    });
 
     document.documentElement.style.setProperty(
       "--lenis-scroll-y",
-      `${window.scrollY}px`,
+      `${this.scrollY}px`,
     );
 
     this.#lenis.on("scroll", ({ scroll }) => {

@@ -36,31 +36,45 @@ import "../styles/index.css";
   </head>
 
   <body
-    class="bg-white font-primary text-black antialiased transition-colors dark:bg-black dark:text-white pointer-fine:overflow-hidden"
+    class="bg-white font-primary text-black antialiased transition-colors overflow-hidden dark:bg-black dark:text-white"
   >
-    <RotateNotice />
+    {
+      /* Le scroll vit dans ce conteneur et non dans le document : un navigateur
+        mobile ne rétracte ses barres que sur un scroll du document, et un
+        viewport qui change de hauteur en plein scroll redimensionnerait
+        l'accordéon sous le doigt.
 
-    <Loader />
-
+        Tout est dedans, y compris les surcouches `fixed` : un geste qui part
+        d'un élément resté à l'extérieur ne défilerait rien. */
+    }
     <div
-      :class="$store.main.isHome ? 'fixed' : 'absolute landscape:fixed'"
-      class="inset-s-0 top-[calc(100vw*335/400)] z-10 -translate-y-full landscape:inset-s-[unset] landscape:inset-e-1/2 landscape:top-0 landscape:-translate-y-0"
+      id="scroller"
+      class="h-svh overflow-x-hidden overflow-y-auto overscroll-y-contain"
     >
-      <ThemeSwitcher />
+      <RotateNotice />
+
+      <Loader />
+
+      <div
+        :class="$store.main.isHome ? 'fixed' : 'absolute landscape:fixed'"
+        class="inset-s-0 top-[calc(100vw*335/400)] z-10 -translate-y-full landscape:inset-s-[unset] landscape:inset-e-1/2 landscape:top-0 landscape:-translate-y-0"
+      >
+        <ThemeSwitcher />
+      </div>
+
+      <!-- <Grid iMobile={6} iDesktop={16} /> -->
+
+      <div class="fixed inset-s-0 top-0 grid w-full grid-cols-6 px-4 py-5">
+        <div class="col-span-1 text-white">CB</div>
+        <div class="col-span-5 text-white-32">Front-end Developer</div>
+      </div>
+
+      <Separator />
+
+      <main id="swup">
+        <slot />
+      </main>
     </div>
-
-    <!-- <Grid iMobile={6} iDesktop={16} /> -->
-
-    <div class="fixed inset-s-0 top-0 grid w-full grid-cols-6 px-4 py-5">
-      <div class="col-span-1 text-white">CB</div>
-      <div class="col-span-5 text-white-32">Front-end Developer</div>
-    </div>
-
-    <Separator />
-
-    <main id="swup">
-      <slot />
-    </main>
 
     <script>
       import "../scripts/app.js";

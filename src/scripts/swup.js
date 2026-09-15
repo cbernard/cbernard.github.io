@@ -94,7 +94,7 @@ const captureLeaving = () => {
   // containing block of the `fixed` elements the page holds and move them
   // twice.
   page.style.position = "relative";
-  page.style.top = `-${window.scrollY}px`;
+  page.style.top = `-${scrollInstance.scrollY}px`;
 
   leaving = document.createElement("div");
   leaving.className =
