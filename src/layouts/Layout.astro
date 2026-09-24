@@ -36,7 +36,7 @@ import "../styles/index.css";
   </head>
 
   <body
-    class="bg-white font-primary text-black antialiased transition-colors overflow-hidden dark:bg-black dark:text-white"
+    class="overflow-hidden bg-white font-primary text-black antialiased transition-colors dark:bg-black dark:text-white"
   >
     {
       /* Le scroll vit dans ce conteneur et non dans le document : un navigateur
@@ -45,11 +45,15 @@ import "../styles/index.css";
         l'accordéon sous le doigt.
 
         Tout est dedans, y compris les surcouches `fixed` : un geste qui part
-        d'un élément resté à l'extérieur ne défilerait rien. */
+        d'un élément resté à l'extérieur ne défilerait rien.
+
+        `relative` pour que les éléments `absolute` sans autre ancêtre positionné
+        se placent dans ce conteneur et défilent avec lui, au lieu de rester
+        figés sur le viewport comme s'ils étaient `fixed`. */
     }
     <div
       id="scroller"
-      class="h-svh overflow-x-hidden overflow-y-auto overscroll-y-contain"
+      class="relative h-svh overflow-x-hidden overflow-y-auto overscroll-y-contain"
     >
       <RotateNotice />
 
