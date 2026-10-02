@@ -1,0 +1,22 @@
+---
+import Link from "../link/link.astro";
+
+export interface Props {
+  class?: string;
+  showAddress?: boolean;
+}
+
+const { class: className, showAddress = false } = Astro.props;
+---
+
+{/* Assembled client-side so the address never appears in the HTML. */}
+<Link
+  href="#"
+  class={className}
+  x-data="email"
+  data-user="charly.bernard+folio"
+  data-domain="gmail.com"
+  :href="`mailto:${address}`"
+>
+  {showAddress ? <span x-text="address" /> : <slot />}
+</Link>

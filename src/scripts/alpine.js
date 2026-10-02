@@ -7,6 +7,7 @@ import progress from "../components/progress/progress";
 import loader from "../components/loader/loader";
 import next from "../components/next/next";
 import pins from "../components/pin/pin";
+import email from "../components/email/email";
 
 export const isHomepage = () => window.location.pathname === "/";
 
@@ -15,6 +16,7 @@ Alpine.data("progress", progress);
 Alpine.data("loader", loader);
 Alpine.data("next", next);
 Alpine.data("pins", pins);
+Alpine.data("email", email);
 
 Alpine.store("darkMode", {
   on: false,

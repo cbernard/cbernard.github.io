@@ -5,6 +5,7 @@ import { Picture } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import Work from "../components/work/work.astro";
 import Link from "../components/link/link.astro";
+import Email from "../components/email/email.astro";
 
 import { getImageByPath } from "../utils/images";
 
@@ -25,10 +26,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
   </div>
 
   <div class="fixed end-0 bottom-0 z-30">
-    <Link
-      href="mailto:charly.bernard@gmail.com"
-      class="m-3 inline-block p-2 text-white">Contact</Link
-    >
+    <Email class="m-3 inline-block p-2 text-white">Contact</Email>
   </div>
 
   <div x-data="accordion()">

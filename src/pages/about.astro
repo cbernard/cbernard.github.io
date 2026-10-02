@@ -6,6 +6,7 @@ import Progress from "../components/progress/progress.astro";
 import Pin from "../components/pin/pin.astro";
 import Postcard from "../components/pin/postcard.astro";
 import Link from "../components/link/link.astro";
+import Email from "../components/email/email.astro";
 
 import backgroundImage from "../images/about.jpg";
 import travelImage from "../images/about_2.jpg";
@@ -36,8 +37,6 @@ const credits = [
   { name: "Thomas Monavon", role: "UX / UI Design" },
   { name: "Lausanne Agency", role: "Development" },
 ];
-
-const email = "charly.bernard@gmail.com";
 ---
 
 <Layout>
@@ -233,9 +232,7 @@ const email = "charly.bernard@gmail.com";
               Let&rsquo;s work together!
             </h2>
 
-            <Link href={`mailto:${email}`} class="self-start">
-              {email}
-            </Link>
+            <Email class="self-start" showAddress />
           </section>
         </div>
       </div>
