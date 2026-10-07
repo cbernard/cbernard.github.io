@@ -98,8 +98,13 @@ export default function accordion() {
       return `--this-translate-y: ${this.positions[index]}px`;
     },
 
+    // Read off the spacers: their height differs between orientations, and the
+    // extra pixel puts the scroll past the start of their trigger.
     getScrollPosition(index) {
-      return (index * this.containerHeight) / this.visible + 1;
+      const spacer =
+        this.$refs.scrollable.querySelectorAll(":scope > div")[index];
+
+      return spacer.getBoundingClientRect().top + scrollInstance.scrollY + 1;
     },
 
     // `current` is restored from the store on mount, but the scroll is back at
