@@ -97,14 +97,17 @@ const backgroundImage = getImageByPath(project.background);
             <span class="text-white-32">{project.year}</span>
           </div>
 
-          <div class="btn md:hidden">
-            <div
-              aria-label="Online"
-              class="block aspect-square w-[5px] rounded-full bg-green"
-            >
-            </div>
-            See live
-          </div>
+          {
+            project.url && (
+              <a href={project.url} target="_blank" class="btn md:hidden">
+                <div
+                  aria-label="Online"
+                  class="block aspect-square w-[5px] rounded-full bg-green"
+                />
+                See live
+              </a>
+            )
+          }
         </div>
 
         <div
