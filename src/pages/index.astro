@@ -90,7 +90,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
           class="projects__thumbnail absolute inset-0 z-50 hidden items-center justify-center landscape:flex"
           data-reveal-fade="swup"
         >
-          <div class="aspect-[300/375] w-[300px] overflow-hidden">
+          <div class="aspect-[300/375] w-[clamp(300px,20vw,480px)] overflow-hidden">
             <div
               class="flex translate-y-[calc(100%_/_var(--length)_*_var(--current)_*_-1)] flex-col"
               x-bind:class={`ready && 'transition-transform'`}
