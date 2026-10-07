@@ -76,6 +76,12 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
                   class="h-full w-full object-cover object-center"
                 />
               )}
+              {project.data.overlay > 0 && (
+                <div
+                  class="pointer-events-none absolute inset-0 bg-black"
+                  style={`opacity: ${project.data.overlay}`}
+                />
+              )}
             </div>
           ))
         }
