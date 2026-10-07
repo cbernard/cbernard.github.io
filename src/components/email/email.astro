@@ -18,5 +18,5 @@ const { class: className, showAddress = false } = Astro.props;
   data-domain="gmail.com"
   :href="`mailto:${address}`"
 >
-  {showAddress ? <span x-text="address" /> : <slot />}
+  {showAddress ? <span x-text="label" /> : <slot />}
 </Link>
