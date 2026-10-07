@@ -7,6 +7,7 @@ import Layout from "../../layouts/Layout.astro";
 import Progress from "../../components/progress/progress.astro";
 import Next from "../../components/next/next.astro";
 import Link from "../../components/link/link.astro";
+import Video from "../../components/video/video.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -163,24 +164,32 @@ const backgroundImage = getImageByPath(project.background);
         data-reveal-slide-up="load"
       >
         {
-          project.medias.map((item, index) => {
-            const image = getImageByPath(item);
-            return (
-              <div
-                class="bg-black p-14 transition-colors dark:bg-white"
-                data-reveal-slide-up="scroll"
-                style={`--reveal-index: ${index}`}
-              >
+          project.medias.map((item, index) => (
+            <div
+              class="bg-black p-8 transition-colors xl:p-10 2xl:p-12 dark:bg-white"
+              data-reveal-slide-up="scroll"
+              style={`--reveal-index: ${index}`}
+            >
+              {/\.(mp4|webm)$/.test(item) ? (
+                <Video
+                  path={item}
+                  aria-label={`${project.title} - ${index}`}
+                  class:list={[
+                    "w-full",
+                    item.includes("-mobile") && "mx-auto max-w-80",
+                  ]}
+                />
+              ) : (
                 <Picture
                   fallbackFormat="webp"
-                  src={image}
+                  src={getImageByPath(item)}
                   formats={["webp"]}
                   alt={`${project.title} - ${index}`}
                   class="w-full"
                 />
-              </div>
-            );
-          })
+              )}
+            </div>
+          ))
         }
       </div>
 

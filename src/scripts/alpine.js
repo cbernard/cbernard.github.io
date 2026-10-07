@@ -8,6 +8,7 @@ import loader from "../components/loader/loader";
 import next from "../components/next/next";
 import pins from "../components/pin/pin";
 import email from "../components/email/email";
+import video from "../components/video/video";
 
 export const isHomepage = () => window.location.pathname === "/";
 
@@ -17,6 +18,7 @@ Alpine.data("loader", loader);
 Alpine.data("next", next);
 Alpine.data("pins", pins);
 Alpine.data("email", email);
+Alpine.data("video", video);
 
 Alpine.store("darkMode", {
   on: false,

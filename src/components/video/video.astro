@@ -1,0 +1,29 @@
+---
+import { existsSync } from "node:fs";
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends HTMLAttributes<"video"> {
+  path: string;
+}
+
+const { path, ...rest } = Astro.props;
+
+const base = `/${path.replace(/\.\w+$/, "")}`;
+
+// A clip only gets a webm where VP9 came out lighter than the mp4.
+const hasWebm = existsSync(`public${base}.webm`);
+---
+
+<video
+  x-data="video"
+  poster={`${base}.webp`}
+  muted
+  loop
+  playsinline
+  preload="none"
+  {...rest}
+>
+  {/* The mp4 stays as the fallback for Safari versions without VP9. */}
+  {hasWebm && <source data-src={`${base}.webm`} type="video/webm" />}
+  <source data-src={`${base}.mp4`} type="video/mp4" />
+</video>
