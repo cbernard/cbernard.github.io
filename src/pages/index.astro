@@ -6,6 +6,7 @@ import Layout from "../layouts/Layout.astro";
 import Work from "../components/work/work.astro";
 import Link from "../components/link/link.astro";
 import Email from "../components/email/email.astro";
+import Video from "../components/video/video.astro";
 
 import { getImageByPath } from "../utils/images";
 
@@ -53,25 +54,30 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
         class="projects relative aspect-[400/335] w-full overflow-hidden landscape:order-2 landscape:aspect-auto landscape:h-auto landscape:w-[50vw]"
       >
         {
-          sortedProjects.map((project, index) => {
-            const backgroundImage = getImageByPath(project.data.background);
-            return (
-              <div
-                class="absolute inset-0 z-10 opacity-0"
-                x-bind:class={`current === ${index} && 'opacity-100'`}
-              >
+          sortedProjects.map((project, index) => (
+            <div
+              class="absolute inset-0 z-10 opacity-0"
+              x-bind:class={`current === ${index} && 'opacity-100'`}
+            >
+              {/\.(mp4|webm)$/.test(project.data.background) ? (
+                <Video
+                  path={project.data.background}
+                  aria-hidden="true"
+                  class="h-full w-full object-cover object-center"
+                />
+              ) : (
                 <Picture
                   fallbackFormat="webp"
-                  src={backgroundImage}
+                  src={getImageByPath(project.data.background)}
                   formats={["webp"]}
                   widths={[400, 800]}
                   sizes="(orientation: landscape) 50vw, 100vw"
                   alt={`${project.data.title} background`}
                   class="h-full w-full object-cover object-center"
                 />
-              </div>
-            );
-          })
+              )}
+            </div>
+          ))
         }
 
         <div
@@ -84,23 +90,27 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
               x-bind:class={`ready && 'transition-transform'`}
             >
               {
-                sortedProjects.map((project) => {
-                  const thumbnailImage = getImageByPath(project.data.thumbnail);
-                  return (
-                    <div class="aspect-[300/375]">
-                      <a href={`project/${project.data.slug}`}>
+                sortedProjects.map((project) => (
+                  <div class="aspect-[300/375]">
+                    <a href={`project/${project.data.slug}`}>
+                      {/\.(mp4|webm)$/.test(project.data.thumbnail) ? (
+                        <Video
+                          path={project.data.thumbnail}
+                          aria-label={`${project.data.title} thumbnail`}
+                          class="w-full"
+                        />
+                      ) : (
                         <Picture
                           fallbackFormat="webp"
-                          src={thumbnailImage}
-                          f
+                          src={getImageByPath(project.data.thumbnail)}
                           formats={["webp"]}
                           alt={`${project.data.title} thumbnail`}
                           class="w-full"
                         />
-                      </a>
-                    </div>
-                  );
-                })
+                      )}
+                    </a>
+                  </div>
+                ))
               }
             </div>
           </div>

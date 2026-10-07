@@ -31,7 +31,7 @@ export async function getStaticPaths() {
 
 const { project, nextProject, index } = Astro.props;
 
-const backgroundImage = getImageByPath(project.background);
+const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
 ---
 
 <Layout>
@@ -56,15 +56,25 @@ const backgroundImage = getImageByPath(project.background);
         <div
           class="image relative col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 aspect-[400/335] md:col-span-8 md:col-start-1 md:row-span-3 md:row-start-1 md:-mx-5 md:-mb-10 md:aspect-auto"
         >
-          <Picture
-            fallbackFormat="webp"
-            src={backgroundImage}
-            formats={["webp"]}
-            widths={[400, 800]}
-            sizes="(orientation: landscape) 50vw, 100vw"
-            alt={`${project.title} background`}
-            class="h-full w-full object-cover object-center"
-          />
+          {
+            isVideoBackground ? (
+              <Video
+                path={project.background}
+                aria-hidden="true"
+                class="h-full w-full object-cover object-center"
+              />
+            ) : (
+              <Picture
+                fallbackFormat="webp"
+                src={getImageByPath(project.background)}
+                formats={["webp"]}
+                widths={[400, 800]}
+                sizes="(orientation: landscape) 50vw, 100vw"
+                alt={`${project.title} background`}
+                class="h-full w-full object-cover object-center"
+              />
+            )
+          }
 
           {
             project.overlay > 0 && (

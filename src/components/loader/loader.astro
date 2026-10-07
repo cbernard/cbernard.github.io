@@ -5,12 +5,21 @@ import { getImageUrl } from "../../utils/images";
 
 const projects = await getCollection("projects");
 
+// A video is represented by its poster.
+const getAssetUrl = (path: string) =>
+  /\.(mp4|webm)$/.test(path)
+    ? `/${path.replace(/\.\w+$/, ".webp")}`
+    : getImageUrl(path);
+
 const assets = [
   "/fonts/TWKLausanne-300.woff2",
   ...projects.flatMap((project) => [
-    getImageUrl(project.data.background),
-    getImageUrl(project.data.thumbnail),
-    ...project.data.medias.map(getImageUrl),
+    getAssetUrl(project.data.background),
+    getAssetUrl(project.data.thumbnail),
+    // Videos stream in on the project page instead of holding up the loader.
+    ...project.data.medias
+      .filter((media) => !/\.(mp4|webm)$/.test(media))
+      .map(getImageUrl),
   ]),
 ];
 
