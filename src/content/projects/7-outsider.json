@@ -4,16 +4,20 @@
   "title": "Outsider.archi",
   "client": "Outsider.archi",
   "year": 2025,
-  "services": ["HTML", "CSS", "Javascript"],
-  "description": "Designed and developed a responsive front-end for Jaeger-LeCoultre, delivering a smooth user experience while maintaining the brand’s elegance and high-end aesthetic.",
-  "background": "images/projects/outsider.webp",
+  "services": ["HTML", "CSS", "JS"],
+  "description": "Website for the architecture studio Outsider, a minimal, image-led layout that lets the projects speak for themselves.",
+  "background": "images/projects/outsider/background.webp",
   "overlay": 0.5,
-  "thumbnail": "images/projects/piaget-thumbnail.webp",
+  "thumbnail": "images/projects/outsider/thumbnail.webp",
   "medias": [
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg",
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg"
+    "videos/projects/outsider/01.mp4",
+    "videos/projects/outsider/02.mp4",
+    "videos/projects/outsider/03.mp4",
+    "videos/projects/outsider/04.mp4",
+    "videos/projects/outsider/05.mp4",
+    "videos/projects/outsider/06.mp4",
+    "videos/projects/outsider/07.mp4",
+    "videos/projects/outsider/08.mp4"
   ],
-  "url": "https://www.piaget.com/"
+  "url": "https://outsider.archi/"
 }

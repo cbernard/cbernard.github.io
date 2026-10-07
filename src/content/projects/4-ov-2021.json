@@ -4,16 +4,15 @@
   "title": "OV - 2021",
   "client": "Terre des hommes",
   "year": 2021,
-  "services": ["HTML", "CSS", "Javascript"],
-  "description": "Designed and developed a responsive front-end for Jaeger-LeCoultre, delivering a smooth user experience while maintaining the brand’s elegance and high-end aesthetic.",
-  "background": "images/projects/tdh.webp",
+  "services": ["HTML", "CSS", "JS", "WordPress"],
+  "description": "Browser game for Terre des hommes’ virtual orange sale. Players catch falling oranges in a basket, and each one becomes a donation to children’s projects.",
+  "background": "images/projects/ov-2021/background.webp",
   "overlay": 0.3,
-  "thumbnail": "images/projects/ov-2021-thumbnail.webp",
+  "thumbnail": "videos/projects/ov-2021/thumbnail.mp4",
   "medias": [
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg",
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg"
-  ],
-  "url": "https://www.piaget.com/"
+    "videos/projects/ov-2021/01.mp4",
+    "videos/projects/ov-2021/02.mp4",
+    "videos/projects/ov-2021/03.mp4",
+    "videos/projects/ov-2021/04.mp4"
+  ]
 }

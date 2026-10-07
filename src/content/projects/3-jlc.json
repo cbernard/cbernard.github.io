@@ -4,20 +4,21 @@
   "title": "Jaeger-Lecoultre",
   "client": "Richemont",
   "year": 2023,
-  "services": ["HTML", "CSS", "Javascript"],
-  "description": "Designed and developed a responsive front-end for Jaeger-LeCoultre, delivering a smooth user experience while maintaining the brand’s elegance and high-end aesthetic.",
-  "background": "images/projects/jlc.webp",
+  "services": ["HTML", "CSS", "JS"],
+  "description": "Front-end development for Jaeger-Lecoultre, from product pages for the Duomètre and Reverso collections to the Reverso engraving configurator.",
+  "background": "images/projects/jlc/background.webp",
   "overlay": 0.3,
-  "thumbnail": "images/projects/jlc-thumbnail.webp",
+  "thumbnail": "images/projects/jlc/thumbnail.webp",
   "medias": [
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg",
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg",
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg",
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg"
+    "images/projects/jlc/detail-01.jpg",
+    "images/projects/jlc/detail-02.jpg",
+    "videos/projects/jlc/01.mp4",
+    "videos/projects/jlc/02.mp4",
+    "videos/projects/jlc/03.mp4",
+    "videos/projects/jlc/04.mp4",
+    "videos/projects/jlc/05.mp4",
+    "videos/projects/jlc/06.mp4",
+    "videos/projects/jlc/07.mp4"
   ],
-  "url": "https://www.piaget.com/"
+  "url": "https://www.jaeger-lecoultre.com/"
 }

@@ -4,16 +4,14 @@
   "title": "Lemon",
   "client": "Lemon",
   "year": 2022,
-  "services": ["HTML", "CSS", "Javascript"],
-  "description": "Designed and developed a responsive front-end for Jaeger-LeCoultre, delivering a smooth user experience while maintaining the brand’s elegance and high-end aesthetic.",
-  "background": "images/projects/piaget.webp",
+  "services": ["HTML", "CSS", "JS"],
+  "description": "Website for Lemon, a creative agency based in Neuchâtel and Fribourg, built around its hand-lettered logo with a light and a dark mode.",
+  "background": "images/projects/piaget/background.webp",
   "overlay": 0.3,
-  "thumbnail": "images/projects/piaget-thumbnail.webp",
+  "thumbnail": "images/projects/lemon/thumbnail.webp",
   "medias": [
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg",
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg"
+    "videos/projects/lemon/01.mp4",
+    "videos/projects/lemon/02-mobile.mp4"
   ],
-  "url": "https://www.piaget.com/"
+  "url": "https://www.lemon.ch/"
 }

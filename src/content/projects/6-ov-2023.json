@@ -4,16 +4,16 @@
   "title": "OV - 2023",
   "client": "Terre des hommes",
   "year": 2023,
-  "services": ["HTML", "CSS", "Javascript"],
-  "description": "Designed and developed a responsive front-end for Jaeger-LeCoultre, delivering a smooth user experience while maintaining the brand’s elegance and high-end aesthetic.",
-  "background": "images/projects/tdh.webp",
+  "services": ["HTML", "CSS", "JS", "WordPress"],
+  "description": "The 2023 virtual orange sale for Terre des hommes, a memory game against the clock where every pair found turns into a donation.",
+  "background": "videos/projects/ov-2023/background.mp4",
   "overlay": 0.3,
-  "thumbnail": "images/projects/ov-2021-thumbnail.webp",
+  "thumbnail": "images/projects/ov-2023/thumbnail.webp",
   "medias": [
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg",
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg"
-  ],
-  "url": "https://www.piaget.com/"
+    "videos/projects/ov-2023/01.mp4",
+    "videos/projects/ov-2023/02.mp4",
+    "videos/projects/ov-2023/03.mp4",
+    "videos/projects/ov-2023/04-mobile.mp4",
+    "videos/projects/ov-2023/05.mp4"
+  ]
 }

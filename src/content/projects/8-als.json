@@ -4,16 +4,11 @@
   "title": "A. Lange & Söhne",
   "client": "Richemont",
   "year": 2023,
-  "services": ["HTML", "CSS", "Javascript"],
-  "description": "Designed and developed a responsive front-end for Jaeger-LeCoultre, delivering a smooth user experience while maintaining the brand’s elegance and high-end aesthetic.",
-  "background": "images/projects/piaget.webp",
+  "services": ["HTML", "CSS", "JS"],
+  "description": "Front-end development of the A. Lange & Söhne website, with restrained layouts and the attention to detail the brand calls for.",
+  "background": "images/projects/als/background.webp",
   "overlay": 0.3,
-  "thumbnail": "images/projects/piaget-thumbnail.webp",
-  "medias": [
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg",
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg"
-  ],
-  "url": "https://www.piaget.com/"
+  "thumbnail": "images/projects/piaget/thumbnail.webp",
+  "medias": [],
+  "url": "https://www.alange-soehne.com/"
 }

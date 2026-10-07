@@ -1,5 +1,5 @@
 const images = import.meta.glob<{ default: ImageMetadata }>(
-  "../images/projects/*.{jpeg,jpg,png,gif,webp}",
+  "../images/projects/**/*.{jpeg,jpg,png,gif,webp}",
   { eager: true },
 );
 

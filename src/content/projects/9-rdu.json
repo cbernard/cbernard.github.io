@@ -4,16 +4,11 @@
   "title": "Roger Dubuis",
   "client": "Richemont",
   "year": 2023,
-  "services": ["HTML", "CSS", "Javascript"],
-  "description": "Designed and developed a responsive front-end for Jaeger-LeCoultre, delivering a smooth user experience while maintaining the brand’s elegance and high-end aesthetic.",
-  "background": "images/projects/piaget.webp",
+  "services": ["HTML", "CSS", "JS"],
+  "description": "Front-end development of the Roger Dubuis website, matching the Manufacture’s bold identity with immersive pages and smooth interactions.",
+  "background": "images/projects/piaget/background.webp",
   "overlay": 0.3,
-  "thumbnail": "images/projects/piaget-thumbnail.webp",
-  "medias": [
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg",
-    "images/projects/jlc-detail-01.jpg",
-    "images/projects/jlc-detail-02.jpg"
-  ],
-  "url": "https://www.piaget.com/"
+  "thumbnail": "images/projects/piaget/thumbnail.webp",
+  "medias": [],
+  "url": "https://www.rogerdubuis.com/"
 }
