@@ -1,0 +1,21 @@
+{
+  "slug": "astroport",
+  "order": 11,
+  "title": "Astroport",
+  "client": "Astroport",
+  "year": 2022,
+  "services": ["HTML", "CSS", "JS"],
+  "description": "Landing page and trading interface for Astroport, a decentralised exchange born on the Terra blockchain, set in IDEO CoLab’s illustrated space station.",
+  "background": "images/projects/astroport/background.webp",
+  "overlay": 0.3,
+  "thumbnail": "images/projects/astroport/thumbnail.webp",
+  "medias": [
+    "images/projects/astroport/01.webp",
+    "images/projects/astroport/02.webp",
+    "images/projects/astroport/03.webp",
+    "images/projects/astroport/04.webp",
+    "images/projects/astroport/05.webp",
+    "images/projects/astroport/06.webp"
+  ],
+  "url": "https://astroport.fi/"
+}
