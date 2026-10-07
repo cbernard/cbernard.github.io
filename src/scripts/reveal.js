@@ -6,6 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 class Reveal {
   #split;
+  #revealTimeline;
   #scrollTweens = [];
   #firstSplitDone = false;
 
@@ -100,15 +101,20 @@ class Reveal {
     }
 
     const tl = gsap.timeline({ delay });
+    this.#revealTimeline = tl;
 
-    if (this.#split.lines.length > 0) {
-      tl.to(this.#split.lines, {
+    const stagger = 0.1;
+    const lines = this.#split.lines;
+
+    if (lines.length > 0) {
+      tl.to(lines, {
         onStart: () => {
           gsap.set("[data-split]", { opacity: 1 });
         },
         y: "0%",
-        duration: 0.35,
-        stagger: 0.07,
+        duration: 1.2,
+        ease: "expo.out",
+        stagger,
       });
     }
 
@@ -121,7 +127,11 @@ class Reveal {
       );
     }
 
-    return tl.then();
+    // Settles once the last line is under way: the scroller and the cursor
+    // would otherwise wait out the whole 1.2s ease.
+    return new Promise((resolve) => {
+      tl.call(resolve, null, Math.max(lines.length - 1, 0) * stagger);
+    });
   }
 
   // Only the items on screen leave, over a fixed distance: translating their
@@ -148,6 +158,7 @@ class Reveal {
 
   unreveal({ delay = 0, swup = false, slideUp = true } = {}) {
     // A reveal still in flight would drag its element back up mid-exit.
+    this.#revealTimeline?.kill();
     this.#killScroll();
 
     const tl = gsap.timeline({ delay });
