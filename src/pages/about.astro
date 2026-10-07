@@ -14,8 +14,8 @@ import travelImage from "../images/about_2.jpg";
 const pins = [{ label: "travel lover", image: travelImage }];
 
 const links = [
-  { name: "Instagram", href: "#" },
-  { name: "Linkedin", href: "#" },
+  { name: "Instagram", href: "https://www.instagram.com/chrlbrnrd/" },
+  { name: "LinkedIn", href: "https://www.linkedin.com/in/charlybernard/" },
 ];
 
 const recognitions = [
@@ -55,7 +55,7 @@ const credits = [
       data-reveal-slide-up="load"
     >
       <div
-        class="grid h-full grid-cols-6 grid-rows-[1fr_auto_auto] gap-x-[10px] gap-y-5 px-4 pt-5 pb-5 md:grid-cols-8 md:grid-rows-[auto_1fr_auto] md:pr-5 md:pl-5"
+        class="grid h-full grid-cols-6 grid-rows-[1fr_auto] gap-x-[10px] gap-y-5 px-4 pt-5 pb-5 md:grid-cols-8 md:grid-rows-[auto_1fr_auto] md:pr-5 md:pl-5"
       >
         <div
           class="image relative col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 aspect-[400/335] md:col-span-8 md:col-start-1 md:row-span-3 md:row-start-1 md:-mx-5 md:-mb-10 md:aspect-auto"
@@ -121,7 +121,7 @@ const credits = [
         </div>
 
         <div
-          class="relative col-span-5 col-start-2 row-start-3 flex flex-col gap-y-5 md:col-span-7 md:col-start-2 md:text-white lg:col-span-6 lg:col-start-2"
+          class="relative col-span-5 col-start-2 row-start-3 hidden flex-col gap-y-5 md:flex md:col-span-7 md:col-start-2 md:text-white lg:col-span-6 lg:col-start-2"
         >
           <div class="flex items-center gap-x-4">
             {
@@ -145,7 +145,7 @@ const credits = [
             would hand every line the `gap-y-4` meant to separate the paragraphs
             and the copy would lose its leading. */}
         <div
-          class="flex flex-col gap-y-4 text-[clamp(2.25rem,1.58rem_+_1.39vw,3.25rem)] leading-[1.1]"
+          class="flex flex-col gap-y-4 text-[clamp(2rem,1.58rem_+_1.39vw,3.25rem)] leading-[1.1]"
         >
           <p data-split>
             Charly Bernard is a Swiss developer and <Pin
@@ -226,6 +226,26 @@ const credits = [
           <section
             data-reveal-slide-up="scroll"
             style="--reveal-index: 2"
+            class="flex flex-col gap-y-10 md:hidden"
+          >
+            <h2 class="text-[clamp(1.5rem,1.3rem_+_0.42vw,1.875rem)]">
+              Socials
+            </h2>
+
+            <div class="flex flex-col gap-y-5">
+              {
+                links.map((link) => (
+                  <Link href={link.href} class="self-start">
+                    {link.name}
+                  </Link>
+                ))
+              }
+            </div>
+          </section>
+
+          <section
+            data-reveal-slide-up="scroll"
+            style="--reveal-index: 3"
             class="flex flex-col gap-y-5"
           >
             <h2 class="text-[clamp(1.5rem,1.3rem_+_0.42vw,1.875rem)]">
