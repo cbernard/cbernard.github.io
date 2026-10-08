@@ -70,7 +70,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
                   fallbackFormat="webp"
                   src={getImageByPath(project.data.background)}
                   formats={["webp"]}
-                  widths={[400, 800]}
+                  widths={[400, 800, 1440]}
                   sizes="(orientation: landscape) 50vw, 100vw"
                   alt={`${project.data.title} background`}
                   class="h-full w-full object-cover object-center"
