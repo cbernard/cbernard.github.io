@@ -6,9 +6,9 @@
   "year": 2023,
   "services": ["HTML", "CSS", "JS", "WordPress"],
   "description": "The 2023 virtual orange sale for Terre des hommes, a memory game against the clock where every pair found turns into a donation.",
-  "background": "videos/projects/ov-2023/background.mp4",
+  "background": "images/projects/ov-2023/background.webp",
   "overlay": 0.3,
-  "thumbnail": "images/projects/ov-2023/thumbnail.webp",
+  "thumbnail": "videos/projects/ov-2023/thumbnail.mp4",
   "medias": [
     "videos/projects/ov-2023/01.mp4",
     "videos/projects/ov-2023/02.mp4",
