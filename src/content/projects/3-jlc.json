@@ -4,7 +4,7 @@
   "title": "Jaeger-LeCoultre",
   "client": "Richemont",
   "year": "2022–2026",
-  "services": ["HTML", "CSS", "JS"],
+  "services": ["HTML", "CSS", "JS", "Laravel", "Vue.js"],
   "description": "Front-end development for Jaeger-LeCoultre, with a focus on reusable components, documented in a dedicated styleguide and shared across the entire website.",
   "background": "images/projects/jlc/background.webp",
   "overlay": 0.3,

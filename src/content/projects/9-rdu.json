@@ -4,7 +4,7 @@
   "title": "Roger Dubuis",
   "client": "Richemont",
   "year": 2023,
-  "services": ["HTML", "CSS", "JS"],
+  "services": ["HTML", "CSS", "JS", "Laravel", "Vue.js"],
   "description": "Front-end development of the Roger Dubuis website, matching the Manufacture’s bold identity with immersive pages and smooth interactions.",
   "background": "images/projects/rdu/background.webp",
   "overlay": 0.3,

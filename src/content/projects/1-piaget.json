@@ -4,7 +4,7 @@
   "title": "Piaget",
   "client": "Richemont",
   "year": 2024,
-  "services": ["HTML", "CSS", "JS"],
+  "services": ["HTML", "CSS", "JS", "Laravel", "Vue.js"],
   "description": "Front-end development of the Piaget website, bringing the Maison’s jewellery and watch collections to responsive, carefully integrated pages.",
   "background": "images/projects/piaget/background.webp",
   "overlay": 0.3,
