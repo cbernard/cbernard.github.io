@@ -8,7 +8,7 @@ const projects = defineCollection({
     order: z.number(),
     title: z.string(),
     client: z.string(),
-    year: z.number(),
+    year: z.union([z.number(), z.string()]),
     services: z.array(z.string()),
     description: z.string(),
     background: z.string(),
