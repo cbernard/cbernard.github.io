@@ -9,6 +9,12 @@
   "background": "images/projects/als/background.webp",
   "overlay": 0.3,
   "thumbnail": "images/projects/als/thumbnail.webp",
-  "medias": [],
+  "medias": [
+    "videos/projects/als/01.mp4",
+    "videos/projects/als/02.mp4",
+    "videos/projects/als/03.mp4",
+    "videos/projects/als/04.mp4",
+    "videos/projects/als/05.mp4"
+  ],
   "url": "https://www.alange-soehne.com/"
 }
