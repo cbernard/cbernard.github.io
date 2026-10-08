@@ -6,9 +6,9 @@
   "year": 2023,
   "services": ["HTML", "CSS", "JS"],
   "description": "Front-end development of the Roger Dubuis website, matching the Manufacture’s bold identity with immersive pages and smooth interactions.",
-  "background": "images/projects/piaget/background.webp",
+  "background": "images/projects/rdu/background.webp",
   "overlay": 0.3,
-  "thumbnail": "images/projects/piaget/thumbnail.webp",
+  "thumbnail": "images/projects/rdu/thumbnail.webp",
   "medias": [],
   "url": "https://www.rogerdubuis.com/"
 }
