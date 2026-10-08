@@ -9,6 +9,12 @@
   "background": "images/projects/rdu/background.webp",
   "overlay": 0.3,
   "thumbnail": "images/projects/rdu/thumbnail.webp",
-  "medias": [],
+  "medias": [
+    "videos/projects/rdu/01.mp4",
+    "videos/projects/rdu/02.mp4",
+    "videos/projects/rdu/03.mp4",
+    "videos/projects/rdu/04.mp4",
+    "videos/projects/rdu/05.mp4"
+  ],
   "url": "https://www.rogerdubuis.com/"
 }
