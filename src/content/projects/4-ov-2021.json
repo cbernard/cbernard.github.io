@@ -7,7 +7,7 @@
   "services": ["HTML", "CSS", "JS", "WordPress"],
   "description": "Browser game for Terre des hommes’ virtual orange sale. Players catch falling oranges in a basket, and each one becomes a donation to children’s projects.",
   "background": "images/projects/ov-2021/background.webp",
-  "overlay": 0.3,
+  "overlay": 0.45,
   "thumbnail": "videos/projects/ov-2021/thumbnail.mp4",
   "medias": [
     "videos/projects/ov-2021/01.mp4",
