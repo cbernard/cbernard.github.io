@@ -9,9 +9,15 @@ import Link from "../components/link/link.astro";
 import Email from "../components/email/email.astro";
 
 import backgroundImage from "../images/about.jpg";
-import travelImage from "../images/about_2.jpg";
+import travelImage from "../images/about_travel.jpg";
+import wavesImage from "../images/about_waves.jpg";
+import hikingImage from "../images/about_hiking.jpg";
 
-const pins = [{ label: "travel lover", image: travelImage }];
+const pins = [
+  { label: "travel lover", image: travelImage },
+  { label: "between two waves", image: wavesImage },
+  { label: "great hiking", image: hikingImage },
+];
 
 const links = [
   { name: "Instagram", href: "https://www.instagram.com/chrlbrnrd/" },
@@ -83,7 +89,7 @@ const credits = [
                   fallbackFormat="webp"
                   src={pin.image}
                   formats={["webp"]}
-                  widths={[400, 800]}
+                  widths={[400, 800, 1200, 1600]}
                   sizes="(orientation: landscape) 50vw, 100vw"
                   alt={pin.label}
                   loading="eager"
@@ -157,11 +163,15 @@ const credits = [
             high-quality, user-friendly applications.
           </p>
           <p data-split>
-            Driven by curiosity and precision, between two waves Charly
-            continuously explores new technologies to enhance his projects.
+            Driven by curiosity and precision, <Pin
+              label={pins[1].label}
+              index={1}
+            />
+            Charly continuously explores new technologies to enhance his projects.
           </p>
           <p data-split>
-            A great hiking and photography enthusiast, he is someone who loves
+            A <Pin label={pins[2].label} index={2} />
+            and photography enthusiast, he is someone who loves
             to see things through in his work and has a keen eye for detail,
             ensuring pixel-perfect integration of any request.
           </p>
