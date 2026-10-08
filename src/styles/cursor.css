@@ -1,21 +1,3 @@
-/* Masque le curseur natif, mais uniquement quand `Cursor` a instancié son
-   remplaçant. Le sélecteur universel est nécessaire : `cursor` s'hérite, mais
-   les `cursor-pointer` du markup l'écraseraient élément par élément. Ce fichier
-   n'est pas dans une `@layer`, il gagne donc sur les utilitaires Tailwind
-   quelle que soit la spécificité. */
-.has-cursor,
-.has-cursor * {
-  cursor: none;
-}
-
-/* `data-cursor="-hidden"` escamote le curseur custom (point à scale 0). Combiné
-   au `cursor: none` ci-dessus, la zone se retrouvait sans aucun curseur : on
-   rend la main au natif, en `pointer` comme l'indique le markup. */
-.has-cursor [data-cursor="-hidden"],
-.has-cursor [data-cursor="-hidden"] * {
-  cursor: pointer;
-}
-
 /* `exclusion` sur du blanc inverse le fond : le curseur reste lisible sur
    n'importe quel backdrop — image, dégradé, thème clair ou sombre — sans
    dépendre du thème, d'où l'absence de variante `.dark`. */
@@ -58,8 +40,10 @@
 
 /* État « pill » (`data-cursor="-pill"` + `data-cursor-text`) : on masque le
    point de la lib et son élément texte devient le badge. La lib garde la
-   gestion du suivi et du show/hide. */
-.mf-cursor.-pill:before {
+   gestion du suivi et du show/hide. Le `.-active` couvre le clic, où le
+   `.-text.-active` de la lib (scale 1.6) l'emporterait sinon. */
+.mf-cursor.-pill:before,
+.mf-cursor.-pill.-active:before {
   transform: scale(0);
 }
 

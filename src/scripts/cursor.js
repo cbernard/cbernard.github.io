@@ -17,12 +17,6 @@ export class Cursor {
         // `-pill`, dont le texte se déformerait.
         skewingText: 0,
       });
-
-      // Débloque le masquage du curseur natif (voir cursor.css). La classe est
-      // posée ici et pas via une media query pour qu'elle suive exactement la
-      // condition d'instanciation : sinon un appareil sans curseur custom se
-      // retrouverait sans curseur du tout.
-      document.documentElement.classList.add("has-cursor");
     }
   }
 
