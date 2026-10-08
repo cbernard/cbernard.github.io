@@ -2,34 +2,43 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import swup from "../../scripts/swup.js";
+import scrollInstance from "../../scripts/scroll.js";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const FILL_FROM = 0.9;
-const FILL_TO = 0.98;
 
 // Lenis only snaps onto its limit once the value rounds to it, so a page of
 // fractional height never reports a progress of exactly 1.
 const BOTTOM_THRESHOLD = 1;
 
-const LEAVE_DELAY = 200;
+// Halfway into the 300px the label stays pinned, so the fill neither waits
+// for the very bottom nor starts the moment the label sticks.
+const ENGAGE_DISTANCE = 150;
 
-// Further out than BOTTOM_THRESHOLD, or a scroll resting on the boundary would
-// arm and disarm on every frame.
-const CANCEL_THRESHOLD = 8;
+// Lenis delta, already scaled by `wheelMultiplier`, needed to fill the label.
+const FILL_DISTANCE = 350;
+
+// How long the input may pause before the fill starts draining.
+const IDLE_DELAY = 150;
+
+const DRAIN_DURATION = 0.6;
 
 export default function next(href) {
   return {
     leaving: false,
     armed: false,
-    timer: null,
+    fill: 0,
+    idleTimer: null,
+    drain: null,
     trigger: null,
     animation: null,
+    stopListening: null,
 
     get progress() {
-      const scroll = this.$store.main.scrollProgress;
-      const fill = (scroll - FILL_FROM) / (FILL_TO - FILL_FROM);
-      return `${gsap.utils.clamp(0, 1, fill) * 100}%`;
+      return `${this.fill * 100}%`;
+    },
+
+    get engaged() {
+      return this.$store.main.scrollRemaining <= ENGAGE_DISTANCE;
     },
 
     init() {
@@ -46,29 +55,13 @@ export default function next(href) {
         // it on the next frame: until then the store still reads the bottom of
         // the page just left.
         if (!this.armed) {
-          this.armed = this.$store.main.scrollProgress < FILL_FROM;
-          return;
+          this.armed = remaining > BOTTOM_THRESHOLD;
         }
-
-        if (this.leaving) {
-          return;
-        }
-
-        if (remaining > CANCEL_THRESHOLD) {
-          this.cancel();
-          return;
-        }
-
-        if (this.timer || remaining > BOTTOM_THRESHOLD) {
-          return;
-        }
-
-        this.timer = setTimeout(() => {
-          this.timer = null;
-          this.leaving = true;
-          swup.navigate(href);
-        }, LEAVE_DELAY);
       });
+
+      this.stopListening = scrollInstance.onVirtualScroll(({ deltaY }) =>
+        this.push(deltaY),
+      );
 
       this.animation = gsap.to(element, {
         opacity: 1,
@@ -87,13 +80,35 @@ export default function next(href) {
       });
     },
 
-    cancel() {
-      clearTimeout(this.timer);
-      this.timer = null;
+    push(delta) {
+      if (!this.armed || this.leaving || !this.engaged) {
+        return;
+      }
+
+      this.drain?.kill();
+      clearTimeout(this.idleTimer);
+
+      this.fill = gsap.utils.clamp(0, 1, this.fill + delta / FILL_DISTANCE);
+
+      if (this.fill === 1) {
+        this.leaving = true;
+        swup.navigate(href);
+        return;
+      }
+
+      this.idleTimer = setTimeout(() => {
+        this.drain = gsap.to(this, {
+          fill: 0,
+          duration: DRAIN_DURATION,
+          ease: "power2.out",
+        });
+      }, IDLE_DELAY);
     },
 
     destroy() {
-      this.cancel();
+      clearTimeout(this.idleTimer);
+      this.drain?.kill();
+      this.stopListening?.();
 
       this.trigger?.kill();
       this.animation?.kill();

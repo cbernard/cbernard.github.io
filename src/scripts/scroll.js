@@ -27,6 +27,7 @@ export class Scroll {
   #lenis;
   #options;
   #raf;
+  #virtualScrollListeners = new Set();
 
   constructor(options = {}) {
     this.#options = { ...defaultOptions, ...options };
@@ -67,6 +68,11 @@ export class Scroll {
       ScrollTrigger.update();
     });
 
+    // Still fires at the bottom of the page, where the scroll itself is stuck.
+    this.#lenis.on("virtual-scroll", (data) => {
+      this.#virtualScrollListeners.forEach((listener) => listener(data));
+    });
+
     // Kept on the instance so `refresh()` can remove this exact closure.
     this.#raf = (time) => {
       this.#lenis.raf(time * 1000);
@@ -82,6 +88,12 @@ export class Scroll {
 
   start() {
     this.#lenis.start();
+  }
+
+  // Outlives `refresh()`, which swaps the Lenis instance on every visit.
+  onVirtualScroll(listener) {
+    this.#virtualScrollListeners.add(listener);
+    return () => this.#virtualScrollListeners.delete(listener);
   }
 
   scrollTo(value, options = {}) {
