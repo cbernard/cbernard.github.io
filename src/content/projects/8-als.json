@@ -8,7 +8,7 @@
   "description": "Front-end development of the A. Lange & Söhne website, with restrained layouts and the attention to detail the brand calls for.",
   "background": "images/projects/als/background.webp",
   "overlay": 0.3,
-  "thumbnail": "images/projects/piaget/thumbnail.webp",
+  "thumbnail": "images/projects/als/thumbnail.webp",
   "medias": [],
   "url": "https://www.alange-soehne.com/"
 }
