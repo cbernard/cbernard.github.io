@@ -1,24 +1,28 @@
 {
   "slug": "jlc",
   "order": 3,
-  "title": "Jaeger-Lecoultre",
+  "title": "Jaeger-LeCoultre",
   "client": "Richemont",
-  "year": 2023,
+  "year": "2022–2026",
   "services": ["HTML", "CSS", "JS"],
-  "description": "Front-end development for Jaeger-Lecoultre, from product pages for the Duomètre and Reverso collections to the Reverso engraving configurator.",
+  "description": "Front-end development for Jaeger-LeCoultre, with a focus on reusable components, documented in a dedicated styleguide and shared across the entire website.",
   "background": "images/projects/jlc/background.webp",
   "overlay": 0.3,
   "thumbnail": "images/projects/jlc/thumbnail.webp",
   "medias": [
-    "images/projects/jlc/detail-01.jpg",
-    "images/projects/jlc/detail-02.jpg",
-    "videos/projects/jlc/01.mp4",
+    "videos/projects/jlc/09.mp4",
+    "videos/projects/jlc/08.mp4",
     "videos/projects/jlc/02.mp4",
+    "videos/projects/jlc/10.mp4",
     "videos/projects/jlc/03.mp4",
-    "videos/projects/jlc/04.mp4",
-    "videos/projects/jlc/05.mp4",
     "videos/projects/jlc/06.mp4",
-    "videos/projects/jlc/07.mp4"
+    "videos/projects/jlc/04.mp4",
+    "videos/projects/jlc/11.mp4",
+    "videos/projects/jlc/01.mp4",
+    "videos/projects/jlc/07.mp4",
+    "videos/projects/jlc/05.mp4",
+    "images/projects/jlc/detail-01.jpg",
+    "images/projects/jlc/detail-02.jpg"
   ],
   "url": "https://www.jaeger-lecoultre.com/"
 }
