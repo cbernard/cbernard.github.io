@@ -1,8 +1,8 @@
 {
   "slug": "outsider",
   "order": 7,
-  "title": "Outsider.archi",
-  "client": "Outsider.archi",
+  "title": "Outsider Architecture",
+  "client": "Outsider Architecture",
   "year": 2025,
   "services": ["HTML", "CSS", "JS"],
   "description": "Website for the architecture studio Outsider, a minimal, image-led layout that lets the projects speak for themselves.",
