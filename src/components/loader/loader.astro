@@ -1,35 +1,65 @@
 ---
 import { getCollection } from "astro:content";
+import { getImage } from "astro:assets";
 import Progress from "../../components/progress/progress.astro";
-import { getImageUrl } from "../../utils/images";
+import Separator from "../../components/separator/separator.astro";
+import {
+  backgroundSizes,
+  backgroundWidths,
+  getImageByPath,
+} from "../../utils/images";
 
 const projects = await getCollection("projects");
 
-// A video is represented by its poster.
-const getAssetUrl = (path: string) =>
-  /\.(mp4|webm)$/.test(path)
-    ? `/${path.replace(/\.\w+$/, ".webp")}`
-    : getImageUrl(path);
+const isVideo = (path: string) => /\.(mp4|webm)$/.test(path);
 
-const assets = [
-  "/fonts/TWKLausanne-300.woff2",
-  ...projects.flatMap((project) => [
-    getAssetUrl(project.data.background),
-    getAssetUrl(project.data.thumbnail),
+// The same transform as the `<Picture>` of the page, so the browser picks the
+// very file it will show. A video is represented by its poster.
+const getAsset = async (
+  path: string,
+  { widths, sizes }: { widths?: number[]; sizes?: string } = {},
+) => {
+  if (isVideo(path)) {
+    return { src: `/${path.replace(/\.\w+$/, ".webp")}` };
+  }
+
+  const image = await getImage({
+    src: getImageByPath(path),
+    format: "webp",
+    widths,
+  });
+
+  return image.srcSet.attribute
+    ? { src: image.src, srcset: image.srcSet.attribute, sizes }
+    : { src: image.src };
+};
+
+const background = { widths: backgroundWidths, sizes: backgroundSizes };
+
+const images = await Promise.all(
+  projects.flatMap((project) => [
+    getAsset(project.data.background, background),
+    getAsset(project.data.thumbnail),
     // Videos stream in on the project page instead of holding up the loader.
     ...project.data.medias
-      .filter((media) => !/\.(mp4|webm)$/.test(media))
-      .map(getImageUrl),
+      .filter((media) => !isVideo(media))
+      .map((media) => getAsset(media)),
   ]),
-];
+);
 
-const distinctAssets = [...new Set(assets)];
+const assets = {
+  fonts: ["/fonts/TWKLausanne-300.woff2"],
+  images: [...new Map(images.map((image) => [image.src, image])).values()],
+};
 ---
 
+{/* Above the separator of the page, which would otherwise darken its own. */}
 <div
-  class="fixed inset-0 z-[5000] grid grid-cols-6 items-center gap-[10px] bg-black px-5 text-white-32 md:grid-cols-16"
-  x-data={`loader(${JSON.stringify(distinctAssets)})`}
+  class="fixed inset-0 z-[9500] grid grid-cols-6 items-center gap-[10px] bg-black px-5 text-white-32 md:grid-cols-16"
+  x-data={`loader(${JSON.stringify(assets)})`}
 >
+  <Separator loader />
+
   <div class="col-start-1 text-white-32">
     <Progress progress="load" />
   </div>

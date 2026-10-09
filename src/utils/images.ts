@@ -25,3 +25,8 @@ export function getImageByPath(imagePath: string): ImageMetadata {
 export function getImageUrl(imagePath: string): string {
   return getImageByPath(imagePath).src;
 }
+
+// The loader preloads the backgrounds at these exact widths so it fetches the
+// files the pages show.
+export const backgroundWidths = [400, 800, 1440];
+export const backgroundSizes = "(orientation: landscape) 50vw, 100vw";

@@ -1,4 +1,3 @@
-import Preload from "preload-it";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 
@@ -8,24 +7,42 @@ gsap.registerPlugin(CustomEase);
 
 CustomEase.create("reveal", "0.5, 0, 0, 1");
 
-export default function loader(assets = []) {
+// Settles either way: a file that fails must not hold the loader up.
+const loadImage = ({ src, srcset, sizes }) =>
+  new Promise((resolve) => {
+    const image = new Image();
+
+    image.onload = image.onerror = resolve;
+
+    // `sizes` and `srcset` before `src`, or the fallback starts downloading.
+    if (sizes) image.sizes = sizes;
+    if (srcset) image.srcset = srcset;
+    image.src = src;
+  });
+
+const loadFile = (url) =>
+  fetch(url)
+    .then((response) => response.blob())
+    .catch(() => {});
+
+export default function loader({ fonts = [], images = [] } = {}) {
   return {
     init() {
-      const preload = Preload();
+      const tasks = [...fonts.map(loadFile), ...images.map(loadImage)];
+      let loaded = 0;
 
-      preload.onprogress = (event) => {
-        Alpine.store("main").loading = (event.progress ?? 0) / 100;
-      };
-
-      preload.oncomplete = () => {
+      Promise.all(
+        tasks.map((task) =>
+          task.then(() => {
+            loaded++;
+            Alpine.store("main").loading = loaded / tasks.length;
+          }),
+        ),
+      ).then(() => {
+        Alpine.store("main").loading = 1;
+        Alpine.store("main").loaded = true;
         this.transitioningOut();
-      };
-
-      preload.onerror = (item) => {
-        console.warn("Preload error:", item);
-      };
-
-      preload.fetch(assets);
+      });
     },
 
     transitioningOut() {
