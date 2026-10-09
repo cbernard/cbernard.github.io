@@ -10,10 +10,6 @@ gsap.registerPlugin(ScrollTrigger);
 // fractional height never reports a progress of exactly 1.
 const BOTTOM_THRESHOLD = 1;
 
-// Halfway into the 300px the label stays pinned, so the fill neither waits
-// for the very bottom nor starts the moment the label sticks.
-const ENGAGE_DISTANCE = 150;
-
 // Lenis delta, already scaled by `wheelMultiplier`, needed to fill the label.
 const FILL_DISTANCE = 350;
 
@@ -38,7 +34,7 @@ export default function next(href) {
     },
 
     get engaged() {
-      return this.$store.main.scrollRemaining <= ENGAGE_DISTANCE;
+      return this.$store.main.scrollRemaining <= BOTTOM_THRESHOLD;
     },
 
     init() {

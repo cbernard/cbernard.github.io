@@ -17,31 +17,45 @@ const pins = [
   { label: "travel lover", image: travelImage },
   { label: "between two waves", image: wavesImage },
   { label: "great hiking", image: hikingImage },
+  // TODO: give the cycling pin its own picture.
+  { label: "cycling", image: hikingImage },
 ];
 
 const links = [
-  { name: "Instagram", href: "https://www.instagram.com/chrlbrnrd/" },
-  { name: "LinkedIn", href: "https://www.linkedin.com/in/charlybernard/" },
+  {
+    name: "Instagram",
+    handle: "@chrlbrnrd",
+    href: "https://www.instagram.com/chrlbrnrd/",
+  },
+  {
+    name: "LinkedIn",
+    handle: "charlybernard",
+    href: "https://www.linkedin.com/in/charlybernard/",
+  },
 ];
 
-const recognitions = [
-  {
-    project: "Jaeger-LeCoultre",
-    award: "Awwwards",
-    label: "Site of the Day",
-    year: "2024",
-  },
-  {
-    project: "Roger Dubuis",
-    award: "FWA",
-    label: "Site of the Day",
-    year: "2024",
-  },
+const recognitions: {
+  project: string;
+  award: string;
+  label: string;
+  year: string;
+}[] = [
+  // {
+  //   project: "Jaeger-LeCoultre",
+  //   award: "Awwwards",
+  //   label: "Site of the Day",
+  //   year: "2024",
+  // },
+  // {
+  //   project: "Roger Dubuis",
+  //   award: "FWA",
+  //   label: "Site of the Day",
+  //   year: "2024",
+  // },
 ];
 
 const credits = [
   { name: "Thomas Monavon", role: "UX / UI Design" },
-  { name: "Lausanne Agency", role: "Development" },
 ];
 ---
 
@@ -122,7 +136,7 @@ const credits = [
         >
           <div class="flex items-center gap-x-4">
             <span class="text-white">Charly Bernard</span>
-            <span class="text-white-32">Front-end Developer </span>
+            <span class="text-white-32">Frontend Developer</span>
           </div>
         </div>
 
@@ -173,41 +187,47 @@ const credits = [
             A <Pin label={pins[2].label} index={2} />
             and photography enthusiast, he is someone who loves
             to see things through in his work and has a keen eye for detail,
-            ensuring pixel-perfect integration of any request.
+            ensuring pixel-perfect integration of any request. He is also a
+            <Pin label={pins[3].label} index={3} />
+            enthusiast.
           </p>
         </div>
 
         <div class="mt-28 flex flex-col gap-y-28 md:mt-48 md:gap-y-48">
-          <section
-            data-reveal-slide-up="scroll"
-            style="--reveal-index: 0"
-            class="flex flex-col gap-y-10"
-          >
-            <h2 class="text-[clamp(1.5rem,1.3rem_+_0.42vw,1.875rem)]">
-              Recognitions
-            </h2>
+          {
+            recognitions.length > 0 && (
+              <section
+                data-reveal-slide-up="scroll"
+                style="--reveal-index: 0"
+                class="flex flex-col gap-y-10"
+              >
+              <h2 class="text-[clamp(1.5rem,1.3rem_+_0.42vw,1.875rem)]">
+                Recognitions
+              </h2>
 
-            <div class="flex flex-col gap-y-5">
-              {
-                recognitions.map((item) => (
-                  <div class="grid grid-cols-[1fr_auto] gap-x-[10px] gap-y-1 md:grid-cols-6">
-                    <div class="col-span-2">{item.project}</div>
+              <div class="flex flex-col gap-y-5">
+                {
+                  recognitions.map((item) => (
+                    <div class="grid grid-cols-[1fr_auto] gap-x-[10px] gap-y-1 md:grid-cols-6">
+                      <div class="col-span-2">{item.project}</div>
 
-                    {/* Inline rather than a flex row: a label that wraps stays
-                        in the text flow instead of hanging under the award. */}
-                    <div class="md:col-span-3 md:col-start-3">
-                      <span class="me-2 text-black-32 dark:text-white-32">
-                        {item.award}
-                      </span>
-                      {item.label}
+                      {/* Inline rather than a flex row: a label that wraps stays
+                          in the text flow instead of hanging under the award. */}
+                      <div class="md:col-span-3 md:col-start-3">
+                        <span class="me-2 text-black-32 dark:text-white-32">
+                          {item.award}
+                        </span>
+                        {item.label}
+                      </div>
+
+                      <div class="text-end md:col-start-6">{item.year}</div>
                     </div>
-
-                    <div class="text-end md:col-start-6">{item.year}</div>
-                  </div>
-                ))
-              }
-            </div>
-          </section>
+                  ))
+                }
+              </div>
+              </section>
+            )
+          }
 
           <section
             data-reveal-slide-up="scroll"
@@ -236,7 +256,7 @@ const credits = [
           <section
             data-reveal-slide-up="scroll"
             style="--reveal-index: 2"
-            class="flex flex-col gap-y-10 md:hidden"
+            class="flex flex-col gap-y-10"
           >
             <h2 class="text-[clamp(1.5rem,1.3rem_+_0.42vw,1.875rem)]">
               Socials
@@ -245,9 +265,15 @@ const credits = [
             <div class="flex flex-col gap-y-5">
               {
                 links.map((link) => (
-                  <Link href={link.href} class="self-start">
-                    {link.name}
-                  </Link>
+                  <div class="grid grid-cols-2 gap-x-[10px] gap-y-1 md:grid-cols-6">
+                    <div class="md:col-span-2">
+                      <Link href={link.href}>{link.name}</Link>
+                    </div>
+
+                    <div class="text-black-32 md:col-span-3 md:col-start-3 dark:text-white-32">
+                      {link.handle}
+                    </div>
+                  </div>
                 ))
               }
             </div>

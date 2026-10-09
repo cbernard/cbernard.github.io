@@ -4,7 +4,7 @@ import Swup from "swup";
 
 import scrollInstance from "./scroll.js";
 import revealInstance from "./reveal.js";
-import { isHomepage } from "./alpine.js";
+import { isHomepage, isLostPage } from "./alpine.js";
 import SwupHeadPlugin from "@swup/head-plugin";
 import SwupScriptsPlugin from "@swup/scripts-plugin";
 import SwupDebugPlugin from "@swup/debug-plugin";
@@ -80,6 +80,15 @@ const captureLeaving = () => {
 
   page.removeAttribute("id");
 
+  // A clone carries no bitmap: what the canvases show is painted back in.
+  const canvases = container.querySelectorAll("canvas");
+
+  page.querySelectorAll("canvas").forEach((canvas, index) => {
+    canvas.width = canvases[index].width;
+    canvas.height = canvases[index].height;
+    canvas.getContext("2d").drawImage(canvases[index], 0, 0);
+  });
+
   // Detached, the copy is out of Alpine's reach, but the reveal queries the
   // whole document: without these hooks it cannot restage a page that leaves.
   page.querySelectorAll("*").forEach((element) => {
@@ -99,6 +108,13 @@ const captureLeaving = () => {
   leaving = document.createElement("div");
   leaving.className =
     "pointer-events-none fixed inset-0 overflow-hidden bg-white dark:bg-black";
+
+  // Keeps the theme it was captured in: leaving the 404 drops its forced
+  // dark mode while the copy is still on screen.
+  leaving.classList.toggle(
+    "dark",
+    document.documentElement.classList.contains("dark"),
+  );
   leaving.append(page);
   document.body.append(leaving);
 
@@ -328,6 +344,24 @@ const swup = new Swup({
             });
           },
         },
+        // A 404 can sit at any path, so it is told by its marker and not by a
+        // route: the page it leads to comes down over it from the top.
+        {
+          from: "(.*)",
+          to: "(.*)",
+          out: async (_, { visit }) => {
+            visit.meta.fromLost = isLostPage();
+
+            if (visit.meta.fromLost) {
+              captureLeaving();
+            }
+          },
+          in: async (_, { visit }) => {
+            if (visit.meta.fromLost) {
+              await cover("y", -1);
+            }
+          },
+        },
       ],
     }),
   ],
@@ -339,6 +373,7 @@ swup.hooks.on("content:replace", () => {
 
 swup.hooks.on("page:view", () => {
   Alpine.store("main").isHome = isHomepage();
+  Alpine.store("main").isLost = isLostPage();
 });
 
 export default swup;

@@ -38,6 +38,10 @@
   transform: scale(0.2);
 }
 
+.mf-cursor.-round:before {
+  border-radius: 50%;
+}
+
 /* État « pill » (`data-cursor="-pill"` + `data-cursor-text`) : on masque le
    point de la lib et son élément texte devient le badge. La lib garde la
    gestion du suivi et du show/hide. Le `.-active` couvre le clic, où le

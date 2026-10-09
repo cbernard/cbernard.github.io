@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Frame from "../components/lost/frame.astro";
+---
+
+<Layout>
+  <Frame>
+    <div
+      class="relative h-svh overflow-hidden"
+      x-data="field()"
+      data-page="404"
+    >
+      <canvas class="absolute inset-0 h-full w-full" x-ref="canvas"></canvas>
+    </div>
+  </Frame>
+</Layout>

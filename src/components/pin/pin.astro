@@ -19,8 +19,9 @@ const last = words.pop();
   <span class="whitespace-nowrap">
     {last}
     <button
-      class="relative mx-2 h-5 w-5 cursor-pointer align-middle touch-none text-black-32 transition-colors duration-200 select-none before:absolute before:top-1/2 before:left-1/2 before:h-5 before:w-5 before:translate-x-[-50%] before:translate-y-[-50%] before:rounded-full before:border before:content-[''] after:absolute after:top-1/2 after:left-1/2 after:h-2 after:w-2 after:translate-x-[-50%] after:translate-y-[-50%] after:transform after:rounded-full after:bg-current after:transition-opacity after:content-[''] hover:text-black hover:after:opacity-0 dark:text-white-32 dark:hover:text-white"
+      class="relative mx-[max(0.5rem,0.19em)] size-[max(1.25rem,0.46em)] cursor-pointer align-middle touch-none text-black-32 transition-colors duration-200 select-none before:absolute before:inset-0 before:rounded-full before:border before:content-[''] after:absolute after:top-1/2 after:left-1/2 after:size-[40%] after:translate-x-[-50%] after:translate-y-[-50%] after:transform after:rounded-full after:bg-current after:transition-opacity after:content-[''] hover:text-black hover:after:opacity-0 dark:text-white-32 dark:hover:text-white"
       data-pin={index}
+      data-cursor="-round"
       data-cursor-stick
       aria-label={`Show the ${label} picture`}></button>
   </span>

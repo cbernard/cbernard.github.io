@@ -11,10 +11,14 @@
   "thumbnail": "images/projects/als/thumbnail.webp",
   "medias": [
     "videos/projects/als/01.mp4",
+    "videos/projects/als/06.mp4",
     "videos/projects/als/02.mp4",
+    "images/projects/als/screens-1.webp",
     "videos/projects/als/03.mp4",
-    "videos/projects/als/04.mp4",
-    "videos/projects/als/05.mp4"
+    "videos/projects/als/07.mp4",
+    "images/projects/als/screens-2.webp",
+    "videos/projects/als/05.mp4",
+    "videos/projects/als/04.mp4"
   ],
   "url": "https://www.alange-soehne.com/"
 }

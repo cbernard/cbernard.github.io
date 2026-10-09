@@ -1,0 +1,21 @@
+{
+  "slug": "iwc",
+  "order": 12,
+  "title": "IWC Schaffhausen",
+  "client": "Richemont",
+  "year": "2025–2026",
+  "services": ["HTML", "CSS", "JS", "Laravel", "Vue.js"],
+  "description": "Front-end development of the IWC Schaffhausen website, with restrained layouts and the attention to detail the brand calls for.",
+  "background": "images/projects/iwc/background.webp",
+  "overlay": 0.3,
+  "thumbnail": "images/projects/iwc/thumbnail.webp",
+  "medias": [
+    "videos/projects/iwc/01.mp4",
+    "videos/projects/iwc/02.mp4",
+    "images/projects/iwc/screens-1.webp",
+    "videos/projects/iwc/03.mp4",
+    "images/projects/iwc/screens-2.webp",
+    "videos/projects/iwc/04.mp4"
+  ],
+  "url": "https://www.iwc.com/"
+}

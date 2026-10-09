@@ -10,12 +10,19 @@
   "overlay": 0.3,
   "thumbnail": "videos/projects/astroport/thumbnail.mp4",
   "medias": [
+    "videos/projects/astroport/01.mp4",
     "images/projects/astroport/01.webp",
+    "videos/projects/astroport/02.mp4",
     "images/projects/astroport/02.webp",
+    "videos/projects/astroport/03.mp4",
     "images/projects/astroport/03.webp",
+    "videos/projects/astroport/04.mp4",
     "images/projects/astroport/04.webp",
+    "videos/projects/astroport/05.mp4",
     "images/projects/astroport/05.webp",
-    "images/projects/astroport/06.webp"
+    "videos/projects/astroport/06.mp4",
+    "images/projects/astroport/06.webp",
+    "videos/projects/astroport/07.mp4"
   ],
   "url": "https://astroport.fi/"
 }

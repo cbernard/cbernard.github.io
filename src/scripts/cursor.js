@@ -30,7 +30,7 @@ export class Cursor {
     // collée après navigation.
     this.#cursor.removeIcon();
     this.#cursor.removeText();
-    this.#cursor.removeState("-exclusion -md -lg -pill");
+    this.#cursor.removeState("-exclusion -md -lg -pill -round");
   }
 }
 

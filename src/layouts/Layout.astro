@@ -9,7 +9,11 @@ import "../styles/index.css";
 ---
 
 <!doctype html>
-<html lang="en" x-data :class="$store.darkMode.on && 'dark'">
+<html
+  lang="en"
+  x-data
+  :class="($store.darkMode.on || $store.main.isLost) && 'dark'"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -27,7 +31,7 @@ import "../styles/index.css";
     }
     <meta name="robots" content="noindex, nofollow" />
 
-    <title>Charly Bernard</title>
+    <title>Charly Bernard - Frontend Developer</title>
 
     <script is:inline>
       history.scrollRestoration = "manual";
@@ -60,6 +64,7 @@ import "../styles/index.css";
       <Loader />
 
       <div
+        x-show="!$store.main.isLost"
         :class="$store.main.isHome ? 'fixed' : 'absolute landscape:fixed'"
         class="inset-s-0 top-[calc(100vw*335/400)] z-10 -translate-y-full landscape:inset-s-[unset] landscape:inset-e-1/2 landscape:top-0 landscape:-translate-y-0"
       >
