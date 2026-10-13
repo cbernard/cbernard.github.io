@@ -40,7 +40,8 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
 
 <Layout>
   <div
-    class="absolute end-0 top-0 z-30 m-3 mix-blend-difference landscape:fixed"
+    class="absolute end-0 top-0 z-30 m-3 md:mix-blend-difference landscape:fixed"
+    data-around-image
   >
     <Link href="/" class="inline-block p-2 text-white">Back</Link>
   </div>
@@ -91,7 +92,8 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
           }
         </div>
 
-        <div class="z-10 col-start-1 row-start-1 md:hidden">
+        {/* Where Works has its own: it stays through the transition. */}
+        <div class="z-10 col-start-1 row-start-1 md:hidden" data-shared>
           <a href="/" class="text-white">CB</a>
         </div>
 
@@ -144,7 +146,7 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
                 </h1>
               </a>
             ) : (
-              <h1 class="text-[52px]" data-split>
+              <h1 class="text-[32px] md:text-[52px]" data-split>
                 {project.title}
               </h1>
             )
@@ -173,6 +175,7 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
 
     <div
       class="grid h-[50vh] grid-cols-6 flex-col items-center gap-[10px] px-4 pb-14 md:h-auto md:w-[50vw] md:grid-cols-8 md:pt-56 md:pr-5 md:pl-[5px]"
+      data-around-image
     >
       <div
         class="images z-2 col-span-5 col-start-2 flex flex-col gap-y-4 md:col-span-6 md:col-start-2 md:gap-y-10"
@@ -191,7 +194,8 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
                   aria-label={`${project.title} - ${index}`}
                   class:list={[
                     "w-full",
-                    item.includes("-mobile") && "mx-auto max-w-80",
+                    item.includes("-mobile") &&
+                      "mx-auto max-w-[60%] md:max-w-80",
                   ]}
                 />
               ) : (
@@ -208,7 +212,9 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
         }
       </div>
 
-      <div class="test z-1 col-span-full col-start-1 -mt-20">
+      <div
+        class="test z-1 col-span-5 col-start-2 -mt-20 md:col-span-full md:col-start-1"
+      >
         <Next label="Next project" href={`/project/${nextProject.slug}`} />
       </div>
     </div>

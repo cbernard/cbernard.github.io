@@ -31,6 +31,45 @@ const isDesktopLandscape = () =>
     `(min-width: ${breakpoint("lg")}) and (orientation: landscape)`,
   ).matches;
 
+// Touch only: a narrow window on a computer takes the mobile layout, but none
+// of the transitions made for a phone.
+const isTouch = () => window.matchMedia("(pointer: coarse)").matches;
+
+// A phone in portrait opens Works and a project on the same picture, in the
+// same place: it stays put while the rest of the page changes around it.
+const sharesImage = () =>
+  isTouch() &&
+  window.matchMedia("(orientation: portrait)").matches &&
+  !window.matchMedia(`(min-width: ${breakpoint("md")})`).matches;
+
+// Opacity only: the accordion owns the transform of some of these.
+const hideAround = (targets) =>
+  gsap.to(targets, { opacity: 0, duration: 0.4, ease: "power2.in" }).then();
+
+const showAround = (targets) =>
+  gsap
+    .from(targets, {
+      opacity: 0,
+      y: 20,
+      duration: 0.6,
+      ease: "power2.out",
+      stagger: 0.05,
+      clearProps: "opacity,transform",
+    })
+    .then();
+
+// Lenis calls no `onComplete` for a scroll it has nothing to do.
+const scrollToTop = () =>
+  scrollInstance.scrollY > 0
+    ? new Promise((resolve) =>
+        scrollInstance.scrollTo(0, {
+          duration: 0.6,
+          easing: (t) => 1 - Math.pow(1 - t, 3),
+          onComplete: resolve,
+        }),
+      )
+    : Promise.resolve();
+
 const fadeOut = () =>
   gsap.to("#swup", { opacity: 0, duration: 0.3, ease: "power2.out" });
 
@@ -57,6 +96,9 @@ const fadeOutPanel = () =>
 
 let leaving = null;
 
+// The `[data-shared]` element of the page left, as it stood on screen.
+let shared = null;
+
 const dropLeaving = () => {
   leaving?.remove();
   leaving = null;
@@ -72,6 +114,13 @@ const captureLeaving = () => {
   if (!container) {
     return;
   }
+
+  const element = container.querySelector("[data-shared]");
+
+  shared = element && {
+    node: element.cloneNode(true),
+    rect: element.getBoundingClientRect(),
+  };
 
   // A copy and not the container itself: Alpine undoes the classes and the
   // styles it bound the moment its elements leave the document, and the page
@@ -123,6 +172,36 @@ const captureLeaving = () => {
   gsap.set(leaving, { y: 0 });
 };
 
+// Held still while the pages slide when both carry it at the same place: a copy
+// stands over the transition, the two pages travel without theirs.
+const holdShared = () => {
+  const arriving = document.querySelector("#swup [data-shared]");
+
+  if (
+    !isTouch() ||
+    !shared?.rect.width ||
+    !arriving?.getBoundingClientRect().width
+  ) {
+    return null;
+  }
+
+  const { node, rect } = shared;
+  const holder = document.createElement("div");
+
+  holder.style.cssText = `position: fixed; z-index: 9100; pointer-events: none; left: ${rect.left}px; top: ${rect.top}px; width: ${rect.width}px`;
+  holder.append(node);
+  document.body.append(holder);
+
+  const hidden = [arriving, leaving.querySelector("[data-shared]")];
+
+  hidden.forEach((element) => (element.style.visibility = "hidden"));
+
+  return () => {
+    holder.remove();
+    hidden.forEach((element) => element.style.removeProperty("visibility"));
+  };
+};
+
 // The distance a page travels to clear the viewport on the given axis.
 const span = (element, axis) => {
   const { width, height } = element.getBoundingClientRect();
@@ -155,6 +234,7 @@ const cover = (axis = "y", direction = 1) => {
 
   const distance = span(leaving, axis) * direction;
   const unclip = axis === "x" ? clipSides() : null;
+  const release = holdShared();
 
   // The copy is what gets covered, so it goes under the arriving page.
   leaving.style.zIndex = -1;
@@ -172,6 +252,7 @@ const cover = (axis = "y", direction = 1) => {
         dropLeaving();
         gsap.set("#swup", { clearProps: "transform,backgroundColor" });
         unclip?.();
+        release?.();
       },
     })
     .to(
@@ -205,6 +286,7 @@ const uncover = (axis = "y", direction = 1) => {
   const distance = span(leaving, axis) * direction;
   const layer = "[data-reveal-slide-up='load']";
   const unclip = axis === "x" ? clipSides() : null;
+  const release = holdShared();
 
   return gsap
     .timeline({
@@ -212,6 +294,7 @@ const uncover = (axis = "y", direction = 1) => {
         dropLeaving();
         gsap.set(layer, { clearProps: "transform" });
         unclip?.();
+        release?.();
       },
     })
     .to(
@@ -262,7 +345,16 @@ const swup = new Swup({
         {
           from: "(/)",
           to: "(/project/.*)",
-          out: async () => {
+          out: async (_, { visit }) => {
+            visit.meta.sharesImage = sharesImage();
+
+            if (visit.meta.sharesImage) {
+              await hideAround(
+                "[data-around-image], [data-reveal-fade='swup']",
+              );
+              return;
+            }
+
             // Portrait has none of the split layout the desktop animation
             // slides apart, so the pages cover each other there too.
             if (!isDesktopLandscape()) {
@@ -283,7 +375,14 @@ const swup = new Swup({
                 "<",
               );
           },
-          in: async () => {
+          in: async (_, { visit }) => {
+            if (visit.meta.sharesImage) {
+              await showAround(
+                "[data-around-image], .panel .image ~ :not([data-shared])",
+              );
+              return;
+            }
+
             if (!isDesktopLandscape()) {
               await cover("x");
             }
@@ -292,7 +391,17 @@ const swup = new Swup({
         {
           from: "(/project/.*)",
           to: "(/)",
-          out: async () => {
+          out: async (_, { visit }) => {
+            visit.meta.sharesImage = sharesImage();
+
+            if (visit.meta.sharesImage) {
+              await scrollToTop();
+              await hideAround(
+                "[data-around-image], .panel .image ~ :not([data-shared])",
+              );
+              return;
+            }
+
             if (!isDesktopLandscape()) {
               captureLeaving();
               return;
@@ -306,7 +415,13 @@ const swup = new Swup({
               ease: easing,
             });
           },
-          in: async () => {
+          // The thumbnail and the list come back on the reveal.
+          in: async (_, { visit }) => {
+            if (visit.meta.sharesImage) {
+              await showAround("[data-around-image]");
+              return;
+            }
+
             if (!isDesktopLandscape()) {
               await uncover("x");
             }

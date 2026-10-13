@@ -7,6 +7,8 @@ const projects = defineCollection({
     slug: z.string(),
     order: z.number(),
     title: z.string(),
+    // For the list of Works, where a long title would not fit on a phone.
+    shortTitle: z.string().optional(),
     client: z.string(),
     year: z.union([z.number(), z.string()]),
     services: z.array(z.string()),

@@ -57,6 +57,7 @@ export default function loader({ fonts = [], images = [] } = {}) {
       tl.to(this.$el, {
         yPercent: "-100",
         delay: 2,
+        onStart: () => delete document.documentElement.dataset.loading,
         duration,
         ease: easing,
       });

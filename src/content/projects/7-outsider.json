@@ -2,6 +2,7 @@
   "slug": "outsider",
   "order": 7,
   "title": "Outsider Architecture",
+  "shortTitle": "Outsider",
   "client": "Outsider Architecture",
   "year": 2025,
   "services": ["HTML", "CSS", "JS", "Kirby", "Alpine.js"],

@@ -6,11 +6,16 @@ import Grid from "../components/grid/grid.astro";
 import Separator from "../components/separator/separator.astro";
 
 import "../styles/index.css";
+
+// `data-loading` keeps the canvas, which Chrome on Android paints under its
+// bottom bar, black for as long as the loader covers the page.
 ---
 
 <!doctype html>
 <html
   lang="en"
+  class="data-loading:bg-black"
+  data-loading
   x-data
   :class="($store.darkMode.on || $store.main.isLost) && 'dark'"
 >

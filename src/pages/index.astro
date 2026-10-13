@@ -22,16 +22,24 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
   <div
     class="fixed top-0 left-0 z-30 grid w-full grid-cols-6 gap-[10px] px-4 pt-5 landscape:hidden"
   >
-    <span class="col-span-1 text-white">CB</span>
-    <span class="col-span-4 text-white-32">Frontend Developer</span>
+    <span class="col-span-1 text-white" data-shared>CB</span>
+    <span class="col-span-4 text-white-32" data-around-image>
+      Frontend Developer
+    </span>
   </div>
 
-  <div class="fixed end-0 top-0 z-30 mx-2 mt-3 landscape:m-3">
+  <div class="fixed end-0 top-0 z-30 mx-2 mt-3 landscape:m-3" data-around-image>
     <Link href="/about" class="inline-block p-2 text-white">About</Link>
   </div>
 
-  <div class="fixed end-0 bottom-0 z-30">
-    <Email class="m-3 inline-block p-2 text-white">Contact</Email>
+  {
+    /* In portrait, at the bottom of the hero, whose ratio is that of `.projects`. */
+  }
+  <div
+    class="fixed end-0 top-[calc(100vw_*_335_/_400)] z-30 -translate-y-full px-2 pb-3 landscape:top-auto landscape:bottom-0 landscape:translate-y-0 landscape:p-3"
+    data-around-image
+  >
+    <Email class="inline-block p-2 text-white">Contact</Email>
   </div>
 
   <div x-data="accordion()">
@@ -93,10 +101,16 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
         }
 
         <div
-          class="projects__thumbnail absolute inset-0 z-50 hidden items-center justify-center landscape:flex"
+          class="projects__thumbnail absolute inset-0 z-50 flex items-center justify-center"
           data-reveal-fade="swup"
         >
-          <div class="aspect-[300/375] w-[clamp(300px,20vw,480px)] overflow-hidden">
+          {
+            /* In portrait the hero is too short for the desktop width, so the
+              thumbnail takes its size from the height. */
+          }
+          <div
+            class="aspect-[300/375] h-[45%] overflow-hidden landscape:h-auto landscape:w-[clamp(300px,20vw,480px)]"
+          >
             <div
               class="flex translate-y-[calc(100%_/_var(--length)_*_var(--current)_*_-1)] flex-col"
               x-bind:class={`ready && 'transition-transform'`}
@@ -161,7 +175,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
               return (
                 <Work
                   index={index}
-                  title={project.data.title}
+                  title={project.data.shortTitle ?? project.data.title}
                   link={`project/${project.data.slug}`}
                 />
               );
