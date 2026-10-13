@@ -7,6 +7,16 @@ const FADE = "opacity 0.3s ease-out";
 // What is left of the real pin under its picture.
 const FADED = "0.32";
 
+// Kept between the card and the edges of the viewport.
+const MARGIN = 16;
+
+// Tilt of the postcard, in degrees either way: never flat, and small enough
+// for the 90vw card to stay on screen.
+const MIN_ANGLE = 1.5;
+const MAX_ANGLE = 4;
+
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
 export default function pins() {
   return {
     active: null,
@@ -70,8 +80,33 @@ export default function pins() {
         return;
       }
 
+      this.place(index, event.target.closest("[data-pin]"));
       this.pressed = index;
       this.lift(index);
+    },
+
+    // Centered on the pin, as far as the viewport allows.
+    place(index, pin) {
+      const card = document.querySelector(`[data-postcard="${index}"]`);
+
+      if (!card) {
+        return;
+      }
+
+      const rect = pin.getBoundingClientRect();
+      const { clientWidth, clientHeight } = document.documentElement;
+      const half = card.offsetWidth / 2 + MARGIN;
+
+      const x = clamp(rect.left + rect.width / 2, half, clientWidth - half);
+      const y = clamp(rect.top + rect.height / 2, half, clientHeight - half);
+
+      const angle =
+        (MIN_ANGLE + Math.random() * (MAX_ANGLE - MIN_ANGLE)) *
+        (Math.random() < 0.5 ? -1 : 1);
+
+      card.style.setProperty("--x", `${x}px`);
+      card.style.setProperty("--y", `${y}px`);
+      card.style.setProperty("--angle", `${angle}deg`);
     },
 
     handleRelease() {

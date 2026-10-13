@@ -8,18 +8,8 @@ import Postcard from "../components/pin/postcard.astro";
 import Link from "../components/link/link.astro";
 import Email from "../components/email/email.astro";
 
-import backgroundImage from "../images/about.jpg";
-import travelImage from "../images/about_travel.jpg";
-import wavesImage from "../images/about_waves.jpg";
-import hikingImage from "../images/about_hiking.jpg";
-
-const pins = [
-  { label: "travel lover", image: travelImage },
-  { label: "between two waves", image: wavesImage },
-  { label: "great hiking", image: hikingImage },
-  // TODO: give the cycling pin its own picture.
-  { label: "cycling", image: hikingImage },
-];
+import { backgroundSizes } from "../utils/images";
+import { aboutImage, aboutWidths, pinWidths, pins } from "../utils/about";
 
 const links = [
   {
@@ -82,10 +72,10 @@ const credits = [
         >
           <Picture
             fallbackFormat="webp"
-            src={backgroundImage}
+            src={aboutImage}
             formats={["webp"]}
-            widths={[400, 800]}
-            sizes="(orientation: landscape) 50vw, 100vw"
+            widths={aboutWidths}
+            sizes={backgroundSizes}
             alt="Charly"
             class="h-full w-full object-cover object-center"
           />
@@ -103,8 +93,8 @@ const credits = [
                   fallbackFormat="webp"
                   src={pin.image}
                   formats={["webp"]}
-                  widths={[400, 800, 1200, 1600]}
-                  sizes="(orientation: landscape) 50vw, 100vw"
+                  widths={pinWidths}
+                  sizes={backgroundSizes}
                   alt={pin.label}
                   loading="eager"
                   pictureAttributes={{ class: "block h-full w-full" }}

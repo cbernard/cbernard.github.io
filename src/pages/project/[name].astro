@@ -80,11 +80,12 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
             )
           }
 
+          {/* Darker on mobile, where the copy sits on the image. */}
           {
             project.overlay > 0 && (
               <div
-                class="pointer-events-none absolute inset-0 bg-black"
-                style={`opacity: ${project.overlay}`}
+                class="pointer-events-none absolute inset-0 bg-black opacity-[min(1,calc(var(--overlay)_+_0.2))] md:opacity-(--overlay)"
+                style={`--overlay: ${project.overlay}`}
               />
             )
           }

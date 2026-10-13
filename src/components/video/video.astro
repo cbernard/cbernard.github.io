@@ -1,6 +1,7 @@
 ---
 import { existsSync } from "node:fs";
 import type { HTMLAttributes } from "astro/types";
+import sharp from "sharp";
 
 export interface Props extends HTMLAttributes<"video"> {
   path: string;
@@ -12,11 +13,17 @@ const base = `/${path.replace(/\.\w+$/, "")}`;
 
 // A clip only gets a webm where VP9 came out lighter than the mp4.
 const hasWebm = existsSync(`public${base}.webm`);
+
+// Sized like its poster, which matches the clip: without it the element is
+// 300×150 until the poster decodes, and the layout jumps.
+const { width, height } = await sharp(`public${base}.webp`).metadata();
 ---
 
 <video
   x-data="video"
   poster={`${base}.webp`}
+  width={width}
+  height={height}
   muted
   loop
   playsinline

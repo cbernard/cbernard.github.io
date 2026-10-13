@@ -8,6 +8,14 @@ import {
   backgroundWidths,
   getImageByPath,
 } from "../../utils/images";
+import {
+  aboutImage,
+  aboutWidths,
+  pinWidths,
+  pins,
+  postcardSizes,
+  postcardWidths,
+} from "../../utils/about";
 
 const projects = await getCollection("projects");
 
@@ -16,15 +24,15 @@ const isVideo = (path: string) => /\.(mp4|webm)$/.test(path);
 // The same transform as the `<Picture>` of the page, so the browser picks the
 // very file it will show. A video is represented by its poster.
 const getAsset = async (
-  path: string,
+  path: string | ImageMetadata,
   { widths, sizes }: { widths?: number[]; sizes?: string } = {},
 ) => {
-  if (isVideo(path)) {
+  if (typeof path === "string" && isVideo(path)) {
     return { src: `/${path.replace(/\.\w+$/, ".webp")}` };
   }
 
   const image = await getImage({
-    src: getImageByPath(path),
+    src: typeof path === "string" ? getImageByPath(path) : path,
     format: "webp",
     widths,
   });
@@ -36,26 +44,32 @@ const getAsset = async (
 
 const background = { widths: backgroundWidths, sizes: backgroundSizes };
 
-const images = await Promise.all(
-  projects.flatMap((project) => [
+// The videos themselves stream in on the page instead of holding up the
+// loader, but their posters are in.
+const images = await Promise.all([
+  ...projects.flatMap((project) => [
     getAsset(project.data.background, background),
     getAsset(project.data.thumbnail),
-    // Videos stream in on the project page instead of holding up the loader.
-    ...project.data.medias
-      .filter((media) => !isVideo(media))
-      .map((media) => getAsset(media)),
+    ...project.data.medias.map((media) => getAsset(media)),
   ]),
-);
+  getAsset(aboutImage, { widths: aboutWidths, sizes: backgroundSizes }),
+  ...pins.flatMap((pin) => [
+    getAsset(pin.image, { widths: pinWidths, sizes: backgroundSizes }),
+    getAsset(pin.image, { widths: postcardWidths, sizes: postcardSizes }),
+  ]),
+]);
 
 const assets = {
   fonts: ["/fonts/TWKLausanne-300.woff2"],
-  images: [...new Map(images.map((image) => [image.src, image])).values()],
+  images: [
+    ...new Map(images.map((image) => [JSON.stringify(image), image])).values(),
+  ],
 };
 ---
 
 {/* Above the separator of the page, which would otherwise darken its own. */}
 <div
-  class="fixed inset-0 z-[9500] grid grid-cols-6 items-center gap-[10px] bg-black px-5 text-white-32 md:grid-cols-16"
+  class="fixed inset-0 z-[9500] grid grid-cols-6 items-center gap-[10px] bg-black px-4 text-white-32 md:px-5 md:grid-cols-16"
   x-data={`loader(${JSON.stringify(assets)})`}
 >
   <Separator loader />
@@ -65,7 +79,8 @@ const assets = {
     <Progress progress="load" />
   </div>
 
-  <div class="col-span-15 col-start-2 flex items-center gap-x-4">
+  {/* Clear of the separator, which sits close to the second column on mobile. */}
+  <div class="col-span-15 col-start-2 flex items-center gap-x-4 pl-4 md:pl-0">
     <span class="text-white">Charly Bernard</span>
     <span>Frontend Developer</span>
   </div>
