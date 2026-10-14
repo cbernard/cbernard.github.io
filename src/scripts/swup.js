@@ -373,6 +373,13 @@ const swup = new Swup({
                 ".projects__thumbnail",
                 { xPercent: 100, duration: duration, ease: easing },
                 "<",
+              )
+              // The image slides over the copy, which would otherwise show
+              // through until the swap.
+              .to(
+                "[x-ref='container'], [data-around-image]",
+                { opacity: 0, duration: 0.4, ease: "power2.in" },
+                "<",
               );
           },
           in: async (_, { visit }) => {
