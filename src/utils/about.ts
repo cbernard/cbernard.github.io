@@ -6,11 +6,9 @@ import hikingImage from "../images/about_hiking.jpg";
 export { aboutImage };
 
 export const pins = [
-  { label: "travel lover", image: travelImage },
-  { label: "between two waves", image: wavesImage },
-  { label: "great hiking", image: hikingImage },
-  // TODO: give the cycling pin its own picture.
-  { label: "cycling", image: hikingImage },
+  { label: "hiking in the mountains", image: hikingImage },
+  { label: "travelling somewhere new", image: travelImage },
+  { label: "catching a few waves", image: wavesImage },
 ];
 
 // The loader preloads these pictures at these exact widths so it fetches the

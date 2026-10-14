@@ -2,9 +2,11 @@
 export interface Props {
   label: string;
   index: number;
+  // Punctuation that follows the label, kept before the pin so it hugs the word.
+  punctuation?: string;
 }
 
-const { label = "", index = 0 } = Astro.props;
+const { label = "", index = 0, punctuation = "" } = Astro.props;
 
 const words = label.trim().split(" ");
 const last = words.pop();
@@ -17,12 +19,12 @@ const last = words.pop();
 >
   {words.length > 0 && `${words.join(" ")} `}
   <span class="whitespace-nowrap">
-    {last}
+    {last}{punctuation}
     <button
       class="relative mx-[max(0.5rem,0.19em)] size-[max(1.25rem,0.46em)] cursor-pointer align-middle touch-none text-black-32 transition-colors duration-200 select-none before:absolute before:inset-0 before:rounded-full before:border before:content-[''] after:absolute after:top-1/2 after:left-1/2 after:size-[40%] after:translate-x-[-50%] after:translate-y-[-50%] after:transform after:rounded-full after:bg-current after:transition-opacity after:content-[''] hover:text-black hover:after:opacity-0 dark:text-white-32 dark:hover:text-white"
       data-pin={index}
       data-cursor="-round"
       data-cursor-stick
-      aria-label={`Show the ${label} picture`}></button>
+      aria-label="Show picture"></button>
   </span>
 </span>

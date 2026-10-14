@@ -45,7 +45,11 @@ const recognitions: {
 ];
 
 const credits = [
-  { name: "Thomas Monavon", role: "UX / UI Design" },
+  {
+    name: "Thomas Monavon",
+    role: "UX / UI Design",
+    href: "https://www.thomasmonavon.com/",
+  },
 ];
 ---
 
@@ -155,31 +159,27 @@ const credits = [
             would hand every line the `gap-y-4` meant to separate the paragraphs
             and the copy would lose its leading. */}
         <div
-          class="flex flex-col gap-y-4 text-[clamp(2rem,1.58rem_+_1.39vw,3.25rem)] leading-[1.1]"
+          class="flex flex-col gap-y-4 text-[clamp(2rem,1.58rem_+_1.39vw,3.25rem)] leading-[1.1] text-pretty"
         >
           <p data-split>
-            Charly Bernard is a Swiss developer and <Pin
-              label={pins[0].label}
-              index={0}
-            />
-            passionate about creating innovative and efficient digital solutions.
-            With expertise in web and software development, he focuses on delivering
-            high-quality, user-friendly applications.
+            Charly Bernard is a frontend developer based in Switzerland,
+            passionate about building things for the web. With over 10 years of
+            experience, he enjoys bringing ideas to life through clean code,
+            thoughtful interactions and a healthy obsession with the little
+            details.
           </p>
           <p data-split>
-            Driven by curiosity and precision, <Pin
-              label={pins[1].label}
-              index={1}
-            />
-            Charly continuously explores new technologies to enhance his projects.
+            Curious by nature, he’s always exploring new technologies,
+            experimenting with fresh ideas and finding better ways to approach
+            his work. He believes great digital experiences come from a balance
+            of creativity, simplicity and technical precision.
           </p>
           <p data-split>
-            A <Pin label={pins[2].label} index={2} />
-            and photography enthusiast, he is someone who loves
-            to see things through in his work and has a keen eye for detail,
-            ensuring pixel-perfect integration of any request. He is also a
-            <Pin label={pins[3].label} index={3} />
-            enthusiast.
+            Away from the screen, you’ll likely find him{" "}
+            <Pin label={pins[0].label} index={0} punctuation="," />{" "}
+            taking photos,{" "}
+            <Pin label={pins[1].label} index={1} />{" "}
+            or <Pin label={pins[2].label} index={2} punctuation="." />
           </p>
         </div>
 
@@ -232,7 +232,9 @@ const credits = [
               {
                 credits.map((item) => (
                   <div class="grid grid-cols-2 gap-x-[10px] gap-y-1 md:grid-cols-6">
-                    <div class="md:col-span-2">{item.name}</div>
+                    <div class="md:col-span-2">
+                      <Link href={item.href}>{item.name}</Link>
+                    </div>
 
                     <div class="text-black-32 md:col-span-3 md:col-start-3 dark:text-white-32">
                       {item.role}
