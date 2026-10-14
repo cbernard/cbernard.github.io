@@ -4,7 +4,7 @@
   "title": "OV - 2021",
   "client": "Terre des hommes",
   "year": 2021,
-  "services": ["WordPress"],
+  "services": ["WordPress", "WooCommerce", "Alpine.js"],
   "description": "A browser game for Terre des hommes’ virtual orange sale. Every orange caught in the basket turns into a donation for children’s projects.",
   "background": "images/projects/ov-2021/background.webp",
   "overlay": 0.45,

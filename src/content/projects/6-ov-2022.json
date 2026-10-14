@@ -4,7 +4,7 @@
   "title": "OV - 2022",
   "client": "Terre des hommes",
   "year": 2022,
-  "services": ["WordPress"],
+  "services": ["WordPress", "WooCommerce", "Alpine.js"],
   "description": "The second edition of the virtual orange sale for Terre des hommes. An illustrated world to explore, where hidden oranges reveal stories from the field.",
   "background": "images/projects/ov-2022/background.webp",
   "overlay": 0.5,

@@ -4,7 +4,7 @@
   "title": "OV - 2023",
   "client": "Terre des hommes",
   "year": 2023,
-  "services": ["WordPress"],
+  "services": ["WordPress", "WooCommerce", "Alpine.js"],
   "description": "The 2023 virtual orange sale for Terre des hommes. A memory game against the clock, where every pair found becomes a donation.",
   "background": "images/projects/ov-2023/background.webp",
   "overlay": 0.3,
