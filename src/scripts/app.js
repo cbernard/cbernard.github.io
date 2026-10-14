@@ -1,6 +1,6 @@
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import "./alpine.js";
+import { isHomepage, isLostPage } from "./alpine.js";
 import swup from "./swup.js";
 import scrollInstance from "./scroll.js";
 import cursorInstance from "./cursor.js";
@@ -16,6 +16,21 @@ class App {
         swup: true,
         instant: Boolean(visit.meta.composed),
       });
+    });
+
+    // Escape leads back to Works from a project or About.
+    window.addEventListener("keydown", (e) => {
+      if (
+        e.key !== "Escape" ||
+        e.repeat ||
+        isHomepage() ||
+        isLostPage() ||
+        e.target.closest?.("input, textarea, select")
+      ) {
+        return;
+      }
+
+      swup.navigate("/");
     });
 
     // Trigger positions are measured off until the `in` animation has settled.

@@ -146,7 +146,25 @@ export default function accordion() {
         this.scrollToNext();
       } else if (e.key === "ArrowUp") {
         this.scrollToPrevious();
+      } else if (e.key === "Enter") {
+        this.open(e);
       }
+    },
+
+    // A focused link or button already acts on Enter by itself.
+    open(e) {
+      if (
+        e.repeat ||
+        e.metaKey ||
+        e.ctrlKey ||
+        e.shiftKey ||
+        e.altKey ||
+        e.target.closest?.("a, button, input, textarea, select")
+      ) {
+        return;
+      }
+
+      this.items[this.current]?.querySelector("a")?.click();
     },
 
     createScrolltriggerInstances() {
