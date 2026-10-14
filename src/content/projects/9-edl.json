@@ -1,0 +1,21 @@
+{
+  "slug": "edl",
+  "order": 9,
+  "title": "Eau de Lavey",
+  "client": "Eau de Lavey",
+  "year": 2021,
+  "services": [],
+  "description": "Frontend development of the website and online shop for Eau de Lavey, a thermal spring spray from the Swiss Alps. Immersive pages built around nature imagery, with smooth transitions and a simple path to purchase.",
+  "background": "images/projects/edl/background.webp",
+  "overlay": 0.65,
+  "thumbnail": "images/projects/edl/thumbnail.webp",
+  "medias": [
+    "videos/projects/edl/01.mp4",
+    "videos/projects/edl/02.mp4",
+    "videos/projects/edl/03.mp4",
+    "videos/projects/edl/04.mp4",
+    "videos/projects/edl/05.mp4",
+    "videos/projects/edl/06.mp4",
+    "videos/projects/edl/07.mp4"
+  ]
+}

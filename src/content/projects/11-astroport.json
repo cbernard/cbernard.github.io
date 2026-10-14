@@ -1,11 +1,11 @@
 {
   "slug": "astroport",
-  "order": 6,
+  "order": 11,
   "title": "Astroport",
   "client": "Astroport",
   "year": "2021–2022",
   "services": ["React", "Next.js", "Chakra UI"],
-  "description": "Front-end development for Astroport, a decentralised exchange. Both the public website and the trading interface, built to make a complex product clear and fluid.",
+  "description": "Frontend development for Astroport, a decentralised exchange. Both the public website and the trading interface, built to make a complex product clear and fluid.",
   "background": "images/projects/astroport/background.webp",
   "overlay": 0.3,
   "thumbnail": "videos/projects/astroport/thumbnail.mp4",
