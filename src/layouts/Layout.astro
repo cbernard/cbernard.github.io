@@ -17,7 +17,7 @@ import "../styles/index.css";
   class="data-loading:bg-black"
   data-loading
   x-data
-  :class="($store.darkMode.on || $store.main.isLost) && 'dark'"
+  :class="$store.darkMode.on && 'dark'"
 >
   <head>
     <meta charset="UTF-8" />

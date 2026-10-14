@@ -4,13 +4,18 @@ import Frame from "../components/lost/frame.astro";
 ---
 
 <Layout>
-  <Frame>
-    <div
-      class="relative h-svh overflow-hidden"
-      x-data="field()"
-      data-page="404"
-    >
-      <canvas class="absolute inset-0 h-full w-full" x-ref="canvas"></canvas>
-    </div>
-  </Frame>
+  {/* Stays put while the page slides in, so no light body shows below it. */}
+  <div class="fixed inset-0 bg-black"></div>
+
+  <div class="relative" data-reveal-slide-up="load">
+    <Frame>
+      <div
+        class="relative h-svh overflow-hidden bg-black text-white"
+        x-data="field()"
+        data-page="404"
+      >
+        <canvas class="absolute inset-0 h-full w-full" x-ref="canvas"></canvas>
+      </div>
+    </Frame>
+  </div>
 </Layout>

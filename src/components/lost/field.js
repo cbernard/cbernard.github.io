@@ -29,6 +29,10 @@ export default function field() {
       this.canvas = this.$refs.canvas;
       this.context = this.canvas.getContext("2d");
 
+      const styles = getComputedStyle(this.$el);
+      this.rgb = styles.color.match(/\d+/g).slice(0, 3).join(", ");
+      this.background = styles.backgroundColor;
+
       this.onResize = () => this.resize();
       window.addEventListener("resize", this.onResize);
 
@@ -121,11 +125,7 @@ export default function field() {
       this.last = now;
 
       const { context, width, height } = this;
-      const styles = getComputedStyle(document.body);
-
-      // Re-read every frame: the theme switcher swaps the ink.
-      const [r, g, b] = styles.color.match(/\d+/g).map(Number);
-      const ink = (alpha) => `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      const ink = (alpha) => `rgba(${this.rgb}, ${alpha})`;
 
       const follow = 1 - Math.exp(-FOLLOW * delta);
       const active = pointer.x > -1e3;
@@ -136,7 +136,7 @@ export default function field() {
       context.clearRect(0, 0, width, height);
       context.lineWidth = 0.75;
       context.lineJoin = "round";
-      context.fillStyle = styles.backgroundColor;
+      context.fillStyle = this.background;
 
       relief.forEach(({ y, row }, index) => {
         const heights = [];

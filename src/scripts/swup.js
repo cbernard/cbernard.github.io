@@ -158,12 +158,6 @@ const captureLeaving = () => {
   leaving.className =
     "pointer-events-none fixed inset-0 overflow-hidden bg-white dark:bg-black";
 
-  // Keeps the theme it was captured in: leaving the 404 drops its forced
-  // dark mode while the copy is still on screen.
-  leaving.classList.toggle(
-    "dark",
-    document.documentElement.classList.contains("dark"),
-  );
   leaving.append(page);
   document.body.append(leaving);
 
@@ -246,11 +240,20 @@ const cover = (axis = "y", direction = 1) => {
     backgroundColor: getComputedStyle(document.body).backgroundColor,
   });
 
+  // Clipped to the screen it brings in: its background would otherwise run
+  // down over the page it covers, which only the first screen should hide.
+  const swupHeight = document.querySelector("#swup").offsetHeight;
+  gsap.set("#swup", {
+    clipPath: `inset(0 0 ${Math.max(0, swupHeight - window.innerHeight)}px 0)`,
+  });
+
   return gsap
     .timeline({
       onComplete: () => {
         dropLeaving();
-        gsap.set("#swup", { clearProps: "transform,backgroundColor" });
+        gsap.set("#swup", {
+          clearProps: "transform,backgroundColor,clipPath",
+        });
         unclip?.();
         release?.();
       },
@@ -480,6 +483,14 @@ const swup = new Swup({
           },
           in: async (_, { visit }) => {
             if (visit.meta.fromLost) {
+              // Works restores its scroll from where its items stand: they
+              // are measured before the page is moved out of place.
+              gsap.set("#swup", { visibility: "hidden" });
+              await new Promise((resolve) =>
+                requestAnimationFrame(() => requestAnimationFrame(resolve)),
+              );
+              gsap.set("#swup", { clearProps: "visibility" });
+
               await cover("y", -1);
             }
           },
