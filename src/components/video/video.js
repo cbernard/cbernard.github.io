@@ -2,6 +2,10 @@
 // scrolls in.
 const LOAD_MARGIN = "50% 0px";
 
+// Apple browsers take the mp4: its H.264 is decoded in hardware on every one of
+// their devices, where an iPhone may hold back the autoplay of the VP9 webm.
+const isApple = /^Apple/.test(navigator.vendor);
+
 export default function video() {
   return {
     loaded: false,
@@ -40,6 +44,11 @@ export default function video() {
     play() {
       if (!this.loaded) {
         this.$el.querySelectorAll("source").forEach((source) => {
+          if (isApple && source.type === "video/webm") {
+            source.remove();
+            return;
+          }
+
           source.src = source.dataset.src;
         });
 
