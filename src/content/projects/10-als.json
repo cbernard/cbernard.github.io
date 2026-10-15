@@ -3,7 +3,7 @@
   "order": 10,
   "title": "A. Lange & Söhne",
   "client": "Richemont",
-  "year": 2023,
+  "year": 2022,
   "services": ["Laravel", "Vue.js"],
   "description": "Frontend development of the A. Lange & Söhne website, from the collections to each timepiece. Components built with precision, true to the design and accessible to everyone.",
   "background": "images/projects/als/background.webp",

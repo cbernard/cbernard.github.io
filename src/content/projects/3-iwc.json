@@ -3,7 +3,7 @@
   "order": 3,
   "title": "IWC Schaffhausen",
   "client": "Richemont",
-  "year": "2025–present",
+  "year": 2025,
   "services": ["Laravel", "Vue.js"],
   "description": "Frontend development of the new IWC Schaffhausen website. Clean, precise components, built to the design system and optimised for every device.",
   "background": "images/projects/iwc/background.webp",
