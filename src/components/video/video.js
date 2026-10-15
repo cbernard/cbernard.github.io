@@ -5,12 +5,27 @@ const LOAD_MARGIN = "50% 0px";
 export default function video() {
   return {
     loaded: false,
+    visible: false,
     observer: null,
 
     init() {
+      // Safari only autoplays a clip it reads as muted, and a clip that Swup
+      // parses into the page can carry the attribute without the property.
+      this.$el.muted = true;
+
+      // Safari turns down a `play()` made while the page is still coming in:
+      // each of these gives it another go.
+      this.retry = () => this.visible && this.start();
+      this.$el.addEventListener("canplay", this.retry);
+      this.$el.addEventListener("loadeddata", this.retry);
+      document.addEventListener("touchstart", this.retry, { passive: true });
+      document.addEventListener("pointerdown", this.retry);
+
       this.observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) {
+          this.visible = entry.isIntersecting;
+
+          if (this.visible) {
             this.play();
           } else {
             this.$el.pause();
@@ -32,6 +47,14 @@ export default function video() {
         this.loaded = true;
       }
 
+      this.start();
+    },
+
+    start() {
+      if (!this.$el.paused) {
+        return;
+      }
+
       // Rejected when the browser refuses autoplay; the poster stays up.
       this.$el.play().catch(() => {});
     },
@@ -39,6 +62,8 @@ export default function video() {
     destroy() {
       this.observer?.disconnect();
       this.observer = null;
+      document.removeEventListener("touchstart", this.retry);
+      document.removeEventListener("pointerdown", this.retry);
     },
   };
 }
