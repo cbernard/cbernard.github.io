@@ -358,7 +358,7 @@ const swup = new Swup({
           to: "(/about/?)",
           // About rides in composed: staging its reveal on top of the cover
           // would read as two moves.
-          out: (_, { visit }) => {
+          out: async (_, { visit }) => {
             visit.meta.composed = true;
             captureLeaving();
           },
@@ -369,7 +369,7 @@ const swup = new Swup({
           to: "(/)",
           // Works comes back on its own reveal, the fade it plays when a
           // project closes.
-          out: () => captureLeaving(),
+          out: async () => captureLeaving(),
           in: () => uncover(),
         },
         {
