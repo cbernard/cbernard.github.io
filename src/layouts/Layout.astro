@@ -60,7 +60,7 @@ const person = {
 <!doctype html>
 <html
   lang="en"
-  class="data-loading:bg-black"
+  class="scheme-only-light data-loading:bg-black dark:scheme-dark"
   data-loading
   x-data
   :class="$store.darkMode.on && 'dark'"
@@ -68,6 +68,8 @@ const person = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    {/* Without it, Samsung Internet's dark mode greys out the light theme. */}
+    <meta name="color-scheme" content="only light" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <PostHog />
