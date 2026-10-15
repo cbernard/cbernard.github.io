@@ -4,7 +4,7 @@
   "title": "Eau de Lavey",
   "client": "Eau de Lavey",
   "year": 2021,
-  "services": [],
+  "services": ["WordPress", "WooCommerce", "Alpine.js"],
   "description": "Frontend development of the website and online shop for Eau de Lavey, a thermal spring spray from the Swiss Alps. Immersive pages built around nature imagery, with smooth transitions and a simple path to purchase.",
   "background": "images/projects/edl/background.webp",
   "overlay": 0.65,
