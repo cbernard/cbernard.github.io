@@ -70,18 +70,6 @@ const person = {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
-    {
-      /* TEMPORAIRE — à retirer au lancement, sans quoi le site restera
-        invisible dans les résultats de recherche.
-
-        Pas de `Disallow` dans un robots.txt en complément : il empêcherait
-        les robots de lire cette balise, et une URL bloquée peut tout de même
-        être listée si elle est liée depuis ailleurs. Le crawl doit rester
-        ouvert pour que le `noindex` soit vu, puis respecté. */
-    }
-    <meta name="robots" content="noindex, nofollow" />
-
-    {/* Kept once the line above goes: a missing page is never to be listed. */}
     {noindex && <meta name="robots" content="noindex" />}
 
     <title>{fullTitle}</title>
