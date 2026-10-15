@@ -44,14 +44,13 @@ const getAsset = async (
 
 const background = { widths: backgroundWidths, sizes: backgroundSizes };
 
-// The videos themselves stream in on the page instead of holding up the
-// loader, but their posters are in.
-const images = await Promise.all([
-  ...projects.flatMap((project) => [
-    getAsset(project.data.background, background),
-    getAsset(project.data.thumbnail),
-    ...project.data.medias.map((media) => getAsset(media)),
-  ]),
+const projectAssets = (project: (typeof projects)[number]) => [
+  getAsset(project.data.background, background),
+  getAsset(project.data.thumbnail),
+  ...project.data.medias.map((media) => getAsset(media)),
+];
+
+const aboutAssets = () => [
   getAsset(aboutImage, { widths: aboutWidths, sizes: backgroundSizes }),
   ...pins.flatMap((pin) =>
     pin.video
@@ -64,13 +63,45 @@ const images = await Promise.all([
           }),
         ],
   ),
+];
+
+// The loader holds the page only for what the page it opens on shows: Works
+// swaps between every background and thumbnail, a project shows its own. The
+// rest comes in behind it, so that the next visits are ready all the same.
+// The videos themselves stream in on the page; their posters are in.
+const path = Astro.url.pathname;
+const landing = projects.find((project) =>
+  path.startsWith(`/project/${project.data.slug}`),
+);
+
+const critical = await Promise.all(
+  path === "/"
+    ? projects.flatMap((project) => [
+        getAsset(project.data.background, background),
+        getAsset(project.data.thumbnail),
+      ])
+    : path.startsWith("/about")
+      ? aboutAssets()
+      : landing
+        ? projectAssets(landing).slice(0, 4)
+        : [],
+);
+
+const everything = await Promise.all([
+  ...projects.flatMap(projectAssets),
+  ...aboutAssets(),
 ]);
+
+const unique = (images: { src: string }[]) => [
+  ...new Map(images.map((image) => [JSON.stringify(image), image])).values(),
+];
+
+const held = new Set(critical.map((image) => JSON.stringify(image)));
 
 const assets = {
   fonts: ["/fonts/TWKLausanne-300.woff2"],
-  images: [
-    ...new Map(images.map((image) => [JSON.stringify(image), image])).values(),
-  ],
+  images: unique(critical),
+  later: unique(everything).filter((image) => !held.has(JSON.stringify(image))),
 };
 ---
 
