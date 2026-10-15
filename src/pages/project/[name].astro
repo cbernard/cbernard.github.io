@@ -38,7 +38,10 @@ const { project, nextProject, index } = Astro.props;
 const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
 ---
 
-<Layout>
+<Layout
+  title={project.title}
+  description={project.description}
+>
   <div
     class="absolute end-0 top-0 z-30 m-3 md:mix-blend-difference landscape:fixed"
     data-around-image
@@ -75,7 +78,7 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
                 formats={["webp"]}
                 widths={backgroundWidths}
                 sizes={backgroundSizes}
-                alt={`${project.title} background`}
+                alt={`${project.title} website`}
                 class="h-full w-full object-cover object-center"
               />
             )
@@ -191,7 +194,7 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
               {/\.(mp4|webm)$/.test(item) ? (
                 <Video
                   path={item}
-                  aria-label={`${project.title} - ${index}`}
+                  aria-label={`${project.title}, screen recording ${index + 1}`}
                   class:list={[
                     "w-full",
                     item.includes("-mobile") &&
@@ -203,7 +206,7 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
                   fallbackFormat="webp"
                   src={getImageByPath(item)}
                   formats={["webp"]}
-                  alt={`${project.title} - ${index}`}
+                  alt={`${project.title}, screenshot ${index + 1}`}
                   class="w-full"
                 />
               )}

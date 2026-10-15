@@ -19,6 +19,25 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Layout>
+  <h1 class="sr-only">Charly Bernard, frontend developer</h1>
+
+  {/* The list below only renders its links through Alpine, the selected one
+      alone as a link: these are there for robots and screen readers. Out of
+      the tab order, where they would take an invisible focus. */}
+  <nav class="sr-only" aria-label="Projects">
+    <ul>
+      {
+        sortedProjects.map((project) => (
+          <li>
+            <a href={`/project/${project.data.slug}`} tabindex="-1">
+              {project.data.title}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
   <div
     class="fixed top-0 left-0 z-30 grid w-full grid-cols-6 gap-[10px] px-4 pt-5 landscape:hidden"
   >

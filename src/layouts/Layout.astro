@@ -1,4 +1,6 @@
 ---
+import { getImage } from "astro:assets";
+
 import ThemeSwitcher from "../components/theme-switcher/theme-switcher.astro";
 import RotateNotice from "../components/rotate-notice/rotate-notice.astro";
 import Loader from "../components/loader/loader.astro";
@@ -6,6 +8,49 @@ import Grid from "../components/grid/grid.astro";
 import Separator from "../components/separator/separator.astro";
 
 import "../styles/index.css";
+
+import shareCard from "../images/share.png";
+
+export interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const NAME = "Charly Bernard";
+
+const {
+  title,
+  description = "Frontend developer based in Switzerland, building websites with care for detail, design systems and thoughtful interactions.",
+  noindex = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} — ${NAME}` : `${NAME} — Frontend Developer`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+// One card for the whole site, at the 1.91:1 every network shows, as a jpg
+// they all read.
+const shareImage = await getImage({
+  src: shareCard,
+  width: 1200,
+  height: 630,
+  fit: "cover",
+  format: "jpg",
+});
+const shareImageUrl = new URL(shareImage.src, Astro.site).href;
+
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: NAME,
+  jobTitle: "Frontend Developer",
+  url: Astro.site?.href,
+  address: { "@type": "PostalAddress", addressCountry: "CH" },
+  sameAs: [
+    "https://www.instagram.com/chrlbrnrd/",
+    "https://www.linkedin.com/in/charlybernard/",
+  ],
+};
 
 // `data-loading` keeps the canvas, which Chrome on Android paints under its
 // bottom bar, black for as long as the loader covers the page.
@@ -36,7 +81,28 @@ import "../styles/index.css";
     }
     <meta name="robots" content="noindex, nofollow" />
 
-    <title>Charly Bernard - Frontend Developer</title>
+    {/* Kept once the line above goes: a missing page is never to be listed. */}
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {!noindex && <link rel="canonical" href={canonical} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={NAME} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={shareImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(person)}
+    />
 
     <script is:inline>
       history.scrollRestoration = "manual";
