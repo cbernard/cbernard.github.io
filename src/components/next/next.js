@@ -2,7 +2,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import swup from "../../scripts/swup.js";
-import scrollInstance from "../../scripts/scroll.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,41 +9,32 @@ gsap.registerPlugin(ScrollTrigger);
 // fractional height never reports a progress of exactly 1.
 const BOTTOM_THRESHOLD = 1;
 
-// Lenis delta, already scaled by `wheelMultiplier`, needed to fill the label.
-const FILL_DISTANCE = 140;
+const LEAVE_DELAY = 200;
 
-// Scroll the label stays pinned for, which leaves that much space above it.
-const PIN_DISTANCE = { mobile: 200, desktop: 300 };
+// Further out than BOTTOM_THRESHOLD, or a scroll resting on the boundary would
+// arm and disarm on every frame.
+const CANCEL_THRESHOLD = 8;
+
+// Share of the viewport the label stays pinned for, which leaves that much
+// space above it.
+const PIN_DISTANCE = { mobile: 0.8, desktop: 0.4 };
 
 const isMobile = () =>
   !window.matchMedia(
     `(min-width: ${getComputedStyle(document.documentElement).getPropertyValue("--breakpoint-md").trim()})`,
   ).matches;
 
-// How long the input may pause before the label empties.
-const IDLE_DELAY = 150;
-
-// Upward delta that empties the label, above the jitter of a finger at rest.
-const RESET_DELTA = 8;
-
 export default function next(href) {
   return {
     leaving: false,
     armed: false,
     fill: 0,
-    target: 0,
-    tween: null,
-    idleTimer: null,
+    timer: null,
     trigger: null,
     animation: null,
-    stopListening: null,
 
     get progress() {
       return `${this.fill * 100}%`;
-    },
-
-    get engaged() {
-      return this.$store.main.scrollRemaining <= BOTTOM_THRESHOLD;
     },
 
     init() {
@@ -61,13 +51,29 @@ export default function next(href) {
         // it on the next frame: until then the store still reads the bottom of
         // the page just left.
         if (!this.armed) {
-          this.armed = remaining > BOTTOM_THRESHOLD;
+          this.armed = remaining > CANCEL_THRESHOLD;
+          return;
         }
-      });
 
-      this.stopListening = scrollInstance.onVirtualScroll(({ deltaY }) =>
-        this.push(deltaY),
-      );
+        if (this.leaving) {
+          return;
+        }
+
+        if (remaining > CANCEL_THRESHOLD) {
+          this.cancel();
+          return;
+        }
+
+        if (this.timer || remaining > BOTTOM_THRESHOLD) {
+          return;
+        }
+
+        this.timer = setTimeout(() => {
+          this.timer = null;
+          this.leaving = true;
+          swup.navigate(href);
+        }, LEAVE_DELAY);
+      });
 
       this.animation = gsap.to(element, {
         opacity: 1,
@@ -80,67 +86,22 @@ export default function next(href) {
         trigger: element,
         start: "bottom bottom-=40px",
         end: () =>
-          `+=${isMobile() ? PIN_DISTANCE.mobile : PIN_DISTANCE.desktop}`,
+          `+=${window.innerHeight * PIN_DISTANCE[isMobile() ? "mobile" : "desktop"]}`,
         toggleActions: "play none none reverse",
         pin: true,
         animation: this.animation,
+        // Fills over the pinned stretch only, where the label is in sight.
+        onUpdate: ({ progress }) => (this.fill = progress),
       });
     },
 
-    // Empties as soon as the input pauses or the page goes back up.
-    push(delta) {
-      if (!this.armed || this.leaving) {
-        return;
-      }
-
-      if (delta < -RESET_DELTA) {
-        this.reset();
-        return;
-      }
-
-      if (!this.engaged || delta <= 0) {
-        return;
-      }
-
-      clearTimeout(this.idleTimer);
-
-      this.target = Math.min(1, this.target + delta / FILL_DISTANCE);
-      this.leaving = this.target === 1;
-
-      // Eased toward the target: raw deltas, a finger's above all, step.
-      this.tween?.kill();
-      this.tween = gsap.to(this, {
-        fill: this.target,
-        duration: this.leaving ? 0.2 : 0.3,
-        ease: "power2.out",
-        onComplete: () => this.leaving && swup.navigate(href),
-      });
-
-      if (!this.leaving) {
-        this.idleTimer = setTimeout(() => this.reset(), IDLE_DELAY);
-      }
-    },
-
-    reset() {
-      clearTimeout(this.idleTimer);
-
-      if (this.target === 0) {
-        return;
-      }
-
-      this.target = 0;
-      this.tween?.kill();
-      this.tween = gsap.to(this, {
-        fill: 0,
-        duration: 0.6,
-        ease: "power2.out",
-      });
+    cancel() {
+      clearTimeout(this.timer);
+      this.timer = null;
     },
 
     destroy() {
-      clearTimeout(this.idleTimer);
-      this.tween?.kill();
-      this.stopListening?.();
+      this.cancel();
 
       this.trigger?.kill();
       this.animation?.kill();

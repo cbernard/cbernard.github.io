@@ -8,7 +8,7 @@ const { label, href = "#" } = Astro.props;
 ---
 
 <div
-  class="relative mx-auto w-fit text-[32px]"
+  class="relative mx-auto w-fit text-[24px] md:text-[32px]"
   x-data={`next(${JSON.stringify(href)})`}
   x-bind:style="{ '--progress-x': progress }"
 >
