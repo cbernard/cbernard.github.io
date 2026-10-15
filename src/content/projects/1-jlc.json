@@ -5,7 +5,7 @@
   "client": "Richemont",
   "year": 2022,
   "services": ["Laravel", "Vue.js"],
-  "description": "Frontend development of the Jaeger-LeCoultre website in 2022, through its styleguide. Every new design becomes a set of components, faithful to the design system and used across the entire site.",
+  "description": "Frontend development of the Jaeger-LeCoultre website since 2022, through its styleguide. Every new design becomes a set of components, faithful to the design system and used across the entire site.",
   "background": "images/projects/jlc/background.webp",
   "overlay": 0.3,
   "thumbnail": "images/projects/jlc/thumbnail.webp",
