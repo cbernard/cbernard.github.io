@@ -31,14 +31,12 @@ const isDesktopLandscape = () =>
     `(min-width: ${breakpoint("lg")}) and (orientation: landscape)`,
   ).matches;
 
-// Touch only: a narrow window on a computer takes the mobile layout, but none
-// of the transitions made for a phone.
 const isTouch = () => window.matchMedia("(pointer: coarse)").matches;
 
-// A phone in portrait opens Works and a project on the same picture, in the
-// same place: it stays put while the rest of the page changes around it.
+// The mobile layout, on a phone or in a narrow window, opens Works and a
+// project on the same picture, in the same place: it stays put while the rest
+// of the page changes around it.
 const sharesImage = () =>
-  isTouch() &&
   window.matchMedia("(orientation: portrait)").matches &&
   !window.matchMedia(`(min-width: ${breakpoint("md")})`).matches;
 
@@ -46,17 +44,90 @@ const sharesImage = () =>
 const hideAround = (targets) =>
   gsap.to(targets, { opacity: 0, duration: 0.4, ease: "power2.in" }).then();
 
+// From and to: `holdImage` may already have hidden them.
 const showAround = (targets) =>
   gsap
-    .from(targets, {
+    .fromTo(
+      targets,
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "power2.out",
+        stagger: 0.05,
+        clearProps: "opacity,transform",
+      },
+    )
+    .then();
+
+// Safari paints a fresh image a few frames after it lands, blank until then:
+// the copy of the page left stands under the new one, its own picture hidden,
+// until that picture is decoded. The copy shows the same image.
+const holdImage = async (around) => {
+  if (!leaving) {
+    return;
+  }
+
+  leaving.style.zIndex = -1;
+
+  const frame = document.querySelector("#swup .image, #swup .projects");
+  const images = [...(frame?.querySelectorAll("img") ?? [])];
+
+  gsap.set(around, { opacity: 0 });
+  gsap.set(frame, { visibility: "hidden" });
+
+  await Promise.race([
+    Promise.all(images.map((image) => image.decode().catch(() => {}))),
+    new Promise((resolve) => setTimeout(resolve, 500)),
+  ]);
+
+  gsap.set(frame, { clearProps: "visibility" });
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+  dropLeaving();
+};
+
+// What surrounds the picture of the page, Works and About included.
+const AROUND = "#swup [data-around-image], #swup .image ~ :not([data-shared])";
+
+// Works and About open on different pictures in the same place: the copy of
+// the page left keeps its own while the new one fades in over it, then the
+// rest of the page comes in around it.
+const crossfade = async () => {
+  if (!leaving) {
+    return fadeIn();
+  }
+
+  leaving.style.zIndex = -1;
+
+  const around = gsap.utils.toArray(AROUND);
+  gsap.set(around, { opacity: 0 });
+
+  await gsap
+    .from("#swup .image, #swup .projects", {
       opacity: 0,
-      y: 20,
-      duration: 0.6,
+      duration: 0.5,
       ease: "power2.out",
-      stagger: 0.05,
-      clearProps: "opacity,transform",
     })
     .then();
+
+  dropLeaving();
+
+  await gsap
+    .fromTo(
+      around,
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "power2.out",
+        stagger: 0.05,
+        clearProps: "opacity,transform",
+      },
+    )
+    .then();
+};
 
 // Lenis calls no `onComplete` for a scroll it has nothing to do.
 const scrollToTop = () =>
@@ -331,19 +402,48 @@ const swup = new Swup({
             // About rides in composed: staging its reveal on top of the cover
             // would read as two moves.
             visit.meta.composed = true;
+            visit.meta.sharesImage = sharesImage();
+
+            if (visit.meta.sharesImage) {
+              await hideAround(
+                "[data-around-image], [data-reveal-fade='swup']",
+              );
+            }
+
             captureLeaving();
           },
           // Portrait mirrors the works transition; the desktop keeps the
           // vertical cover.
-          in: () => (isDesktopLandscape() ? cover() : cover("x", -1)),
+          in: (_, { visit }) => {
+            if (visit.meta.sharesImage) {
+              return crossfade();
+            }
+
+            return isDesktopLandscape() ? cover() : cover("x", -1);
+          },
         },
         {
           from: "(/about/?)",
           to: "(/)",
           // Works comes back on its own reveal, the fade it plays when a
           // project closes.
-          out: async () => captureLeaving(),
-          in: () => (isDesktopLandscape() ? uncover() : uncover("x", -1)),
+          out: async (_, { visit }) => {
+            visit.meta.sharesImage = sharesImage();
+
+            if (visit.meta.sharesImage) {
+              await scrollToTop();
+              await hideAround(AROUND);
+            }
+
+            captureLeaving();
+          },
+          in: (_, { visit }) => {
+            if (visit.meta.sharesImage) {
+              return crossfade();
+            }
+
+            return isDesktopLandscape() ? uncover() : uncover("x", -1);
+          },
         },
         {
           from: "(/)",
@@ -355,6 +455,7 @@ const swup = new Swup({
               await hideAround(
                 "[data-around-image], [data-reveal-fade='swup']",
               );
+              captureLeaving();
               return;
             }
 
@@ -387,9 +488,11 @@ const swup = new Swup({
           },
           in: async (_, { visit }) => {
             if (visit.meta.sharesImage) {
-              await showAround(
-                "[data-around-image], .panel .image ~ :not([data-shared])",
-              );
+              const around =
+                "[data-around-image], .panel .image ~ :not([data-shared])";
+
+              await holdImage(around);
+              await showAround(around);
               return;
             }
 
@@ -409,6 +512,7 @@ const swup = new Swup({
               await hideAround(
                 "[data-around-image], .panel .image ~ :not([data-shared])",
               );
+              captureLeaving();
               return;
             }
 
@@ -428,6 +532,7 @@ const swup = new Swup({
           // The thumbnail and the list come back on the reveal.
           in: async (_, { visit }) => {
             if (visit.meta.sharesImage) {
+              await holdImage("[data-around-image]");
               await showAround("[data-around-image]");
               return;
             }
