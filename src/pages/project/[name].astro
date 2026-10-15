@@ -101,7 +101,7 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
         </div>
 
         <div class="z-10 col-start-6 row-start-1 text-end md:hidden">
-          <a href="/" class="text-white"> </a>
+
         </div>
 
         <div
@@ -128,7 +128,7 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
                 data-posthog-project={project.title}
               >
                 <div
-                  aria-label="Online"
+                  aria-hidden="true"
                   class="block aspect-square w-[5px] rounded-full bg-green"
                 />
                 See live
@@ -145,7 +145,7 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
               <a
                 href={project.url}
                 target="_blank"
-                aria-label="See live"
+                aria-label={`${project.title}, see live`}
                 data-cursor="-pill"
                 data-cursor-text="See live"
                 data-posthog-event="project_live_site_opened"

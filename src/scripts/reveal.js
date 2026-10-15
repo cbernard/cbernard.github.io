@@ -20,6 +20,9 @@ class Reveal {
       linesClass: "lines",
       wordsClass: "word",
       autoSplit: true,
+      // Its default labels the split element and hides the lines, which is not
+      // allowed on a <p> or <div> and hides the pins inside from the keyboard.
+      aria: "none",
       onSplit: (split) => this.#onSplit(split),
     });
 

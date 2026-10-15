@@ -12,6 +12,7 @@ const environment = import.meta.env.DEV ? "development" : "production";
     // Nothing stored on the device, so no cookie banner: a visitor is only
     // recognised for the length of a page load.
     persistence: "memory",
+    disable_surveys: true,
     defaults: "2026-01-30",
     logs: { serviceName: "folio-2025-web", environment },
     capture_exceptions: {
