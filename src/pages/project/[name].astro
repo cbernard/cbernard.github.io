@@ -38,10 +38,7 @@ const { project, nextProject, index } = Astro.props;
 const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
 ---
 
-<Layout
-  title={project.title}
-  description={project.description}
->
+<Layout title={project.title} description={project.description}>
   <div
     class="absolute end-0 top-0 z-30 m-3 md:mix-blend-difference landscape:fixed"
     data-around-image
@@ -100,9 +97,7 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
           <a href="/" class="text-white">CB</a>
         </div>
 
-        <div class="z-10 col-start-6 row-start-1 text-end md:hidden">
-
-        </div>
+        <div class="z-10 col-start-6 row-start-1 text-end md:hidden"></div>
 
         <div
           class="z-10 col-start-1 row-span-3 row-start-1 hidden text-white-32 md:block"
@@ -195,7 +190,7 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
         {
           project.medias.map((item, index) => (
             <div
-              class="bg-black p-8 transition-colors xl:p-10 2xl:p-12 dark:bg-white"
+              class="bg-black p-4 transition-colors md:p-8 xl:p-10 2xl:p-12 dark:bg-white"
               data-reveal-slide-up="scroll"
               style={`--reveal-index: ${index}`}
             >
