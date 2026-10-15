@@ -7,6 +7,7 @@ import Pin from "../components/pin/pin.astro";
 import Postcard from "../components/pin/postcard.astro";
 import Link from "../components/link/link.astro";
 import Email from "../components/email/email.astro";
+import Video from "../components/video/video.astro";
 
 import { backgroundSizes } from "../utils/images";
 import { aboutImage, aboutWidths, pinWidths, pins } from "../utils/about";
@@ -92,19 +93,28 @@ const credits = [
             pins.map((pin, index) => (
               <div
                 class="absolute inset-0 opacity-0 transition-opacity duration-500 ease-out data-[active]:opacity-100"
+                data-pin-layer={index}
                 :data-active={`isActive(${index}) || null`}
               >
-                <Picture
-                  fallbackFormat="webp"
-                  src={pin.image}
-                  formats={["webp"]}
-                  widths={pinWidths}
-                  sizes={backgroundSizes}
-                  alt={pin.label}
-                  loading="eager"
-                  pictureAttributes={{ class: "block h-full w-full" }}
-                  class="h-full w-full object-cover object-center"
-                />
+                {pin.video ? (
+                  <Video
+                    path={pin.video}
+                    aria-label={pin.label}
+                    class="h-full w-full object-cover object-center"
+                  />
+                ) : (
+                  <Picture
+                    fallbackFormat="webp"
+                    src={pin.image!}
+                    formats={["webp"]}
+                    widths={pinWidths}
+                    sizes={backgroundSizes}
+                    alt={pin.label}
+                    loading="eager"
+                    pictureAttributes={{ class: "block h-full w-full" }}
+                    class="h-full w-full object-cover object-center"
+                  />
+                )}
               </div>
             ))
           }
@@ -164,17 +174,20 @@ const credits = [
           class="flex flex-col gap-y-4 text-[clamp(2rem,1.58rem_+_1.39vw,3.25rem)] leading-[1.1] text-pretty"
         >
           <p data-split>
-            Charly Bernard is a frontend developer based in{" "}
+            I’m a frontend developer based in{" "}
             <Pin label={pins[0].label} index={0} punctuation="," />{" "}
-            passionate about building things for the web. With over 10 years of
-            experience, he enjoys bringing ideas to life through clean code and
-            thoughtful interactions.
+            passionate about building things for the web.
           </p>
           <p data-split>
-            Away from his desk, he’s usually{" "}
-            <Pin label={pins[1].label} index={1} punctuation="," />{" "}
+            With over 10 years of experience, I enjoy bringing ideas to life
+            through clean code and{" "}
+            <Pin label={pins[1].label} index={1} punctuation="." />
+          </p>
+          <p data-split>
+            Away from my desk, I like to keep moving: long rides on my bike,{" "}
             <Pin label={pins[2].label} index={2} />{" "}
-            or <Pin label={pins[3].label} index={3} punctuation="." />
+            and early mornings spent{" "}
+            <Pin label={pins[3].label} index={3} punctuation="." />
           </p>
         </div>
 

@@ -53,10 +53,17 @@ const images = await Promise.all([
     ...project.data.medias.map((media) => getAsset(media)),
   ]),
   getAsset(aboutImage, { widths: aboutWidths, sizes: backgroundSizes }),
-  ...pins.flatMap((pin) => [
-    getAsset(pin.image, { widths: pinWidths, sizes: backgroundSizes }),
-    getAsset(pin.image, { widths: postcardWidths, sizes: postcardSizes }),
-  ]),
+  ...pins.flatMap((pin) =>
+    pin.video
+      ? [getAsset(pin.video)]
+      : [
+          getAsset(pin.image!, { widths: pinWidths, sizes: backgroundSizes }),
+          getAsset(pin.image!, {
+            widths: postcardWidths,
+            sizes: postcardSizes,
+          }),
+        ],
+  ),
 ]);
 
 const assets = {

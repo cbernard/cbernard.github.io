@@ -38,6 +38,23 @@ export default function pins() {
       // The finger can lift anywhere, hence the window and not `$el`.
       window.addEventListener("pointerup", this.onRelease);
       window.addEventListener("pointercancel", this.onRelease);
+
+      this.$watch("active", (index) => this.rewind(index, "data-pin-layer"));
+      this.$watch("pressed", (index) => this.rewind(index, "data-postcard"));
+    },
+
+    // A clip starts over each time its pin is shown.
+    rewind(index, attribute) {
+      if (index === null) {
+        return;
+      }
+
+      document
+        .querySelectorAll(`[${attribute}="${index}"] video`)
+        .forEach((video) => {
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        });
     },
 
     isActive(index) {

@@ -2,10 +2,11 @@
 import type { ImageMetadata } from "astro";
 import { Picture } from "astro:assets";
 
+import Video from "../video/video.astro";
 import { postcardSizes, postcardWidths } from "../../utils/about";
 
 export interface Props {
-  pins: { label: string; image: ImageMetadata }[];
+  pins: { label: string; image?: ImageMetadata; video?: string }[];
 }
 
 const { pins = [] } = Astro.props;
@@ -25,16 +26,24 @@ const { pins = [] } = Astro.props;
         data-postcard={index}
         :data-active={`isPressed(${index}) || null`}
       >
-        <Picture
-          fallbackFormat="webp"
-          src={pin.image}
-          formats={["webp"]}
-          widths={postcardWidths}
-          sizes={postcardSizes}
-          alt={pin.label}
-          pictureAttributes={{ class: "block h-full w-full" }}
-          class="h-full w-full object-cover object-center"
-        />
+        {pin.video ? (
+          <Video
+            path={pin.video}
+            aria-label={pin.label}
+            class="h-full w-full object-cover object-center"
+          />
+        ) : (
+          <Picture
+            fallbackFormat="webp"
+            src={pin.image!}
+            formats={["webp"]}
+            widths={postcardWidths}
+            sizes={postcardSizes}
+            alt={pin.label}
+            pictureAttributes={{ class: "block h-full w-full" }}
+            class="h-full w-full object-cover object-center"
+          />
+        )}
       </div>
     ))
   }
