@@ -6,6 +6,7 @@ import RotateNotice from "../components/rotate-notice/rotate-notice.astro";
 import Loader from "../components/loader/loader.astro";
 import Grid from "../components/grid/grid.astro";
 import Separator from "../components/separator/separator.astro";
+import PostHog from "../components/posthog.astro";
 
 import "../styles/index.css";
 
@@ -69,6 +70,7 @@ const person = {
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <PostHog />
 
     {noindex && <meta name="robots" content="noindex" />}
 

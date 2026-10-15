@@ -137,7 +137,11 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
               {
                 sortedProjects.map((project) => (
                   <div class="aspect-[300/375]">
-                    <a href={`project/${project.data.slug}`}>
+                    <a
+                      href={`project/${project.data.slug}`}
+                      data-posthog-event="project_opened"
+                      data-posthog-project={project.data.title}
+                    >
                       {/\.(mp4|webm)$/.test(project.data.thumbnail) ? (
                         <Video
                           path={project.data.thumbnail}

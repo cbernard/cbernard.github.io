@@ -16,6 +16,7 @@ const { class: className, showAddress = false } = Astro.props;
   x-data="email"
   data-user="charly.bernard+folio"
   data-domain="gmail.com"
+  data-posthog-event="contact_initiated"
   :href="`mailto:${address}`"
 >
   {showAddress ? <span x-text="label" /> : <slot />}

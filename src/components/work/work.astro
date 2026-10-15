@@ -21,7 +21,12 @@ const itemClasses =
   x-bind:style={`getPosition(${index})`}
 >
   <template x-if={`current == ${index}`}>
-    <a href={link} class={itemClasses}>
+    <a
+      href={link}
+      class={itemClasses}
+      data-posthog-event="project_opened"
+      data-posthog-project={title}
+    >
       <div class="col-span-1">
         {String(index + 1).padStart(2, "0")}
       </div>

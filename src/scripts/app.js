@@ -33,6 +33,28 @@ class App {
       swup.navigate("/");
     });
 
+    // Clicks on anything carrying `data-posthog-event` are sent as that event.
+    document.addEventListener("click", (event) => {
+      if (!(event.target instanceof Element)) {
+        return;
+      }
+
+      const target = event.target.closest("[data-posthog-event]");
+      const eventName = target?.dataset.posthogEvent;
+
+      if (!eventName) {
+        return;
+      }
+
+      const properties = target.dataset.posthogProject
+        ? { project: target.dataset.posthogProject }
+        : target.dataset.posthogSocial
+          ? { platform: target.dataset.posthogSocial }
+          : undefined;
+
+      window.posthog?.capture(eventName, properties);
+    });
+
     // Trigger positions are measured off until the `in` animation has settled.
     swup.hooks.on("animation:in:end", () => {
       ScrollTrigger.refresh();

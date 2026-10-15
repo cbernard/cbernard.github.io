@@ -156,7 +156,13 @@ const credits = [
           <div class="flex items-center gap-x-4">
             {
               links.map((link) => (
-                <Link href={link.href}>{link.name}</Link>
+                <Link
+                  href={link.href}
+                  data-posthog-event="social_profile_opened"
+                  data-posthog-social={link.name}
+                >
+                  {link.name}
+                </Link>
               ))
             }
           </div>
@@ -272,7 +278,13 @@ const credits = [
                 links.map((link) => (
                   <div class="grid grid-cols-2 gap-x-[10px] gap-y-1 md:grid-cols-6">
                     <div class="md:col-span-2">
-                      <Link href={link.href}>{link.name}</Link>
+                      <Link
+                        href={link.href}
+                        data-posthog-event="social_profile_opened"
+                        data-posthog-social={link.name}
+                      >
+                        {link.name}
+                      </Link>
                     </div>
 
                     <div class="text-black-32 md:col-span-3 md:col-start-3 dark:text-white-32">
