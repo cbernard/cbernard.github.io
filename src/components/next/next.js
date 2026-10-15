@@ -17,7 +17,7 @@ const CANCEL_THRESHOLD = 8;
 
 // Share of the viewport the label stays pinned for, which leaves that much
 // space above it.
-const PIN_DISTANCE = { mobile: 0.8, desktop: 0.4 };
+const PIN_DISTANCE = { mobile: 0.4, desktop: 0.4 };
 
 const isMobile = () =>
   !window.matchMedia(
