@@ -1,18 +1,19 @@
 {
   "slug": "ov-2023",
   "order": 8,
-  "title": "OV - 2023",
+  "title": "TDH OV - 2023",
   "client": "Terre des hommes",
   "year": 2023,
   "services": ["WordPress", "WooCommerce", "Alpine.js"],
   "description": "The 2023 virtual orange sale for Terre des hommes. A memory game against the clock, where every pair found becomes a donation.",
   "background": "images/projects/ov-2023/background.webp",
-  "overlay": 0.3,
+  "overlay": 0.5,
   "thumbnail": "videos/projects/ov-2023/thumbnail.mp4",
   "medias": [
     "videos/projects/ov-2023/01.mp4",
     "videos/projects/ov-2023/02.mp4",
     "videos/projects/ov-2023/03.mp4",
+    "videos/projects/ov-2023/06.mp4",
     "videos/projects/ov-2023/04-mobile.mp4",
     "videos/projects/ov-2023/05.mp4"
   ]
