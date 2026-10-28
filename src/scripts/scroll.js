@@ -17,6 +17,10 @@ ScrollTrigger.defaults({ scroller: wrapper });
 const defaultOptions = {
   wheelMultiplier: 0.25,
 
+  // The limit read live: the reveals shift the page's overflow without
+  // resizing anything, and a cached one stays past the real bottom.
+  naiveDimensions: true,
+
   // A finger on a `fixed` element scrolls the document and never the overflow
   // container the element sits in, and the pages are built out of `fixed`
   // layers, so Lenis drives the touch scroll itself.
