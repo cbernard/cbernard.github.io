@@ -10,11 +10,11 @@ import SwupScriptsPlugin from "@swup/scripts-plugin";
 import SwupDebugPlugin from "@swup/debug-plugin";
 import SwupJsPlugin from "@swup/js-plugin";
 
-const duration = 0.8;
-const easing = "power4.inOut";
+const duration = 0.75;
+const easing = "power3.inOut";
 
 // The curve `loader.js` registers for its curtain.
-const coverDuration = 0.6;
+const coverDuration = 1;
 const coverEasing = "reveal";
 
 // Share of the height the page underneath drifts over, the ratio the loader
@@ -42,7 +42,7 @@ const sharesImage = () =>
 
 // Opacity only: the accordion owns the transform of some of these.
 const hideAround = (targets) =>
-  gsap.to(targets, { opacity: 0, duration: 0.4, ease: "power2.in" }).then();
+  gsap.to(targets, { opacity: 0, duration: 0.3, ease: "power2.in" }).then();
 
 // From and to: `holdImage` may already have hidden them.
 const showAround = (targets) =>
@@ -53,7 +53,7 @@ const showAround = (targets) =>
       {
         opacity: 1,
         y: 0,
-        duration: 0.6,
+        duration: 0.5,
         ease: "power2.out",
         stagger: 0.05,
         clearProps: "opacity,transform",
@@ -87,6 +87,21 @@ const holdImage = async (around) => {
   dropLeaving();
 };
 
+// Outside the page, it would stand still over both while one covers the
+// other.
+const switcher = "[data-theme-switcher]";
+
+const hideSwitcher = () =>
+  gsap.to(switcher, { opacity: 0, duration: 0.2, ease: "power2.in" }).then();
+
+const showSwitcher = () =>
+  gsap.to(switcher, {
+    opacity: 1,
+    duration: 0.4,
+    ease: "power2.out",
+    clearProps: "opacity",
+  });
+
 // Lenis calls no `onComplete` for a scroll it has nothing to do.
 const scrollToTop = () =>
   scrollInstance.scrollY > 0
@@ -106,7 +121,7 @@ const fadeIn = () =>
   gsap.fromTo(
     "#swup",
     { opacity: 0 },
-    { opacity: 1, duration: 0.3, ease: "power2.out" },
+    { opacity: 1, duration: 0.6, ease: "power2.out" },
   );
 
 // `overwrite` drops the scroll-driven opacity tween of `next()` if it is still
@@ -118,10 +133,6 @@ const fadeOutNext = () =>
     ease: "power2.in",
     overwrite: "auto",
   });
-
-// On `duration`, the length of the unreveal, so the fade costs no extra time.
-const fadeOutPanel = () =>
-  gsap.to(".panel", { opacity: 0, duration: duration, ease: "power2.in" });
 
 let leaving = null;
 
@@ -250,7 +261,7 @@ const clipSides = () => {
 // The arriving page rises over the one it replaces, which drifts under it.
 // `direction` is the edge it comes in from: 1 the end of the axis, -1 its
 // start.
-const cover = (axis = "y", direction = 1) => {
+const cover = (axis = "y", direction = 1, seconds = coverDuration) => {
   if (!leaving) {
     return fadeIn();
   }
@@ -291,7 +302,7 @@ const cover = (axis = "y", direction = 1) => {
       leaving,
       {
         [axis]: -distance * coverDrift,
-        duration: coverDuration,
+        duration: seconds,
         ease: coverEasing,
       },
       0,
@@ -299,7 +310,7 @@ const cover = (axis = "y", direction = 1) => {
     .fromTo(
       "#swup",
       { [axis]: distance },
-      { [axis]: 0, duration: coverDuration, ease: coverEasing },
+      { [axis]: 0, duration: seconds, ease: coverEasing },
       0,
     )
     .then();
@@ -310,7 +321,7 @@ const cover = (axis = "y", direction = 1) => {
 // loader slides in on the first load — on Works everything on screen is
 // `fixed` inside it, so the layer moves without its container, and so without
 // the scroll the accordion restores on mount.
-const uncover = (axis = "y", direction = 1) => {
+const uncover = (axis = "y", direction = 1, seconds = coverDuration) => {
   if (!leaving) {
     return fadeIn();
   }
@@ -329,15 +340,11 @@ const uncover = (axis = "y", direction = 1) => {
         release?.();
       },
     })
-    .to(
-      leaving,
-      { [axis]: distance, duration: coverDuration, ease: coverEasing },
-      0,
-    )
+    .to(leaving, { [axis]: distance, duration: seconds, ease: coverEasing }, 0)
     .fromTo(
       layer,
       { [axis]: -distance * coverDrift },
-      { [axis]: 0, duration: coverDuration, ease: coverEasing },
+      { [axis]: 0, duration: seconds, ease: coverEasing },
       0,
     )
     .then();
@@ -424,7 +431,7 @@ const swup = new Swup({
             }
 
             if (!isDesktopLandscape()) {
-              await cover("x");
+              await cover("x", 1, duration);
             }
           },
         },
@@ -452,7 +459,7 @@ const swup = new Swup({
 
             await gsap.to(".image", {
               xPercent: 100,
-              duration: 0.8,
+              duration: duration,
               ease: easing,
             });
           },
@@ -465,40 +472,24 @@ const swup = new Swup({
             }
 
             if (!isDesktopLandscape()) {
-              await uncover("x");
+              await uncover("x", 1, duration);
             }
           },
         },
+        // The next project rises from below, where the scroll was heading.
         {
           from: "(/project/.*)",
           to: "(/project/.*)",
           out: async () => {
             if (!isDesktopLandscape()) {
-              captureLeaving();
-              return;
+              await hideSwitcher();
             }
 
-            // Awaited together: Swup must not swap the content until the
-            // longest of the four is done.
-            await Promise.all([
-              revealInstance.unreveal({ slideUp: false }),
-              revealInstance.unrevealVisible(),
-              fadeOutNext(),
-              fadeOutPanel(),
-            ]);
+            captureLeaving();
           },
           in: async () => {
-            if (!isDesktopLandscape()) {
-              await cover();
-              return;
-            }
-
-            // Incoming image only; the medias come back through `reveal()`.
-            await gsap.from(".image", {
-              opacity: 0,
-              duration: duration,
-              ease: "power2.out",
-            });
+            await cover();
+            showSwitcher();
           },
         },
         // A 404 can sit at any path, so it is told by its marker and not by a

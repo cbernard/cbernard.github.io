@@ -129,8 +129,8 @@ const person = {
       <div
         x-show="!$store.main.isLost"
         x-cloak
-        :class="$store.main.isHome ? 'fixed' : 'absolute landscape:fixed'"
-        class="inset-s-0 top-[calc(100vw*335/400)] z-10 -translate-y-full landscape:inset-s-[unset] landscape:inset-e-1/2 landscape:top-0 landscape:-translate-y-0"
+        data-theme-switcher
+        class="fixed inset-e-1/2 top-0 z-10 portrait:hidden"
       >
         <ThemeSwitcher />
       </div>

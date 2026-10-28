@@ -48,16 +48,6 @@ class Reveal {
     this.#scrollTweens = [];
   }
 
-  #visibleScrollItems() {
-    return gsap.utils
-      .toArray("[data-reveal-slide-up='scroll']")
-      .filter((element) => {
-        const { top, bottom } = element.getBoundingClientRect();
-
-        return bottom > 0 && top < window.innerHeight;
-      });
-  }
-
   #initScroll() {
     this.#killScroll();
 
@@ -137,29 +127,7 @@ class Reveal {
     });
   }
 
-  // Only the items on screen leave, over a fixed distance: translating their
-  // column would cover its own height, so a speed that varies per project.
-  unrevealVisible({ distance = 80 } = {}) {
-    this.#killScroll();
-
-    const items = this.#visibleScrollItems();
-
-    if (items.length === 0) {
-      return Promise.resolve();
-    }
-
-    return gsap
-      .to(items, {
-        y: -distance,
-        opacity: 0,
-        duration: 0.5,
-        ease: "power2.in",
-        stagger: { each: 0.06, from: "start" },
-      })
-      .then();
-  }
-
-  unreveal({ delay = 0, swup = false, slideUp = true } = {}) {
+  unreveal({ delay = 0, swup = false } = {}) {
     // A reveal still in flight would drag its element back up mid-exit.
     this.#revealTimeline?.kill();
     this.#killScroll();
@@ -176,11 +144,7 @@ class Reveal {
       });
     }
 
-    // `slideUp: false` leaves these to `unrevealVisible`, or both tweens
-    // fight over the same y.
-    const items = slideUp
-      ? gsap.utils.toArray("[data-reveal-slide-up='scroll']")
-      : [];
+    const items = gsap.utils.toArray("[data-reveal-slide-up='scroll']");
 
     if (items.length > 0) {
       tl.to(

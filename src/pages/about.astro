@@ -8,6 +8,7 @@ import Postcard from "../components/pin/postcard.astro";
 import Link from "../components/link/link.astro";
 import Email from "../components/email/email.astro";
 import Video from "../components/video/video.astro";
+import ThemeSwitcher from "../components/theme-switcher/theme-switcher.astro";
 
 import { backgroundSizes } from "../utils/images";
 import { aboutImage, aboutWidths, pinWidths, pins } from "../utils/about";
@@ -81,6 +82,11 @@ const credits = [
         <div
           class="image relative col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 aspect-[400/335] md:col-span-8 md:col-start-1 md:row-span-3 md:row-start-1 md:-mx-5 md:-mb-10 md:aspect-auto"
         >
+          {/* Part of the page in portrait, so it scrolls and travels with it. */}
+          <div class="absolute bottom-0 start-0 z-20 text-white landscape:hidden">
+            <ThemeSwitcher />
+          </div>
+
           <Picture
             fallbackFormat="webp"
             src={aboutImage}

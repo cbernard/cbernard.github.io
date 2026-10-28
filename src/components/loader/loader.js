@@ -95,6 +95,20 @@ export default function loader({ fonts = [], images = [], later = [] } = {}) {
           "<",
         );
       }
+
+      // Outside the page, it would stand still while the page rises under it:
+      // it fades in over the second half instead.
+      tl.fromTo(
+        "[data-theme-switcher]",
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: duration / 2,
+          ease: "power2.out",
+          clearProps: "opacity",
+        },
+        `<${duration / 2}`,
+      );
     },
   };
 }

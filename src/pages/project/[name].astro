@@ -10,6 +10,7 @@ import {
 import Layout from "../../layouts/Layout.astro";
 import Progress from "../../components/progress/progress.astro";
 import Next from "../../components/next/next.astro";
+import ThemeSwitcher from "../../components/theme-switcher/theme-switcher.astro";
 import Link from "../../components/link/link.astro";
 import Video from "../../components/video/video.astro";
 
@@ -61,6 +62,13 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
         <div
           class="image relative col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 aspect-[400/335] md:col-span-8 md:col-start-1 md:row-span-3 md:row-start-1 md:-mx-5 md:-mb-10 md:aspect-auto"
         >
+          {
+            /* Part of the page in portrait, so it scrolls and travels with it. */
+          }
+          <div class="absolute bottom-0 start-0 z-20 text-white landscape:hidden">
+            <ThemeSwitcher />
+          </div>
+
           {
             isVideoBackground ? (
               <Video
@@ -180,7 +188,7 @@ const isVideoBackground = /\.(mp4|webm)$/.test(project.background);
     </div>
 
     <div
-      class="grid h-[50vh] grid-cols-6 flex-col items-center gap-[10px] px-4 pb-14 md:h-auto md:w-[50vw] md:grid-cols-8 md:pt-56 md:pr-5 md:pl-[5px]"
+      class="grid grid-cols-6 flex-col items-center gap-[10px] px-4 pb-14 md:w-[50vw] md:grid-cols-8 md:pt-56 md:pr-5 md:pl-[5px]"
       data-around-image
     >
       <div

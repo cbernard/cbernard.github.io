@@ -7,6 +7,7 @@ import Work from "../components/work/work.astro";
 import Link from "../components/link/link.astro";
 import Email from "../components/email/email.astro";
 import Video from "../components/video/video.astro";
+import ThemeSwitcher from "../components/theme-switcher/theme-switcher.astro";
 
 import {
   backgroundSizes,
@@ -88,7 +89,12 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
           sortedProjects.map((project, index) => (
             <div
               class="absolute inset-0 z-10 opacity-0"
-              x-bind:class={`current === ${index} && 'opacity-100'`}
+              x-bind:class={`{
+                'z-20 opacity-100': current === ${index},
+                'transition-opacity duration-1000 ease-[cubic-bezier(0.5,0,0,1)]': ready && current === ${index},
+                // Held until the image coming in has faded over it.
+                'transition-opacity duration-0 delay-1000': ready && current !== ${index},
+              }`}
             >
               {/\.(mp4|webm)$/.test(project.data.background) ? (
                 <Video
@@ -119,6 +125,11 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
           ))
         }
 
+        {/* Part of the page in portrait, so it travels with it. */}
+        <div class="absolute bottom-0 start-0 z-60 text-white landscape:hidden">
+          <ThemeSwitcher />
+        </div>
+
         <div
           class="projects__thumbnail absolute inset-0 z-50 flex items-center justify-center"
           data-reveal-fade="swup"
@@ -132,7 +143,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
           >
             <div
               class="flex translate-y-[calc(100%_/_var(--length)_*_var(--current)_*_-1)] flex-col"
-              x-bind:class={`ready && 'landscape:transition-transform landscape:duration-500 landscape:ease-[cubic-bezier(0.22,1,0.36,1)]'`}
+              x-bind:class={`ready && 'landscape:transition-transform landscape:duration-1000 landscape:ease-[cubic-bezier(0.5,0,0,1)]'`}
             >
               {
                 sortedProjects.map((project) => (
@@ -177,7 +188,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
           x-bind:class={`ready && 'transition-transform'`}
         >
           <div
-            class="z-50 hidden items-center gap-x-[10px] py-5 md:grid md:grid-cols-8"
+            class="z-50 hidden items-center gap-x-[10px] py-5 md:landscape:grid md:landscape:grid-cols-8"
             x-ref="headline"
             x-bind:class={`{
               '-translate-y-full': current > 0,
