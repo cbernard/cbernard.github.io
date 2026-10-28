@@ -8,11 +8,11 @@ export interface Props {
 const { index, title, link } = Astro.props;
 
 const itemClasses =
-  "grid cursor-pointer grid-cols-6 items-center gap-x-[10px] text-start text-nowrap md:grid-cols-8";
+  "grid cursor-pointer grid-cols-6 items-center gap-x-[10px] text-start text-nowrap md:landscape:grid-cols-8";
 ---
 
 <div
-  class="work absolute flex h-12 w-full translate-y-[calc(var(--this-translate-y))] flex-col justify-center md:h-19.5"
+  class="work absolute flex h-12 w-full translate-y-[calc(var(--this-translate-y))] flex-col justify-center md:landscape:h-19.5"
   x-bind:class={`{
     'dark:text-white': current == ${index},
     'text-black-32 dark:text-white-32': current != ${index},
@@ -30,7 +30,9 @@ const itemClasses =
       <div class="col-span-1">
         {String(index + 1).padStart(2, "0")}
       </div>
-      <div class="col-span-5 text-[32px] md:col-span-7 md:text-[52px]">
+      <div
+        class="col-span-5 text-[32px] md:landscape:col-span-7 md:landscape:text-[52px]"
+      >
         {title}
       </div>
     </a>
@@ -41,7 +43,9 @@ const itemClasses =
       <div class="col-span-1">
         {String(index + 1).padStart(2, "0")}
       </div>
-      <div class="col-span-5 text-[32px] md:col-span-7 md:text-[52px]">
+      <div
+        class="col-span-5 text-[32px] md:landscape:col-span-7 md:landscape:text-[52px]"
+      >
         {title}
       </div>
     </button>

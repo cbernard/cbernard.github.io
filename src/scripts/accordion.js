@@ -16,9 +16,9 @@ export default function accordion() {
       this.onResize = debounce(this.handleResize.bind(this), 100);
       this.onKeyDown = this.handleKeyDown.bind(this);
 
-      this.isMobile = window.matchMedia(
-        "(orientation: portrait) and (max-width: 767px)",
-      );
+      // In portrait the hero leaves the list too short for the desktop items,
+      // whatever the width.
+      this.isCompact = window.matchMedia("(orientation: portrait)");
 
       this.setData();
       this.updatePositions();
@@ -43,8 +43,8 @@ export default function accordion() {
       this.items = Array.from(this.$el.querySelectorAll(".work"));
       this.containerHeight =
         this.$refs.container.getBoundingClientRect().height;
-      this.itemHeight = this.isMobile.matches ? 48 : 78;
-      this.visible = this.isMobile.matches ? 5 : 6;
+      this.itemHeight = this.isCompact.matches ? 48 : 78;
+      this.visible = this.isCompact.matches ? 5 : 6;
     },
 
     updatePositions() {
