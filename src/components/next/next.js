@@ -9,15 +9,16 @@ gsap.registerPlugin(ScrollTrigger);
 // fractional height never reports a progress of exactly 1.
 const BOTTOM_THRESHOLD = 1;
 
-const LEAVE_DELAY = 200;
-
 // Further out than BOTTOM_THRESHOLD, or a scroll resting on the boundary would
 // arm and disarm on every frame.
 const CANCEL_THRESHOLD = 8;
 
-// Share of the viewport the label stays pinned for, which leaves that much
-// space above it.
-const PIN_DISTANCE = { mobile: 0.4, desktop: 0.4 };
+// How long the label stays full before the next project comes in, in ms.
+const HOLD = 500;
+
+// Share of the viewport the label stays pinned for, the stretch of scroll that
+// fills it.
+const PIN_DISTANCE = { mobile: 0.6, desktop: 0.6 };
 
 const isMobile = () =>
   !window.matchMedia(
@@ -72,7 +73,7 @@ export default function next(href) {
           this.timer = null;
           this.leaving = true;
           swup.navigate(href);
-        }, LEAVE_DELAY);
+        }, HOLD);
       });
 
       this.animation = gsap.to(element, {
@@ -90,8 +91,19 @@ export default function next(href) {
         toggleActions: "play none none reverse",
         pin: true,
         animation: this.animation,
-        // Fills over the pinned stretch only, where the label is in sight.
-        onUpdate: ({ progress }) => (this.fill = progress),
+        // Full at the bottom of the page even when the pin runs past it.
+        onUpdate: (self) => {
+          const end = Math.min(
+            self.end,
+            ScrollTrigger.maxScroll(self.scroller),
+          );
+
+          this.fill = gsap.utils.clamp(
+            0,
+            1,
+            (self.scroll() - self.start) / (end - self.start),
+          );
+        },
       });
     },
 
