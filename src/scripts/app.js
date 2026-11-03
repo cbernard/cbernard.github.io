@@ -12,12 +12,17 @@ class App {
     scrollInstance.init();
     historySwipe();
 
+    // A transition may hold the reveal until its own cue. Not awaited here,
+    // or Swup would hold the rest of the visit with it.
     swup.hooks.on("page:view", (visit) => {
-      this.onPageReady({
-        revealDelay: 0,
-        swup: true,
-        instant: Boolean(visit.meta.composed),
-      });
+      Promise.resolve(visit.meta.revealCue).then(() =>
+        this.onPageReady({
+          revealDelay: 0,
+          swup: true,
+          instant: Boolean(visit.meta.composed),
+          reveal: visit.meta.reveal,
+        }),
+      );
     });
 
     // Escape leads back to Works from a project or About.
@@ -63,8 +68,18 @@ class App {
     });
   }
 
-  async onPageReady({ revealDelay = 1, swup = false, instant = false } = {}) {
-    await revealInstance.reveal({ delay: revealDelay, swup, instant });
+  async onPageReady({
+    revealDelay = 1,
+    swup = false,
+    instant = false,
+    reveal = {},
+  } = {}) {
+    await revealInstance.reveal({
+      delay: revealDelay,
+      swup,
+      instant,
+      ...reveal,
+    });
     this.reset();
   }
 

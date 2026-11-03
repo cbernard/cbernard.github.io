@@ -1,9 +1,9 @@
 import Alpine from "alpinejs";
 import gsap from "gsap";
+import { CustomEase } from "gsap/CustomEase";
 import Swup from "swup";
 
 import scrollInstance from "./scroll.js";
-import revealInstance from "./reveal.js";
 import { isHomepage, isLostPage } from "./alpine.js";
 import SwupHeadPlugin from "@swup/head-plugin";
 import SwupScriptsPlugin from "@swup/scripts-plugin";
@@ -11,7 +11,6 @@ import SwupDebugPlugin from "@swup/debug-plugin";
 import SwupJsPlugin from "@swup/js-plugin";
 
 const duration = 0.75;
-const easing = "power3.inOut";
 
 // How much faster the way back from a project to Works plays.
 const backSpeed = 1.4;
@@ -19,6 +18,9 @@ const backSpeed = 1.4;
 // The curve `loader.js` registers for its curtain.
 const coverDuration = 1;
 const coverEasing = "reveal";
+
+// Works and About cover each other quicker than the other pages.
+const aboutDuration = 0.7;
 
 // Share of the height the page underneath drifts over, the ratio the loader
 // curtain keeps with the page it uncovers.
@@ -149,16 +151,6 @@ const fadeIn = () =>
     { opacity: 1, duration: 0.6, ease: "power2.out" },
   );
 
-// `overwrite` drops the scroll-driven opacity tween of `next()` if it is still
-// running.
-const fadeOutNext = () =>
-  gsap.to(".test", {
-    opacity: 0,
-    duration: 0.5,
-    ease: "power2.in",
-    overwrite: "auto",
-  });
-
 let leaving = null;
 
 // The `[data-shared]` element of the page left, as it stood on screen.
@@ -203,15 +195,19 @@ const captureLeaving = () => {
     canvas.getContext("2d").drawImage(canvases[index], 0, 0);
   });
 
-  // A cloned image is blank until Safari paints it again, some frames later:
-  // the picture on screen goes over as a canvas, painted at once.
-  const media = container.querySelectorAll(".image img, .projects img");
+  // A cloned image or video is blank until Safari paints it again, some frames
+  // later: the picture on screen goes over as a canvas, painted at once.
+  const selector = ".image :is(img, video), .projects :is(img, video)";
+  const media = container.querySelectorAll(selector);
 
-  page.querySelectorAll(".image img, .projects img").forEach((copy, index) => {
+  page.querySelectorAll(selector).forEach((copy, index) => {
     const source = media[index];
+    const width = source.naturalWidth || source.videoWidth;
+    const height = source.naturalHeight || source.videoHeight;
 
     if (
-      !source.naturalWidth ||
+      !width ||
+      source.readyState < 2 ||
       source.checkVisibility?.({ opacityProperty: true }) === false
     ) {
       return;
@@ -219,10 +215,10 @@ const captureLeaving = () => {
 
     const canvas = document.createElement("canvas");
 
-    canvas.width = source.naturalWidth;
-    canvas.height = source.naturalHeight;
+    canvas.width = width;
+    canvas.height = height;
     canvas.className = source.className;
-    canvas.getContext("2d").drawImage(source, 0, 0);
+    canvas.getContext("2d").drawImage(source, 0, 0, width, height);
     copy.replaceWith(canvas);
   });
 
@@ -282,6 +278,273 @@ const holdShared = () => {
     holder.remove();
     hidden.forEach((element) => element.style.removeProperty("visibility"));
   };
+};
+
+// Works and a project on desktop, in one move from the click on: the image
+// crosses from its half of one page to its half of the other while what
+// leaves clears, and the page coming in shows around it as it lands.
+const morphDuration = { into: 0.9, back: 1 };
+
+// Share of the move after which the page coming in shows: as the image comes
+// in to land.
+const morphEnter = 0.65;
+
+// One family of curves: the image eases in and out, what leaves speeds away,
+// what comes in settles the way it lands. Into a project the image sets off
+// sooner and lands longer: a symmetric curve as hard on its way in holds it
+// still for a quarter of a second after the click.
+gsap.registerPlugin(CustomEase);
+CustomEase.create("morph-into", "0.65, 0, 0.1, 1");
+
+const morphEase = {
+  into: "morph-into",
+  back: "power4.inOut",
+  leave: "power2.in",
+  enter: "power4.out",
+};
+
+// Handed to the reveal of the project, so its lines land with the image.
+const morphReveal = { ease: morphEase.enter, duration: 1 };
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+let morph = null;
+
+const endMorph = () => {
+  morph?.timeline.kill();
+  morph?.enter?.kill();
+  morph?.holder?.remove();
+  morph = null;
+};
+
+// The move runs on the copy of the page left until the next one is in, then
+// on both at the same progress: `move` places the copy, and `attach` hands
+// over the page coming in once Swup has it in place.
+const startMorph = ({ ease, duration, move, leave, attach }) => {
+  const state = { progress: 0 };
+
+  const update = () => {
+    move(state.progress);
+    morph?.follow?.(state.progress);
+  };
+
+  const timeline = gsap
+    .timeline()
+    .to(
+      state,
+      {
+        progress: 1,
+        duration,
+        ease,
+        onUpdate: update,
+      },
+      0,
+    )
+    .to(leave, { opacity: 0, duration: 0.35, ease: morphEase.leave }, 0);
+
+  // On the clock of the move itself: a delay counted from the click would
+  // drift by as long as the swap of the pages holds the main thread.
+  const entered = new Promise((resolve) => {
+    timeline.call(resolve, null, duration * morphEnter);
+  });
+
+  morph = { timeline, entered, update, attach };
+
+  return morph;
+};
+
+const morphIntoProject = () => {
+  endMorph();
+
+  const projects = document.querySelector("#swup .projects");
+  const thumbnail = document.querySelector("#swup .projects__thumbnail > div");
+  const from = projects.getBoundingClientRect();
+  const thumbnailRect = thumbnail?.getBoundingClientRect();
+
+  // Its offset comes from variables set on an ancestor it is about to leave.
+  const thumbnailShift =
+    thumbnail && getComputedStyle(thumbnail.firstElementChild).translate;
+
+  captureLeaving();
+
+  const image = leaving.querySelector(".projects");
+  const copiedThumbnail = leaving.querySelector(".projects__thumbnail > div");
+
+  // Lifted over everything, or the project coming in would hide it. Moved and
+  // not cloned: a clone of its canvases would come out blank.
+  let holder = null;
+
+  if (copiedThumbnail && thumbnailRect) {
+    holder = document.createElement("div");
+    holder.style.cssText = `position: fixed; z-index: 9000; pointer-events: none; left: ${thumbnailRect.left}px; top: ${thumbnailRect.top}px; width: ${thumbnailRect.width}px; height: ${thumbnailRect.height}px`;
+    copiedThumbnail.firstElementChild.style.translate = thumbnailShift;
+    holder.append(copiedThumbnail);
+    document.body.append(holder);
+  }
+
+  // The image ends on the left edge, where the project has its own.
+  const travel = -from.left;
+
+  const current = startMorph({
+    ease: morphEase.into,
+    duration: morphDuration.into,
+    leave: [
+      leaving.querySelector("[data-works-list]"),
+      ...leaving.querySelectorAll("[data-around-image]"),
+    ],
+    move: (progress) => {
+      gsap.set(image, { x: travel * progress });
+
+      // Cut by the edge of the image passing under it, as when both sat in
+      // the same frame.
+      if (holder) {
+        holder.style.clipPath = `inset(0 ${Math.max(0, thumbnailRect.right - from.right - travel * progress)}px 0 0)`;
+      }
+    },
+    attach: () => {
+      const frame = document.querySelector("#swup .panel .image");
+
+      if (!frame) {
+        return null;
+      }
+
+      const offset = from.left - frame.getBoundingClientRect().left;
+
+      return {
+        frame,
+        around: ["#swup .panel .image ~ *", "#swup [data-around-image]"],
+        follow: (progress) =>
+          gsap.set(frame, { x: offset + travel * progress }),
+        restore: () => gsap.set(frame, { clearProps: "transform" }),
+      };
+    },
+  });
+
+  current.holder = holder;
+
+  return current.entered;
+};
+
+const morphBackToWorks = () => {
+  endMorph();
+
+  const from = document
+    .querySelector("#swup .panel .image")
+    .getBoundingClientRect();
+
+  // The image ends on the right edge, where Works has its own.
+  const travel = window.innerWidth - from.right;
+
+  captureLeaving();
+
+  const image = leaving.querySelector(".panel .image");
+
+  const current = startMorph({
+    ease: morphEase.back,
+    duration: morphDuration.back,
+    leave: [
+      ...leaving.querySelectorAll(".panel .image ~ *, [data-around-image]"),
+    ],
+    move: (progress) => gsap.set(image, { x: travel * progress }),
+    attach: () => {
+      const frame = document.querySelector("#swup .projects");
+      const thumbnail = document.querySelector("#swup .projects__thumbnail");
+
+      if (!frame) {
+        return null;
+      }
+
+      const offset = from.left - frame.getBoundingClientRect().left;
+
+      return {
+        frame,
+        around: ["#swup [data-works-list]", "#swup [data-around-image]"],
+        // The thumbnail holds still on screen, uncovered by the edge of the
+        // image as it passes, as when both sat in the same frame.
+        follow: (progress) => {
+          const x = offset + travel * progress;
+
+          gsap.set(frame, { x });
+          gsap.set(thumbnail, { x: -x });
+        },
+        restore: () =>
+          gsap.set([frame, thumbnail], { clearProps: "transform" }),
+      };
+    },
+  });
+
+  // The lines go back down their masks, the way they came up.
+  current.timeline.to(
+    leaving.querySelectorAll(".panel .lines"),
+    {
+      yPercent: 100,
+      duration: 0.35,
+      ease: morphEase.leave,
+      stagger: { each: 0.03, from: "end" },
+    },
+    0,
+  );
+
+  return current.entered;
+};
+
+// The page coming in takes over the move where the copy has it, the copy
+// underneath standing in until Safari paints its image. Without its overlay,
+// as the one of the page coming in darkens it already.
+const attachMorph = () => {
+  const page = morph && leaving && morph.attach();
+
+  if (!page) {
+    return;
+  }
+
+  Object.assign(morph, page);
+  morph.update();
+
+  leaving
+    .querySelectorAll("[style*='--overlay']")
+    .forEach((overlay) => overlay.remove());
+
+  leaving.style.zIndex = -1;
+
+  const enter = gsap.fromTo(
+    page.around,
+    { opacity: 0 },
+    {
+      opacity: 1,
+      duration: 0.8,
+      ease: morphEase.enter,
+      clearProps: "opacity",
+      paused: true,
+    },
+  );
+
+  morph.enter = enter;
+  morph.entered.then(() => enter.play());
+};
+
+const finishMorph = async () => {
+  if (!morph?.frame) {
+    dropLeaving();
+    endMorph();
+    return;
+  }
+
+  const { timeline, enter, frame, restore } = morph;
+  const images = [...frame.querySelectorAll("img")];
+
+  await Promise.all([
+    timeline.then(),
+    enter.then(),
+    Promise.race([
+      Promise.all(images.map((image) => image.decode().catch(() => {}))),
+      wait(1000),
+    ]).then(() => wait(PAINT_DELAY)),
+  ]);
+
+  restore();
+  dropLeaving();
+  endMorph();
 };
 
 // The distance a page travels to clear the viewport on the given axis.
@@ -417,7 +680,7 @@ const swup = new Swup({
             visit.meta.composed = true;
             captureLeaving();
           },
-          in: () => cover(),
+          in: () => cover("y", 1, aboutDuration),
         },
         {
           from: "(/about/?)",
@@ -425,7 +688,7 @@ const swup = new Swup({
           // Works comes back on its own reveal, the fade it plays when a
           // project closes.
           out: async () => captureLeaving(),
-          in: () => uncover(),
+          in: () => uncover("y", 1, aboutDuration),
         },
         {
           from: "(/)",
@@ -448,28 +711,10 @@ const swup = new Swup({
               return;
             }
 
-            await gsap
-              .timeline()
-              .to(".projects", {
-                xPercent: -100,
-                duration: duration,
-                ease: easing,
-              })
-              .to(
-                ".projects__thumbnail",
-                { xPercent: 100, duration: duration, ease: easing },
-                "<",
-              )
-              // The image slides over the copy, which would otherwise show
-              // through until the swap.
-              .to(
-                "[x-ref='container'], [data-around-image]",
-                { opacity: 0, duration: 0.4, ease: "power2.in" },
-                "<",
-              );
-
-            // Stands in for the image until the one of the project is decoded.
-            captureLeaving();
+            visit.meta.morph = true;
+            visit.meta.reveal = morphReveal;
+            scrollInstance.lock();
+            visit.meta.revealCue = morphIntoProject();
           },
           in: async (_, { visit }) => {
             if (visit.meta.sharesImage) {
@@ -481,12 +726,12 @@ const swup = new Swup({
               return;
             }
 
-            if (!isDesktopLandscape()) {
-              await cover("x", 1, duration);
+            if (visit.meta.morph) {
+              await finishMorph();
               return;
             }
 
-            await holdImage();
+            await cover("x", 1, duration);
           },
         },
         {
@@ -510,20 +755,12 @@ const swup = new Swup({
               return;
             }
 
-            await Promise.all([
-              revealInstance.unreveal({ speed: backSpeed }),
-              fadeOutNext().timeScale(backSpeed),
-            ]);
-
-            await gsap
-              .to(".image", {
-                xPercent: 100,
-                duration: duration,
-                ease: easing,
-              })
-              .timeScale(backSpeed);
-
-            captureLeaving();
+            // Not locked: Works puts its scroll back on the project left,
+            // which a locked scroller would not take.
+            visit.meta.morph = true;
+            // Its list and links come back with the move, not on its fade.
+            visit.meta.reveal = { swup: false };
+            visit.meta.revealCue = morphBackToWorks();
           },
           // The thumbnail and the list come back on the reveal.
           in: async (_, { visit }) => {
@@ -533,12 +770,12 @@ const swup = new Swup({
               return;
             }
 
-            if (!isDesktopLandscape()) {
-              await uncover("x", 1, duration / backSpeed);
+            if (visit.meta.morph) {
+              await finishMorph();
               return;
             }
 
-            await holdImage();
+            await uncover("x", 1, duration / backSpeed);
           },
         },
         // The next project rises from below, where the scroll was heading.
@@ -590,10 +827,18 @@ const swup = new Swup({
   ],
 });
 
-swup.hooks.on("content:replace", () => {
+swup.hooks.on("content:replace", (visit) => {
   // Forced, or a locked scroll would stay at the bottom of the page left.
   scrollInstance.scrollTo(0, { immediate: true, force: true });
+
+  // Before the first paint of the project, or it shows in place for a frame.
+  if (visit.meta.morph) {
+    attachMorph();
+  }
 });
+
+// A move still under way belongs to a visit cut short.
+swup.hooks.on("visit:start", endMorph);
 
 // After the `in` animation; a visit cut short reaches it through the next one.
 swup.hooks.on("visit:end", () => scrollInstance.unlock());

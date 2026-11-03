@@ -22,9 +22,11 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 <Layout>
   <h1 class="sr-only">Charly Bernard, frontend developer</h1>
 
-  {/* The list below only renders its links through Alpine, the selected one
+  {
+    /* The list below only renders its links through Alpine, the selected one
       alone as a link: these are there for robots and screen readers. Out of
-      the tab order, where they would take an invisible focus. */}
+      the tab order, where they would take an invisible focus. */
+  }
   <nav class="sr-only" aria-label="Projects">
     <ul>
       {
@@ -126,7 +128,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
         }
 
         {/* Part of the page in portrait, so it travels with it. */}
-        <div class="absolute bottom-0 start-0 z-60 text-white landscape:hidden">
+        <div class="absolute start-0 bottom-0 z-60 text-white landscape:hidden">
           <ThemeSwitcher />
         </div>
 
@@ -182,6 +184,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
         x-bind:class={`ready && 'transition-transform'`}
         x-ref="container"
         data-reveal-fade="swup"
+        data-works-list
       >
         <div
           class="flex flex-col ease-[cubic-bezier(0.5,0,0,1)]"

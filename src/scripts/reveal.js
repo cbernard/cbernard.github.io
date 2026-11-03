@@ -6,7 +6,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 class Reveal {
   #split;
-  #revealTimeline;
   #scrollTweens = [];
   #firstSplitDone = false;
 
@@ -82,7 +81,13 @@ class Reveal {
       });
   }
 
-  reveal({ delay = 1, swup = false, instant = false } = {}) {
+  reveal({
+    delay = 1,
+    swup = false,
+    instant = false,
+    ease = "expo.out",
+    duration = 1.2,
+  } = {}) {
     this.#init();
     this.#initScroll();
 
@@ -94,7 +99,6 @@ class Reveal {
     }
 
     const tl = gsap.timeline({ delay });
-    this.#revealTimeline = tl;
 
     const stagger = 0.1;
     const lines = this.#split.lines;
@@ -105,8 +109,8 @@ class Reveal {
           gsap.set("[data-split]", { opacity: 1 });
         },
         y: "0%",
-        duration: 1.2,
-        ease: "expo.out",
+        duration,
+        ease,
         stagger,
       });
     }
@@ -121,54 +125,10 @@ class Reveal {
     }
 
     // Settles once the last line is under way: the scroller and the cursor
-    // would otherwise wait out the whole 1.2s ease.
+    // would otherwise wait out the whole ease.
     return new Promise((resolve) => {
       tl.call(resolve, null, Math.max(lines.length - 1, 0) * stagger);
     });
-  }
-
-  unreveal({ delay = 0, swup = false, speed = 1 } = {}) {
-    // A reveal still in flight would drag its element back up mid-exit.
-    this.#revealTimeline?.kill();
-    this.#killScroll();
-
-    const tl = gsap.timeline({ delay }).timeScale(speed);
-
-    if (this.#split?.lines.length > 0) {
-      tl.to(this.#split.lines, {
-        y: "100%",
-        stagger: { each: 0.1, from: "end" },
-        onComplete: () => {
-          gsap.set("[data-split]", { opacity: 0 });
-        },
-      });
-    }
-
-    const items = gsap.utils.toArray("[data-reveal-slide-up='scroll']");
-
-    if (items.length > 0) {
-      tl.to(
-        items,
-        {
-          y: 20,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power2.in",
-          stagger: { each: 0.08, from: "end" },
-        },
-        "<",
-      );
-    }
-
-    if (swup && document.querySelector("[data-reveal-fade='swup']")) {
-      tl.to(
-        "[data-reveal-fade='swup']",
-        { opacity: 0, duration: 0.3, ease: "power2.in" },
-        "<",
-      );
-    }
-
-    return tl.then();
   }
 }
 
