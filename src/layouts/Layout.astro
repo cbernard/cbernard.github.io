@@ -50,17 +50,20 @@ const person = {
   sameAs: [
     "https://www.instagram.com/chrlbrnrd/",
     "https://www.linkedin.com/in/charlybernard/",
+    "https://github.com/cbernard",
   ],
 };
 
 // `data-loading` keeps the canvas, which Chrome on Android paints under its
-// bottom bar, black for as long as the loader covers the page.
+// bottom bar, black for as long as the loader covers the page. Only then: with a
+// background on the root, the body paints its own over the page copies the
+// transitions hold at `z-index: -1`.
 ---
 
 <!doctype html>
 <html
   lang="en"
-  class="scheme-only-light data-loading:bg-black dark:scheme-dark"
+  class="overscroll-x-none scheme-only-light data-loading:bg-black dark:scheme-dark"
   data-loading
   x-data
   :class="$store.darkMode.on && 'dark'"
@@ -70,6 +73,8 @@ const person = {
     <meta name="viewport" content="width=device-width" />
     {/* Without it, Samsung Internet's dark mode greys out the light theme. */}
     <meta name="color-scheme" content="only light" />
+    {/* Safari's bar. */}
+    <meta name="theme-color" content="#0a0a0a" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <PostHog />
@@ -103,7 +108,7 @@ const person = {
   </head>
 
   <body
-    class="overflow-hidden bg-white font-primary text-black antialiased transition-colors dark:bg-black dark:text-white"
+    class="overflow-hidden overscroll-x-none bg-white font-primary text-black antialiased transition-colors dark:bg-black dark:text-white"
   >
     {
       /* Le scroll vit dans ce conteneur et non dans le document : un navigateur
@@ -120,7 +125,7 @@ const person = {
     }
     <div
       id="scroller"
-      class="relative h-svh overflow-x-hidden overflow-y-auto overscroll-y-contain"
+      class="relative h-svh overflow-x-hidden overflow-y-auto overscroll-x-none overscroll-y-contain"
     >
       <RotateNotice />
 

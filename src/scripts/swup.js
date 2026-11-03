@@ -13,6 +13,9 @@ import SwupJsPlugin from "@swup/js-plugin";
 const duration = 0.75;
 const easing = "power3.inOut";
 
+// How much faster the way back from a project to Works plays.
+const backSpeed = 1.4;
+
 // The curve `loader.js` registers for its curtain.
 const coverDuration = 1;
 const coverEasing = "reveal";
@@ -41,11 +44,14 @@ const sharesImage = () =>
   !window.matchMedia(`(min-width: ${breakpoint("md")})`).matches;
 
 // Opacity only: the accordion owns the transform of some of these.
-const hideAround = (targets) =>
-  gsap.to(targets, { opacity: 0, duration: 0.3, ease: "power2.in" }).then();
+const hideAround = (targets, speed = 1) =>
+  gsap
+    .to(targets, { opacity: 0, duration: 0.3, ease: "power2.in" })
+    .timeScale(speed)
+    .then();
 
 // From and to: `holdImage` may already have hidden them.
-const showAround = (targets) =>
+const showAround = (targets, speed = 1) =>
   gsap
     .fromTo(
       targets,
@@ -59,31 +65,50 @@ const showAround = (targets) =>
         clearProps: "opacity,transform",
       },
     )
+    .timeScale(speed)
     .then();
 
-// Safari paints a fresh image a few frames after it lands, blank until then:
-// the copy of the page left stands under the new one, its own picture hidden,
-// until that picture is decoded. The copy shows the same image.
+// How long the copy stays under the new picture once that one is decoded:
+// Safari paints a decoded image some frames later still.
+const PAINT_DELAY = 300;
+
+// Safari paints a fresh image a few frames after it lands, blank until then.
+// The new picture stays up, the copy of the page left under it, cut to its
+// frame: it shows the same image, so a blank frame shows that one. Without
+// its overlay, as the overlay of the new picture already darkens it.
 const holdImage = async (around) => {
   if (!leaving) {
     return;
   }
 
+  const frame = document.querySelector("#swup .image, #swup .projects");
+
+  if (around) {
+    gsap.set(around, { opacity: 0 });
+  }
+
+  if (frame) {
+    const { top, right, bottom, left } = frame.getBoundingClientRect();
+
+    leaving.style.clipPath = `inset(${top}px ${window.innerWidth - right}px ${window.innerHeight - bottom}px ${left}px)`;
+  }
+
+  leaving
+    .querySelectorAll("[style*='--overlay']")
+    .forEach((overlay) => overlay.remove());
+
   leaving.style.zIndex = -1;
 
-  const frame = document.querySelector("#swup .image, #swup .projects");
-  const images = [...(frame?.querySelectorAll("img") ?? [])];
-
-  gsap.set(around, { opacity: 0 });
-  gsap.set(frame, { visibility: "hidden" });
-
   await Promise.race([
-    Promise.all(images.map((image) => image.decode().catch(() => {}))),
+    Promise.all(
+      [...(frame?.querySelectorAll("img") ?? [])].map((image) =>
+        image.decode().catch(() => {}),
+      ),
+    ),
     new Promise((resolve) => setTimeout(resolve, 500)),
   ]);
 
-  gsap.set(frame, { clearProps: "visibility" });
-  await new Promise((resolve) => requestAnimationFrame(resolve));
+  await new Promise((resolve) => setTimeout(resolve, PAINT_DELAY));
   dropLeaving();
 };
 
@@ -107,7 +132,7 @@ const scrollToTop = () =>
   scrollInstance.scrollY > 0
     ? new Promise((resolve) =>
         scrollInstance.scrollTo(0, {
-          duration: 0.6,
+          duration: 0.6 / backSpeed,
           easing: (t) => 1 - Math.pow(1 - t, 3),
           onComplete: resolve,
         }),
@@ -176,6 +201,29 @@ const captureLeaving = () => {
     canvas.width = canvases[index].width;
     canvas.height = canvases[index].height;
     canvas.getContext("2d").drawImage(canvases[index], 0, 0);
+  });
+
+  // A cloned image is blank until Safari paints it again, some frames later:
+  // the picture on screen goes over as a canvas, painted at once.
+  const media = container.querySelectorAll(".image img, .projects img");
+
+  page.querySelectorAll(".image img, .projects img").forEach((copy, index) => {
+    const source = media[index];
+
+    if (
+      !source.naturalWidth ||
+      source.checkVisibility?.({ opacityProperty: true }) === false
+    ) {
+      return;
+    }
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = source.naturalWidth;
+    canvas.height = source.naturalHeight;
+    canvas.className = source.className;
+    canvas.getContext("2d").drawImage(source, 0, 0);
+    copy.replaceWith(canvas);
   });
 
   // Detached, the copy is out of Alpine's reach, but the reveal queries the
@@ -419,6 +467,9 @@ const swup = new Swup({
                 { opacity: 0, duration: 0.4, ease: "power2.in" },
                 "<",
               );
+
+            // Stands in for the image until the one of the project is decoded.
+            captureLeaving();
           },
           in: async (_, { visit }) => {
             if (visit.meta.sharesImage) {
@@ -432,7 +483,10 @@ const swup = new Swup({
 
             if (!isDesktopLandscape()) {
               await cover("x", 1, duration);
+              return;
             }
+
+            await holdImage();
           },
         },
         {
@@ -445,6 +499,7 @@ const swup = new Swup({
               await scrollToTop();
               await hideAround(
                 "[data-around-image], .panel .image ~ :not([data-shared])",
+                backSpeed,
               );
               captureLeaving();
               return;
@@ -455,25 +510,35 @@ const swup = new Swup({
               return;
             }
 
-            await Promise.all([revealInstance.unreveal(), fadeOutNext()]);
+            await Promise.all([
+              revealInstance.unreveal({ speed: backSpeed }),
+              fadeOutNext().timeScale(backSpeed),
+            ]);
 
-            await gsap.to(".image", {
-              xPercent: 100,
-              duration: duration,
-              ease: easing,
-            });
+            await gsap
+              .to(".image", {
+                xPercent: 100,
+                duration: duration,
+                ease: easing,
+              })
+              .timeScale(backSpeed);
+
+            captureLeaving();
           },
           // The thumbnail and the list come back on the reveal.
           in: async (_, { visit }) => {
             if (visit.meta.sharesImage) {
               await holdImage("[data-around-image]");
-              await showAround("[data-around-image]");
+              await showAround("[data-around-image]", backSpeed);
               return;
             }
 
             if (!isDesktopLandscape()) {
-              await uncover("x", 1, duration);
+              await uncover("x", 1, duration / backSpeed);
+              return;
             }
+
+            await holdImage();
           },
         },
         // The next project rises from below, where the scroll was heading.
@@ -481,6 +546,8 @@ const swup = new Swup({
           from: "(/project/.*)",
           to: "(/project/.*)",
           out: async () => {
+            scrollInstance.lock();
+
             if (!isDesktopLandscape()) {
               await hideSwitcher();
             }
@@ -524,8 +591,12 @@ const swup = new Swup({
 });
 
 swup.hooks.on("content:replace", () => {
-  scrollInstance.scrollTo(0, { immediate: true });
+  // Forced, or a locked scroll would stay at the bottom of the page left.
+  scrollInstance.scrollTo(0, { immediate: true, force: true });
 });
+
+// After the `in` animation; a visit cut short reaches it through the next one.
+swup.hooks.on("visit:end", () => scrollInstance.unlock());
 
 swup.hooks.on("page:view", () => {
   Alpine.store("main").isHome = isHomepage();

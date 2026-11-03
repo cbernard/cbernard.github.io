@@ -15,7 +15,8 @@ const wrapper = document.querySelector(WRAPPER);
 ScrollTrigger.defaults({ scroller: wrapper });
 
 const defaultOptions = {
-  wheelMultiplier: 0.25,
+  wheelMultiplier: 0.55,
+  touchMultiplier: 1.75,
 
   // The limit read live: the reveals shift the page's overflow without
   // resizing anything, and a cached one stays past the real bottom.
@@ -32,6 +33,8 @@ export class Scroll {
   #options;
   #raf;
   #virtualScrollListeners = new Set();
+  #virtualScrollFilter = null;
+  #locked = false;
 
   constructor(options = {}) {
     this.#options = { ...defaultOptions, ...options };
@@ -46,9 +49,15 @@ export class Scroll {
     // `refresh()` is what hands Lenis the element of the page just rendered.
     this.#lenis = new Lenis({
       ...this.#options,
+      // Returning false keeps the gesture from Lenis.
+      virtualScroll: (data) => this.#virtualScrollFilter?.(data) ?? true,
       wrapper,
       content: document.querySelector(CONTENT),
     });
+
+    if (this.#locked) {
+      this.#lenis.stop();
+    }
 
     document.documentElement.style.setProperty(
       "--lenis-scroll-y",
@@ -94,10 +103,31 @@ export class Scroll {
     this.#lenis.start();
   }
 
+  // Unlike `stop()`, holds across `refresh()`.
+  lock() {
+    this.#locked = true;
+    this.#lenis.stop();
+  }
+
+  unlock() {
+    this.#locked = false;
+    this.#lenis.start();
+  }
+
   // Outlives `refresh()`, which swaps the Lenis instance on every visit.
   onVirtualScroll(listener) {
     this.#virtualScrollListeners.add(listener);
     return () => this.#virtualScrollListeners.delete(listener);
+  }
+
+  // Outlives `refresh()` as well.
+  setVirtualScrollFilter(filter) {
+    this.#virtualScrollFilter = filter;
+    return () => {
+      if (this.#virtualScrollFilter === filter) {
+        this.#virtualScrollFilter = null;
+      }
+    };
   }
 
   scrollTo(value, options = {}) {

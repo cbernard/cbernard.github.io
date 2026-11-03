@@ -15,6 +15,9 @@ export default function accordion() {
     init() {
       this.onResize = debounce(this.handleResize.bind(this), 100);
       this.onKeyDown = this.handleKeyDown.bind(this);
+      this.removeSwipeFilter = scrollInstance.setVirtualScrollFilter(
+        this.handleSwipe.bind(this),
+      );
 
       // In portrait the hero leaves the list too short for the desktop items,
       // whatever the width.
@@ -54,7 +57,6 @@ export default function accordion() {
         }
 
         if (this.current <= this.visible / 2) {
-          console.log("test");
           return this.itemHeight * (index - 0.5);
         }
 
@@ -155,6 +157,60 @@ export default function accordion() {
       }
     },
 
+    // In portrait a swipe moves one project, and a flick a few more.
+    handleSwipe({ deltaY, event }) {
+      if (!this.isCompact.matches || !event.type.startsWith("touch")) {
+        return true;
+      }
+
+      if (event.type === "touchstart") {
+        this.swipe = { distance: 0, direction: 0, samples: [] };
+        return false;
+      }
+
+      if (!this.swipe) {
+        return false;
+      }
+
+      if (event.type === "touchmove") {
+        if (event.cancelable) {
+          event.preventDefault();
+        }
+
+        this.swipe.distance += deltaY;
+        this.swipe.samples.push({ deltaY, time: event.timeStamp });
+
+        // In pixels, enough to tell a swipe from a tap that drifts.
+        if (!this.swipe.direction && Math.abs(this.swipe.distance) > 30) {
+          this.swipe.direction = Math.sign(this.swipe.distance);
+          this.moveTo(this.current + this.swipe.direction);
+        }
+      } else if (event.type === "touchend" && this.swipe.direction) {
+        // Over the last 100ms, so a flick that slows down before the release
+        // still counts as one.
+        const recent = this.swipe.samples.filter(
+          ({ time }) => event.timeStamp - time < 100,
+        );
+        const velocity =
+          recent.reduce((sum, { deltaY }) => sum + deltaY, 0) / 100;
+
+        // One more project per px/ms, at most 4: a slow drag stays at one.
+        const extra = Math.min(
+          4,
+          Math.floor(Math.max(0, velocity * this.swipe.direction)),
+        );
+
+        this.moveTo(this.current + extra * this.swipe.direction);
+        this.swipe = null;
+      }
+
+      return false;
+    },
+
+    moveTo(index) {
+      this.scrollTo(Math.min(Math.max(index, 0), this.items.length - 1));
+    },
+
     // A focused link or button already acts on Enter by itself.
     open(e) {
       if (
@@ -233,6 +289,7 @@ export default function accordion() {
 
     destroy() {
       this.removeEventListeners();
+      this.removeSwipeFilter();
       ScrollTrigger.killAll();
     },
   };

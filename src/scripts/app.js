@@ -5,10 +5,12 @@ import swup from "./swup.js";
 import scrollInstance from "./scroll.js";
 import cursorInstance from "./cursor.js";
 import revealInstance from "./reveal.js";
+import historySwipe from "./history-swipe.js";
 
 class App {
   constructor() {
     scrollInstance.init();
+    historySwipe();
 
     swup.hooks.on("page:view", (visit) => {
       this.onPageReady({

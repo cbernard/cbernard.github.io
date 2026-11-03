@@ -127,12 +127,12 @@ class Reveal {
     });
   }
 
-  unreveal({ delay = 0, swup = false } = {}) {
+  unreveal({ delay = 0, swup = false, speed = 1 } = {}) {
     // A reveal still in flight would drag its element back up mid-exit.
     this.#revealTimeline?.kill();
     this.#killScroll();
 
-    const tl = gsap.timeline({ delay });
+    const tl = gsap.timeline({ delay }).timeScale(speed);
 
     if (this.#split?.lines.length > 0) {
       tl.to(this.#split.lines, {
