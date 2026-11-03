@@ -16,7 +16,6 @@ ScrollTrigger.defaults({ scroller: wrapper });
 
 const defaultOptions = {
   wheelMultiplier: 0.55,
-  touchMultiplier: 1.75,
 
   // The limit read live: the reveals shift the page's overflow without
   // resizing anything, and a cached one stays past the real bottom.
@@ -35,6 +34,7 @@ export class Scroll {
   #virtualScrollListeners = new Set();
   #virtualScrollFilter = null;
   #locked = false;
+  #staleTouch = false;
 
   constructor(options = {}) {
     this.#options = { ...defaultOptions, ...options };
@@ -50,7 +50,7 @@ export class Scroll {
     this.#lenis = new Lenis({
       ...this.#options,
       // Returning false keeps the gesture from Lenis.
-      virtualScroll: (data) => this.#virtualScrollFilter?.(data) ?? true,
+      virtualScroll: (data) => this.#filter(data),
       wrapper,
       content: document.querySelector(CONTENT),
     });
@@ -103,9 +103,30 @@ export class Scroll {
     this.#lenis.start();
   }
 
+  // A gesture still under way when the scroll locks belongs to the page left:
+  // it is dropped until the finger lifts and lands again.
+  #filter(data) {
+    const { event } = data;
+
+    if (this.#staleTouch && event.type.startsWith("touch")) {
+      if (event.type !== "touchstart") {
+        if (event.cancelable) {
+          event.preventDefault();
+        }
+
+        return false;
+      }
+
+      this.#staleTouch = false;
+    }
+
+    return this.#virtualScrollFilter?.(data) ?? true;
+  }
+
   // Unlike `stop()`, holds across `refresh()`.
   lock() {
     this.#locked = true;
+    this.#staleTouch = true;
     this.#lenis.stop();
   }
 

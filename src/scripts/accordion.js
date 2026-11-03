@@ -181,7 +181,7 @@ export default function accordion() {
         this.swipe.samples.push({ deltaY, time: event.timeStamp });
 
         // In pixels, enough to tell a swipe from a tap that drifts.
-        if (!this.swipe.direction && Math.abs(this.swipe.distance) > 30) {
+        if (!this.swipe.direction && Math.abs(this.swipe.distance) > 50) {
           this.swipe.direction = Math.sign(this.swipe.distance);
           this.moveTo(this.current + this.swipe.direction);
         }
@@ -194,10 +194,10 @@ export default function accordion() {
         const velocity =
           recent.reduce((sum, { deltaY }) => sum + deltaY, 0) / 100;
 
-        // One more project per px/ms, at most 4: a slow drag stays at one.
+        // One more project per 2 px/ms, at most 3: a slow drag stays at one.
         const extra = Math.min(
-          4,
-          Math.floor(Math.max(0, velocity * this.swipe.direction)),
+          3,
+          Math.floor(Math.max(0, (velocity * this.swipe.direction) / 2)),
         );
 
         this.moveTo(this.current + extra * this.swipe.direction);
