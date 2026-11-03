@@ -74,18 +74,18 @@ const credits = [
   </div>
 
   <div
-    class="flex w-screen flex-col md:flex-row md:justify-end"
+    class="flex w-screen flex-col md:landscape:flex-row md:landscape:justify-end"
     x-data="pins()"
   >
     <div
-      class="relative md:fixed md:start-0 md:top-0 md:h-screen md:w-[50vw]"
+      class="relative md:landscape:fixed md:landscape:start-0 md:landscape:top-0 md:landscape:h-screen md:landscape:w-[50vw]"
       data-reveal-slide-up="load"
     >
       <div
-        class="grid h-full grid-cols-6 grid-rows-[1fr_auto] gap-x-[10px] gap-y-5 px-4 pt-5 pb-5 md:grid-cols-8 md:grid-rows-[auto_1fr_auto] md:pr-5 md:pl-5"
+        class="grid h-full grid-cols-6 grid-rows-[1fr_auto] gap-x-[10px] gap-y-5 px-4 pt-5 pb-5 md:landscape:grid-cols-8 md:landscape:grid-rows-[auto_1fr_auto] md:landscape:pr-5 md:landscape:pl-5"
       >
         <div
-          class="image relative col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 aspect-[400/335] md:col-span-8 md:col-start-1 md:row-span-3 md:row-start-1 md:-mx-5 md:-mb-10 md:aspect-auto"
+          class="image relative col-span-6 col-start-1 row-span-2 row-start-1 -mx-4 -mt-5 h-(--hero-height) md:landscape:col-span-8 md:landscape:col-start-1 md:landscape:row-span-3 md:landscape:row-start-1 md:landscape:-mx-5 md:landscape:-mb-10 md:landscape:h-auto"
         >
           {/* Part of the page in portrait, so it scrolls and travels with it. */}
           <div class="absolute bottom-0 start-0 z-20 text-white landscape:hidden">
@@ -138,22 +138,22 @@ const credits = [
 
         {/* Positioned like the image cell above them: a positioned element
             paints over its static siblings whatever the DOM order. */}
-        <div class="relative col-start-1 row-start-1 md:hidden" data-shared>
+        <div class="relative col-start-1 row-start-1 md:landscape:hidden" data-shared>
           <a href="/" class="text-white">CB</a>
         </div>
 
-        <div class="relative col-start-6 row-start-1 text-end md:hidden">
+        <div class="relative col-start-6 row-start-1 text-end md:landscape:hidden">
 
         </div>
 
         <div
-          class="relative col-start-1 row-span-3 row-start-1 hidden text-white-32 md:block"
+          class="relative col-start-1 row-span-3 row-start-1 hidden text-white-32 md:landscape:block"
         >
           <Progress translate={true} progress="scroll" />
         </div>
 
         <div
-          class="relative col-span-5 col-start-2 row-start-2 flex items-center justify-between pb-3 md:col-span-7 md:col-start-2 md:row-start-1 md:pb-0"
+          class="relative col-span-5 col-start-2 row-start-2 flex items-center justify-between pb-3 md:landscape:col-span-7 md:landscape:col-start-2 md:landscape:row-start-1 md:landscape:pb-0"
         >
           <div class="flex items-center gap-x-4">
             <span class="text-white">Charly Bernard</span>
@@ -162,7 +162,7 @@ const credits = [
         </div>
 
         <div
-          class="relative col-span-5 col-start-2 row-start-3 hidden flex-col gap-y-5 md:flex md:col-span-7 md:col-start-2 md:text-white lg:col-span-6 lg:col-start-2"
+          class="relative col-span-5 col-start-2 row-start-3 hidden flex-col gap-y-5 md:landscape:flex md:landscape:col-span-7 md:landscape:col-start-2 md:landscape:text-white lg:landscape:col-span-6 lg:landscape:col-start-2"
         >
           <div class="flex items-center gap-x-4">
             {
@@ -182,11 +182,11 @@ const credits = [
     </div>
 
     <div
-      class="grid min-h-[50vh] grid-cols-6 flex-col items-center gap-[10px] px-4 pb-14 md:h-auto md:w-[50vw] md:grid-cols-8 md:pt-56 md:pr-5 md:pl-[5px]"
+      class="grid min-h-[50vh] grid-cols-6 flex-col items-center gap-[10px] px-4 pb-14 md:landscape:h-auto md:landscape:w-[50vw] md:landscape:grid-cols-8 md:landscape:pt-56 md:landscape:pr-5 md:landscape:pl-[5px]"
       data-around-image
     >
       <div
-        class="z-2 col-span-5 col-start-2 transition-colors duration-200 has-[button:hover]:text-black-32 md:col-span-6 md:col-start-2 dark:has-[button:hover]:text-white-32"
+        class="z-2 col-span-5 col-start-2 transition-colors duration-200 has-[button:hover]:text-black-32 md:landscape:col-span-6 md:landscape:col-start-2 dark:has-[button:hover]:text-white-32"
       >
         {/* Split per paragraph, not on the wrapper: SplitText hoists its line
             masks as direct children of the element it splits, so a wrapper split
@@ -213,7 +213,7 @@ const credits = [
           </p>
         </div>
 
-        <div class="mt-28 flex flex-col gap-y-28 md:mt-48 md:gap-y-48">
+        <div class="mt-28 flex flex-col gap-y-28 md:landscape:mt-48 md:landscape:gap-y-48">
           {
             recognitions.length > 0 && (
               <section
@@ -228,19 +228,19 @@ const credits = [
               <div class="flex flex-col gap-y-5">
                 {
                   recognitions.map((item) => (
-                    <div class="grid grid-cols-[1fr_auto] gap-x-[10px] gap-y-1 md:grid-cols-6">
+                    <div class="grid grid-cols-[1fr_auto] gap-x-[10px] gap-y-1 md:landscape:grid-cols-6">
                       <div class="col-span-2">{item.project}</div>
 
                       {/* Inline rather than a flex row: a label that wraps stays
                           in the text flow instead of hanging under the award. */}
-                      <div class="md:col-span-3 md:col-start-3">
+                      <div class="md:landscape:col-span-3 md:landscape:col-start-3">
                         <span class="me-2 text-black-32 dark:text-white-32">
                           {item.award}
                         </span>
                         {item.label}
                       </div>
 
-                      <div class="text-end md:col-start-6">{item.year}</div>
+                      <div class="text-end md:landscape:col-start-6">{item.year}</div>
                     </div>
                   ))
                 }
@@ -261,12 +261,12 @@ const credits = [
             <div class="flex flex-col gap-y-5">
               {
                 credits.map((item) => (
-                  <div class="grid grid-cols-2 gap-x-[10px] gap-y-1 md:grid-cols-6">
-                    <div class="md:col-span-2">
+                  <div class="grid grid-cols-2 gap-x-[10px] gap-y-1 md:landscape:grid-cols-6">
+                    <div class="md:landscape:col-span-2">
                       <Link href={item.href}>{item.name}</Link>
                     </div>
 
-                    <div class="text-black-32 md:col-span-3 md:col-start-3 dark:text-white-32">
+                    <div class="text-black-32 md:landscape:col-span-3 md:landscape:col-start-3 dark:text-white-32">
                       {item.role}
                     </div>
                   </div>
@@ -287,8 +287,8 @@ const credits = [
             <div class="flex flex-col gap-y-5">
               {
                 links.map((link) => (
-                  <div class="grid grid-cols-2 gap-x-[10px] gap-y-1 md:grid-cols-6">
-                    <div class="md:col-span-2">
+                  <div class="grid grid-cols-2 gap-x-[10px] gap-y-1 md:landscape:grid-cols-6">
+                    <div class="md:landscape:col-span-2">
                       <Link
                         href={link.href}
                         data-posthog-event="social_profile_opened"
@@ -298,7 +298,7 @@ const credits = [
                       </Link>
                     </div>
 
-                    <div class="text-black-32 md:col-span-3 md:col-start-3 dark:text-white-32">
+                    <div class="text-black-32 md:landscape:col-span-3 md:landscape:col-start-3 dark:text-white-32">
                       {link.handle}
                     </div>
                   </div>

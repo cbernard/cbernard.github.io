@@ -107,18 +107,18 @@ const assets = {
 
 {/* Above the separator of the page, which would otherwise darken its own. */}
 <div
-  class="fixed inset-0 z-[9500] grid grid-cols-6 items-center gap-[10px] bg-black px-4 text-white-32 md:px-5 md:grid-cols-16"
+  class="fixed inset-0 z-[9500] grid grid-cols-6 items-center gap-[10px] bg-black px-4 text-white-32 md:landscape:px-5 md:landscape:grid-cols-16"
   x-data={`loader(${JSON.stringify(assets)})`}
 >
   <Separator loader />
 
   {/* Nudged left so "100" stays clear of the separator. */}
-  <div class="col-start-1 text-white-32 md:-translate-x-1">
+  <div class="col-start-1 text-white-32 md:landscape:-translate-x-1">
     <Progress progress="load" />
   </div>
 
   {/* Clear of the separator, which sits close to the second column on mobile. */}
-  <div class="col-span-15 col-start-2 flex items-center gap-x-4 pl-4 md:pl-0">
+  <div class="col-span-15 col-start-2 flex items-center gap-x-4 pl-4 md:landscape:pl-0">
     <span class="text-white">Charly Bernard</span>
     <span>Frontend Developer</span>
   </div>

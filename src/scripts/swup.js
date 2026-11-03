@@ -38,12 +38,10 @@ const isDesktopLandscape = () =>
 
 const isTouch = () => window.matchMedia("(pointer: coarse)").matches;
 
-// The mobile layout, on a phone or in a narrow window, opens Works and a
+// The mobile layout, which every portrait viewport takes, opens Works and a
 // project on the same picture, in the same place: it stays put while the rest
 // of the page changes around it.
-const sharesImage = () =>
-  window.matchMedia("(orientation: portrait)").matches &&
-  !window.matchMedia(`(min-width: ${breakpoint("md")})`).matches;
+const sharesImage = () => window.matchMedia("(orientation: portrait)").matches;
 
 // Opacity only: the accordion owns the transform of some of these.
 const hideAround = (targets, speed = 1) =>
@@ -704,8 +702,8 @@ const swup = new Swup({
               return;
             }
 
-            // Portrait has none of the split layout the desktop animation
-            // slides apart, so the pages cover each other there too.
+            // A narrow landscape window splits the pages too tightly for the
+            // desktop animation: they cover each other instead.
             if (!isDesktopLandscape()) {
               captureLeaving();
               return;

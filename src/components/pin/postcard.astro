@@ -17,7 +17,7 @@ const { pins = [] } = Astro.props;
     to the panel on the left instead — see the image stack of the about page. */}
 {/* Placed and tilted by `pin.js` on every press. Only the opacity and the scale
     are eased: the next press would otherwise swing the card to its new angle. */}
-<div class="pointer-events-none fixed inset-0 z-40 md:hidden">
+<div class="pointer-events-none fixed inset-0 z-40 md:landscape:hidden">
   {
     pins.map((pin, index) => (
       <div
@@ -53,7 +53,7 @@ const { pins = [] } = Astro.props;
     cannot rise above it, SplitText leaves a transform on the line it sits in and
     that transform is a stacking context of its own. Filled by `pin.js`. */}
 <div
-  class="pointer-events-none fixed inset-0 z-50 md:hidden"
+  class="pointer-events-none fixed inset-0 z-50 md:landscape:hidden"
   data-pin-ghosts
   aria-hidden="true"
 >

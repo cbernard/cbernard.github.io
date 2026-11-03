@@ -54,11 +54,9 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
     <Link href="/about" class="inline-block p-2 text-white">About</Link>
   </div>
 
-  {
-    /* In portrait, at the bottom of the hero, whose ratio is that of `.projects`. */
-  }
+  {/* In portrait, at the bottom of the hero. */}
   <div
-    class="fixed end-0 top-[calc(100vw_*_335_/_400)] z-30 -translate-y-full px-2 pb-3 landscape:top-auto landscape:bottom-0 landscape:translate-y-0 landscape:p-3"
+    class="fixed end-0 top-(--hero-height) z-30 -translate-y-full px-2 pb-3 landscape:top-auto landscape:bottom-0 landscape:translate-y-0 landscape:p-3"
     data-around-image
   >
     <Email class="inline-block p-2 text-white">Contact</Email>
@@ -85,7 +83,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
       data-reveal-slide-up="load"
     >
       <div
-        class="projects relative aspect-[400/335] w-full overflow-hidden landscape:order-2 landscape:aspect-auto landscape:h-auto landscape:w-[50vw]"
+        class="projects relative h-(--hero-height) w-full overflow-hidden landscape:order-2 landscape:h-auto landscape:w-[50vw]"
       >
         {
           sortedProjects.map((project, index) => (
@@ -119,7 +117,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
                   between the two. */}
               {project.data.overlay > 0 && (
                 <div
-                  class="pointer-events-none absolute inset-0 bg-black opacity-[min(1,calc(var(--overlay)_+_0.2))] md:opacity-(--overlay)"
+                  class="pointer-events-none absolute inset-0 bg-black opacity-[min(1,calc(var(--overlay)_+_0.2))] md:landscape:opacity-(--overlay)"
                   style={`--overlay: ${project.data.overlay}`}
                 />
               )}

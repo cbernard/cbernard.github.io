@@ -22,7 +22,7 @@ const PIN_DISTANCE = { mobile: 0.6, desktop: 0.6 };
 
 const isMobile = () =>
   !window.matchMedia(
-    `(min-width: ${getComputedStyle(document.documentElement).getPropertyValue("--breakpoint-md").trim()})`,
+    `(min-width: ${getComputedStyle(document.documentElement).getPropertyValue("--breakpoint-md").trim()}) and (orientation: landscape)`,
   ).matches;
 
 export default function next(href) {

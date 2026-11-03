@@ -44,11 +44,23 @@
   --color-white-80: color-mix(in srgb, var(--color-white) 80%, transparent);
 }
 
+/* The portrait hero, capped so that a near-square viewport leaves Works room
+   for its list. */
+:root {
+  --hero-height: min(100vw * 335 / 400, 60svh);
+}
+
+/* The desktop titles, shrunk in a barely landscape window until the widest,
+   "IWC Schaffhausen", fits its half of the viewport. */
+:root {
+  --title-size: min(52px, 5.25vw - 5px);
+}
+
 /* `@utility` plutôt que `@layer components` : Tailwind v4 n'autorise `@apply`
    que sur des utilitaires, et cursor.css réutilise la pill pour l'état
    `-pill` du curseur. */
 @utility btn {
-  @apply flex items-center gap-x-1 rounded-sm bg-white-16 px-2 py-0.5 text-white md:gap-x-2 md:p-2;
+  @apply flex items-center gap-x-1 rounded-sm bg-white-16 px-2 py-0.5 text-white md:landscape:gap-x-2 md:landscape:p-2;
 }
 
 [x-cloak] {
