@@ -66,3 +66,11 @@
 [x-cloak] {
   display: none !important;
 }
+
+/* Lenis clips the scroller it stops, which drops its offset: the page left
+   flashes its top and the next one lands where the previous scroll was. While
+   stopped, Lenis cancels the gestures on its own. */
+#scroller.lenis-stopped {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
